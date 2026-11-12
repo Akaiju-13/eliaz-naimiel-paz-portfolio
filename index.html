@@ -16,8 +16,9 @@
   --white:#FFFFFF; --body:#D1D5DB; --muted:#9CA3AF;
   --lime:#75F94C; --lime-soft:rgba(117,249,76,.12); --rec:#FF4D4D;
   --r:14px; --wrap:1280px;
-  --s2:8px; --s3:16px; --s4:24px; --s5:40px; --s6:64px; --s7:120px;
+  --s2:8px; --s3:16px; --s4:24px; --s5:40px; --s6:64px; --s7:128px;
   --mono:"JetBrains Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.77,0,.18,1);
 }
 *{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
@@ -37,18 +38,19 @@ button{font:inherit;color:inherit;cursor:pointer}
 .skip:focus{left:8px}
 h1,h2,h3{color:var(--white)}
 .dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-/* ---------- film leader intro ---------- */
-.leader{position:fixed;inset:0;z-index:100;background:var(--navy);display:grid;place-items:center;transition:clip-path .7s cubic-bezier(.77,0,.18,1)}
+/* ---------- film leader ---------- */
+.leader{position:fixed;inset:0;z-index:100;background:var(--navy);display:grid;place-items:center;transition:clip-path .7s var(--ease)}
 .leader.out{clip-path:inset(0 0 100% 0)}
 .leader .ring{position:relative;width:min(56vmin,420px);aspect-ratio:1;border-radius:50%;border:2px solid var(--edge-ui);display:grid;place-items:center;overflow:hidden}
 .leader .ring::before{content:"";position:absolute;inset:0;background:conic-gradient(var(--lime-soft) var(--sweep,0deg),transparent 0)}
 .leader .ring::after{content:"";position:absolute;inset:12%;border-radius:50%;border:1px solid var(--edge)}
 .leader .x,.leader .y{position:absolute;background:var(--edge)}
 .leader .x{left:0;right:0;top:50%;height:1px}.leader .y{top:0;bottom:0;left:50%;width:1px}
-.leader .num{position:relative;font-size:min(28vmin,210px);font-weight:900;color:var(--white);line-height:1;font-variant-numeric:tabular-nums}
-.leader .meta{position:absolute;bottom:32px;left:0;right:0;display:flex;justify-content:space-between;padding:0 32px;color:var(--muted)}
-.leader button{background:none;border:1px solid var(--edge-ui);border-radius:999px;padding:8px 16px;color:var(--body);min-height:40px}
+.leader .num{position:relative;font-size:min(28vmin,210px);font-weight:900;color:var(--white);line-height:1}
+.leader .meta{position:absolute;bottom:32px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 32px;color:var(--muted)}
+.leader button{background:none;border:1px solid var(--edge-ui);border-radius:999px;padding:8px 16px;color:var(--body);min-height:44px}
 .leader button:hover{border-color:var(--lime);color:var(--lime)}
 
 /* ---------- nav ---------- */
@@ -59,37 +61,42 @@ header.top{position:sticky;top:0;z-index:30;background:rgba(4,11,22,.82);backdro
 .nav ul{display:flex;gap:var(--s4);list-style:none;padding:0;align-items:center}
 .nav a.l{text-decoration:none;padding:10px 2px;color:var(--body);transition:color .2s}
 .nav a.l:hover{color:var(--lime)}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--edge-ui);color:var(--white);background:transparent;transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--edge-ui);color:var(--white);background:transparent;transition:background .2s ease,border-color .2s ease,color .2s ease}
 .btn:hover{border-color:var(--lime);color:var(--lime)}
 .btn.solid{background:var(--lime);border-color:var(--lime);color:var(--navy)}
 .btn.solid:hover{background:#9BFF7A;color:var(--navy)}
-.btn:active{transform:scale(.97)}
-@media (max-width:760px){.nav ul li.hide-sm{display:none}}
+@media (max-width:820px){.nav ul li.hide-sm{display:none}}
 
 /* ---------- hero ---------- */
 .stage{position:relative;overflow:hidden;isolation:isolate}
+.scan{position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(255,255,255,.018) 3px 4px);pointer-events:none}
 .hero{min-height:calc(100vh - 124px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--s5);align-items:center;padding:var(--s6) var(--s4)}
 .status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid var(--edge);border-radius:999px;background:rgba(10,20,40,.6);color:var(--body)}
 .status .dot{color:var(--lime);animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(117,249,76,.6)}70%,100%{box-shadow:0 0 0 10px rgba(117,249,76,0)}}
-h1{margin-top:var(--s4);font-size:clamp(56px,8.2vw,124px);line-height:.88;font-weight:900;letter-spacing:-.045em}
-h1 .ln{display:block}
-h1 .out{color:transparent;-webkit-text-stroke:1.5px var(--white);font-weight:800}
-h1 .g{background:linear-gradient(100deg,#fff 0%,#D1D5DB 40%,var(--lime) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{margin-top:var(--s4);font-size:clamp(56px,8.2vw,124px);line-height:.9;font-weight:900;letter-spacing:-.045em}
+h1 .ln{display:block;overflow:hidden;padding-bottom:.04em}
+h1 .ln>span{display:inline-block;transform:translateY(105%);transition:transform .9s var(--ease)}
+.ready h1 .ln>span{transform:none}
+.ready h1 .ln:nth-child(2)>span{transition-delay:.08s}.ready h1 .ln:nth-child(3)>span{transition-delay:.16s}
+h1 .out>span{color:transparent;-webkit-text-stroke:1.5px var(--white);font-weight:800}
+h1 .g>span{background:linear-gradient(100deg,#fff 0%,#D1D5DB 40%,var(--lime) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* RGB split on hover */
+h1:hover .ln:first-child>span{text-shadow:-3px 0 rgba(255,77,77,.75),3px 0 rgba(77,166,255,.75)}
 .role{margin-top:var(--s4);font-size:clamp(19px,1.9vw,24px);line-height:1.35;color:var(--white);font-weight:500;max-width:32ch}
-.role .sw{display:inline-block;color:var(--lime);min-width:7ch}
+.role .sw{display:inline-block;color:var(--lime);position:relative}
+.role .sw::after{content:"";position:absolute;right:-6px;top:10%;bottom:10%;width:2px;background:var(--lime);animation:blink 1s steps(2) infinite}
 .lede{margin-top:var(--s3);max-width:52ch}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--s5)}
-
-/* phones */
-.rig{position:relative;height:min(76vh,700px);display:grid;place-items:center}
+.rig{position:relative;height:min(76vh,700px);display:grid;place-items:center;perspective:1200px}
+.phones{position:relative;width:100%;height:100%;display:grid;place-items:center;transform-style:preserve-3d;transition:transform .3s ease-out}
 .phone{position:absolute;aspect-ratio:9/19.5;height:100%;max-height:640px;border-radius:44px;padding:10px;background:linear-gradient(145deg,#1b2747,#070e1c);box-shadow:0 40px 80px -20px rgba(0,0,0,.7),inset 0 0 0 1.5px #2a3a60}
 .phone .scr{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#000}
 .phone .scr video,.phone .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .phone.ghost{height:82%;opacity:.45;filter:saturate(.6) brightness(.7)}
-.phone.ghost.l{transform:translateX(-58%) rotate(-9deg)}
-.phone.ghost.r{transform:translateX(58%) rotate(9deg)}
-.phone.main{z-index:2}
+.phone.ghost.l{transform:translateX(-58%) rotate(-9deg) translateZ(-60px)}
+.phone.ghost.r{transform:translateX(58%) rotate(9deg) translateZ(-60px)}
+.phone.main{z-index:2;transform:translateZ(40px)}
 .island{position:absolute;top:18px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:20px;background:#000;z-index:3}
 .reel-ui{position:absolute;inset:auto 0 0 0;z-index:3;padding:56px 18px 18px;background:linear-gradient(transparent,rgba(0,0,0,.8));color:var(--white)}
 .reel-ui .now{color:var(--lime)}
@@ -105,38 +112,116 @@ h1 .g{background:linear-gradient(100deg,#fff 0%,#D1D5DB 40%,var(--lime) 100%);-w
 .flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:2;pointer-events:none}
 .flash.go{animation:flash .18s ease-out}
 @keyframes flash{0%{opacity:.35}100%{opacity:0}}
-.tag{position:absolute;z-index:4;padding:10px 14px;border-radius:12px;background:rgba(10,20,40,.92);border:1px solid var(--edge);color:var(--white);box-shadow:0 20px 40px -15px rgba(0,0,0,.6)}
-.tag b{display:block;font-size:22px;font-weight:800;line-height:1.1;color:var(--lime)}
-.tag.a{left:0;top:16%}.tag.b{right:-2%;bottom:14%}
-@media (max-width:960px){.hero{grid-template-columns:1fr;min-height:auto}.rig{height:560px}.tag.a{left:2%}.tag.b{right:2%}}
-@media (max-width:520px){.phone.ghost{display:none}.rig{height:520px}}
+.float{position:absolute;z-index:4;padding:10px 14px;border-radius:12px;background:rgba(10,20,40,.92);border:1px solid var(--edge);color:var(--white);box-shadow:0 20px 40px -15px rgba(0,0,0,.6);animation:bob 6s ease-in-out infinite}
+.float b{display:block;font-size:22px;font-weight:800;line-height:1.1;color:var(--lime)}
+.float.a{left:0;top:14%}.float.b{right:-2%;bottom:16%;animation-delay:-3s}
+.float.c{left:4%;bottom:6%;animation-delay:-1.5s;display:flex;align-items:center;gap:10px}
+.kf{display:flex;gap:10px;align-items:center}
+.kf i{width:10px;height:10px;background:var(--lime);transform:rotate(45deg);animation:kf 1.6s ease-in-out infinite}
+.kf i:nth-child(2){animation-delay:.2s}.kf i:nth-child(3){animation-delay:.4s}
+@keyframes kf{50%{background:var(--edge-ui)}}
+@keyframes bob{50%{transform:translateY(-10px)}}
+@media (max-width:960px){.hero{grid-template-columns:1fr;min-height:auto}.rig{height:560px}}
+@media (max-width:520px){.phone.ghost,.float.c{display:none}.rig{height:520px}}
 
-/* ticker */
-.ticker{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:var(--panel);overflow:hidden;white-space:nowrap}
-.ticker .track{display:inline-flex;gap:48px;padding:18px 0;animation:slide 50s linear infinite}
-.ticker span{font-size:clamp(20px,2.4vw,30px);font-weight:300;color:var(--white)}
-.ticker span.sep{color:var(--lime)}
+/* logo marquee */
+.marq{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:var(--panel);overflow:hidden;padding:18px 0;display:grid;gap:14px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mrow{display:flex;gap:14px;width:max-content;animation:slide 60s linear infinite}
+.mrow.rev{animation-direction:reverse;animation-duration:70s}
+.marq:hover .mrow{animation-play-state:paused}
+.app{width:64px;height:64px;border-radius:16px;background:#F4F6F8;display:grid;place-items:center;flex:none;box-shadow:0 8px 20px -10px rgba(0,0,0,.6);transition:transform .25s ease}
+.app svg{width:36px;height:36px}
+.app:hover{transform:translateY(-4px) scale(1.06)}
 @keyframes slide{to{transform:translateX(-50%)}}
 
 section{padding:var(--s7) 0;scroll-margin-top:68px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s4);flex-wrap:wrap}
-h2{font-size:clamp(42px,5.6vw,80px);line-height:.95;font-weight:800;letter-spacing:-.04em;max-width:15ch}
+h2{font-size:clamp(42px,5.6vw,80px);line-height:.95;font-weight:800;letter-spacing:-.04em;max-width:16ch}
 h2 em{font-style:normal;color:var(--lime)}
 .sub{margin-top:var(--s3);max-width:58ch}
 .idx{color:var(--muted)}
+/* wipe-in transition for headings */
+.wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1s var(--ease)}
+.wipe.in{clip-path:inset(0 0 0 0)}
+.trans{display:inline-flex;align-items:center;gap:8px;margin-bottom:var(--s3);padding:5px 10px;border-radius:6px;border:1px dashed var(--edge-ui);color:var(--muted)}
+.trans::before{content:"";width:18px;height:10px;border-radius:2px;background:linear-gradient(90deg,var(--edge-ui),var(--lime))}
 
-/* ---------- hook lab ---------- */
-.lab{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);margin-top:var(--s5);align-items:start}
-.lab figure{position:relative}
-.lab .scr{position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:var(--panel);border:1px solid var(--edge)}
-.lab video{width:100%;height:100%;object-fit:cover}
-.lab figcaption{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--white);font-weight:600}
-.lab figcaption span{color:var(--muted)}
-.lab .lbl{position:absolute;top:12px;left:12px;z-index:2;background:var(--lime);color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600}
-.labbar{display:flex;gap:12px;align-items:center;margin-top:var(--s4);flex-wrap:wrap}
-@media (max-width:760px){.lab{grid-template-columns:repeat(3,minmax(160px,1fr));overflow-x:auto;scroll-snap-type:x mandatory}.lab figure{scroll-snap-align:start}}
+/* ---------- anatomy (sticky scroll) ---------- */
+.anat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s6);margin-top:var(--s5)}
+.anat .pin{position:sticky;top:100px;align-self:start}
+.mon{position:relative;width:min(100%,360px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--edge)}
+.mon video{width:100%;height:100%;object-fit:cover;transition:filter .8s ease,transform .8s var(--ease)}
+.mon[data-s="0"] video{filter:saturate(.25) contrast(.72) brightness(1.15)}
+.mon[data-s="1"] video{filter:saturate(.25) contrast(.72) brightness(1.15)}
+.mon[data-s="2"] video{filter:saturate(.25) contrast(.72) brightness(1.15)}
+.mon[data-s="3"] video,.mon[data-s="4"] video,.mon[data-s="5"] video{filter:saturate(1.2) contrast(1.08)}
+.mon .hud{position:absolute;left:12px;right:12px;display:flex;justify-content:space-between;color:var(--white);z-index:3;text-shadow:0 1px 2px #000}
+.mon .hud.t{top:12px}.mon .hud.b{bottom:12px}
+.mon .safe{position:absolute;inset:8% 6% 18% 6%;border:1px dashed rgba(255,255,255,.35);border-radius:6px;opacity:0;transition:opacity .4s}
+.mon[data-s="0"] .safe{opacity:1}
+.mon .cutfx{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:2}
+.mon .cutfx.go{animation:flash .16s ease-out}
+.cap{position:absolute;left:8%;right:8%;bottom:24%;text-align:center;z-index:3;font-weight:900;font-size:26px;line-height:1.1;color:#fff;text-transform:uppercase;letter-spacing:-.01em;opacity:0;transition:opacity .3s;-webkit-text-stroke:1px #000;paint-order:stroke}
+.cap b{color:var(--lime)}
+.mon[data-s="2"] .cap,.mon[data-s="3"] .cap,.mon[data-s="4"] .cap,.mon[data-s="5"] .cap{opacity:1}
+.cap span{display:inline-block;animation:pop .4s var(--ease) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.lut{position:absolute;top:44px;left:12px;z-index:3;padding:3px 8px;border-radius:6px;background:rgba(4,11,22,.8);color:var(--lime);opacity:0;transition:opacity .3s}
+.mon[data-s="3"] .lut{opacity:1}
+.wave{position:absolute;left:10px;right:10px;bottom:40px;height:40px;display:flex;align-items:center;gap:2px;z-index:3;opacity:0;transition:opacity .3s}
+.mon[data-s="4"] .wave{opacity:1}
+.wave i{flex:1;background:var(--lime);border-radius:2px;height:20%;animation:wv .9s ease-in-out infinite alternate}
+@keyframes wv{to{height:100%}}
+.plats{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:rgba(4,11,22,.55);opacity:0;transition:opacity .4s}
+.mon[data-s="5"] .plats{opacity:1}
+.plats .row{display:flex;gap:10px}
+.plats .app{width:52px;height:52px;border-radius:14px;animation:pop .5s var(--ease) both}
+.plats .app svg{width:28px;height:28px}
+.plats p{margin-top:12px;color:var(--white);text-align:center}
+.mini{width:min(100%,360px);margin:14px auto 0;display:grid;gap:5px}
+.mini .tk{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:center;color:var(--muted)}
+.mini .ln{position:relative;height:14px;background:var(--panel);border:1px solid var(--edge);border-radius:4px;overflow:hidden}
+.mini .ln b{position:absolute;top:0;bottom:0;left:0;width:0;background:var(--edge-ui);transition:width .8s var(--ease)}
+.mini .ln b.on{background:var(--lime)}
+.mini .ln b.cuts{background:repeating-linear-gradient(90deg,var(--lime) 0 18%,var(--navy) 18% 19%)}
+.steps{list-style:none;padding:0}
+.steps li{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.3;transition:opacity .4s}
+.steps li.on{opacity:1}
+.steps .no{color:var(--lime)}
+.steps h3{font-size:clamp(28px,3.2vw,44px);line-height:1.05;letter-spacing:-.02em;margin-top:6px}
+.steps p{margin-top:12px;max-width:44ch}
+@media (max-width:900px){.anat{grid-template-columns:1fr}.anat .pin{top:76px;z-index:2;background:var(--navy);padding-bottom:12px}.mon{width:min(62vw,260px)}.steps li{min-height:46vh}.mini{width:min(62vw,260px)}}
+
+/* ---------- grade + formats ---------- */
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5);margin-top:var(--s5)}
+.cmp{position:relative;aspect-ratio:9/16;width:min(100%,360px);margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid var(--edge);background:#000;touch-action:none;user-select:none}
+.cmp video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmp .raw{filter:saturate(.2) contrast(.7) brightness(1.15)}
+.cmp .graded{clip-path:inset(0 0 0 var(--cut,50%));filter:saturate(1.25) contrast(1.1)}
+.cmp .handle{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:2px;background:var(--white);z-index:3}
+.cmp .handle::after{content:"⟷";position:absolute;top:50%;left:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:var(--lime);color:var(--navy);display:grid;place-items:center;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.cmp .tagl,.cmp .tagr{position:absolute;top:12px;z-index:3;padding:3px 8px;border-radius:6px;background:rgba(4,11,22,.8);color:var(--white)}
+.cmp .tagl{left:12px}.cmp .tagr{right:12px;color:var(--lime)}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;z-index:4;margin:0}
+.fmt{display:flex;flex-direction:column;align-items:center}
+.fbox{position:relative;width:100%;height:min(640px,110vw);display:grid;place-items:center}
+.frm{position:relative;height:100%;aspect-ratio:var(--ar,9/16);max-width:100%;border-radius:16px;overflow:hidden;border:2px solid var(--lime);background:#000;transition:aspect-ratio .7s var(--ease),height .7s var(--ease)}
+.frm video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frm .lbl{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:rgba(4,11,22,.85);color:var(--white)}
+.frm .lbl svg{width:18px;height:18px}
+.fbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--s4);justify-content:center}
+.fbtn{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--edge-ui);background:var(--panel);color:var(--body);font-family:var(--mono);font-size:13px}
+.fbtn[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--navy)}
+.duo h3{font-size:24px;margin-bottom:6px}
+.duo .note{color:var(--muted);margin-bottom:var(--s4)}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
 
 /* ---------- work ---------- */
+.ticker{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);overflow:hidden;white-space:nowrap}
+.ticker .track{display:inline-flex;gap:48px;padding:18px 0;animation:slide 50s linear infinite}
+.ticker span{font-size:clamp(20px,2.4vw,30px);font-weight:300;color:var(--white)}
+.ticker span.sep{color:var(--lime)}
 .filters{display:flex;flex-wrap:wrap;gap:10px;margin:var(--s5) 0 var(--s3);padding:0;list-style:none}
 .chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--edge-ui);background:rgba(10,20,40,.6);font-weight:500;font-size:15px;display:inline-flex;gap:10px;align-items:center;color:var(--body);transition:all .2s ease}
 .chip .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
@@ -145,9 +230,11 @@ h2 em{font-style:normal;color:var(--lime)}
 .chip[aria-pressed="true"] .n{color:var(--navy)}
 .catnote{margin-bottom:var(--s5);max-width:64ch;min-height:1.6em;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:var(--s5) var(--s4);list-style:none;padding:0}
+.card{opacity:0;transform:translateY(24px);animation:card .6s var(--ease) forwards}
+@keyframes card{to{opacity:1;transform:none}}
 .tile{position:relative;display:block;width:100%;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--raised),var(--panel));border:1px solid var(--edge);padding:0;transition:border-color .25s ease,transform .25s ease}
 .tile img,.tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.tile img{transition:transform .5s ease,opacity .3s ease}
+.tile img{transition:transform .5s ease}
 .tile video{opacity:0;transition:opacity .25s ease}
 .tile.live video{opacity:1}
 .tile:hover{border-color:var(--lime);transform:translateY(-4px)}
@@ -159,7 +246,7 @@ h2 em{font-style:normal;color:var(--lime)}
 .tile .pv .dot{color:var(--rec);width:6px;height:6px}
 .play{position:absolute;left:50%;top:50%;z-index:2;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--lime);display:grid;place-items:center;transform:scale(.6);opacity:0;transition:all .25s ease}
 .tile:focus-visible .play{opacity:1;transform:scale(1)}
-@media (pointer:coarse){.tile:hover .play{opacity:1;transform:scale(1)}}
+@media (pointer:coarse){.play{opacity:.9;transform:scale(.8)}}
 .play svg{width:20px;height:20px;fill:var(--navy);margin-left:3px}
 .card h3{font-size:16px;line-height:1.3;font-weight:600;margin-top:12px;overflow-wrap:anywhere}
 .card p{font-size:14px;color:var(--muted);margin-top:2px}
@@ -167,22 +254,25 @@ h2 em{font-style:normal;color:var(--lime)}
 .count{color:var(--muted)}
 @media (max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:var(--s4) 12px}.card h3{font-size:14.5px}}
 
-/* custom play cursor */
+/* cursor */
 .cur{position:fixed;left:0;top:0;z-index:90;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:var(--lime);color:var(--navy);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:500;pointer-events:none;transform:scale(0);transition:transform .2s ease}
 .cur.on{transform:scale(1)}
-@media (pointer:fine){.grid .tile,.lab .scr{cursor:none}}
+@media (pointer:fine){.grid .tile{cursor:none}}
 
-/* capabilities */
-.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin-top:var(--s5)}
-.cap{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r);padding:var(--s4);transition:border-color .25s}
-.cap:hover{border-color:rgba(117,249,76,.45)}
-.cap h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
-.cap p{margin-top:var(--s2);font-size:16px}
-.cap ul{list-style:none;padding:0;margin-top:var(--s3);display:flex;flex-wrap:wrap;gap:6px}
-.cap li{padding:5px 10px;border-radius:6px;background:var(--raised);color:var(--body)}
-@media (max-width:900px){.caps{grid-template-columns:1fr}}
+/* ---------- stack ---------- */
+.stack{display:grid;gap:var(--s4);margin-top:var(--s5)}
+.sgrp{display:grid;grid-template-columns:160px 1fr;gap:var(--s4);align-items:center;padding:var(--s4) 0;border-top:1px solid var(--edge)}
+.sgrp h3{font-size:20px;font-weight:700}
+.sgrp h3 small{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;margin-top:4px}
+.tools{display:flex;flex-wrap:wrap;gap:14px;list-style:none;padding:0}
+.tool{display:flex;align-items:center;gap:12px;padding:8px 16px 8px 8px;border-radius:14px;background:var(--panel);border:1px solid var(--edge);transition:border-color .2s,transform .2s}
+.tool:hover{border-color:var(--lime);transform:translateY(-3px)}
+.tool .app{width:44px;height:44px;border-radius:11px}
+.tool .app svg{width:26px;height:26px}
+.tool span{color:var(--white);font-weight:500}
+@media (max-width:700px){.sgrp{grid-template-columns:1fr}}
 
-/* about + timeline */
+/* ---------- about ---------- */
 .about{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:var(--s6);align-items:start;margin-top:var(--s5)}
 .vf{position:relative;width:100%;aspect-ratio:4/5;border-radius:6px;overflow:hidden;background:var(--panel)}
 .vf img{width:100%;height:100%;object-fit:cover}
@@ -190,8 +280,8 @@ h2 em{font-style:normal;color:var(--lime)}
 .br{position:absolute;width:26px;height:26px;border:2px solid var(--white);z-index:2}
 .br.tl{top:14px;left:14px;border-right:0;border-bottom:0}.br.tr{top:14px;right:14px;border-left:0;border-bottom:0}
 .br.bl{bottom:14px;left:14px;border-right:0;border-top:0}.br.brr{bottom:14px;right:14px;border-left:0;border-top:0}
-.hud{position:absolute;z-index:2;left:50px;right:50px;color:var(--white);display:flex;justify-content:space-between;align-items:center}
-.hud.top{top:20px}.hud.bot{bottom:20px}
+.vf .hud{position:absolute;z-index:2;left:50px;right:50px;color:var(--white);display:flex;justify-content:space-between;align-items:center}
+.vf .hud.top{top:20px}.vf .hud.bot{bottom:20px}
 .rec{color:var(--rec);display:inline-flex;align-items:center;gap:6px}
 .rec .dot{animation:blink 1.2s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
@@ -210,14 +300,15 @@ h2 em{font-style:normal;color:var(--lime)}
 .ph-line::before{content:"";position:absolute;top:-4px;left:-5px;border:6px solid transparent;border-top-color:var(--lime)}
 @media (max-width:900px){.about{grid-template-columns:minmax(0,1fr)}.vf{max-width:360px}}
 
-/* contact */
+/* ---------- contact ---------- */
 #contact{border-top:1px solid var(--edge);background:radial-gradient(800px 400px at 15% 100%,rgba(117,249,76,.08),transparent 70%)}
 .slate{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;margin-top:var(--s5);max-width:900px}
 .slate div{padding:14px 18px;border-right:1px solid var(--edge)}
 .slate div:last-child{border-right:0}
 .slate span{display:block;color:var(--muted)}
 .slate b{color:var(--white);font-weight:600}
-.clapper{height:22px;background:repeating-linear-gradient(-45deg,var(--white) 0 22px,var(--navy) 22px 44px);border-bottom:1px solid var(--edge);grid-column:1/-1;padding:0!important}
+.clapper{height:26px;background:repeating-linear-gradient(-45deg,var(--white) 0 22px,var(--navy) 22px 44px);border-bottom:1px solid var(--edge);grid-column:1/-1;padding:0!important;transform-origin:0 100%;transform:rotate(-8deg);transition:transform .35s cubic-bezier(.5,2,.5,.8)}
+.slate.clap .clapper{transform:none}
 @media (max-width:640px){.slate{grid-template-columns:1fr 1fr}.slate div:nth-child(3){border-right:0}}
 .mail{display:inline-block;margin-top:var(--s5);font-size:clamp(30px,6vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;color:var(--white);text-decoration:none;overflow-wrap:anywhere;background:linear-gradient(var(--lime),var(--lime)) 0 100%/0 4px no-repeat;padding-bottom:6px;transition:background-size .4s ease,color .2s}
 .mail:hover{background-size:100% 4px;color:var(--lime)}
@@ -235,7 +326,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(-
 .scrub .fill{position:absolute;left:0;top:50%;height:2px;margin-top:-1px;background:var(--lime);width:0}
 .scrub .head-mk{position:absolute;top:0;bottom:0;width:2px;background:var(--lime);left:0}
 .scrub .head-mk::before{content:"";position:absolute;top:-2px;left:-5px;width:12px;height:8px;background:var(--lime);clip-path:polygon(0 0,100% 0,50% 100%)}
-.scrub .mk{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;min-width:44px;min-height:44px;justify-content:center;color:var(--muted)}
+.scrub .mk{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;background:none;border:0;padding:0;min-width:44px;min-height:44px;justify-content:center;color:var(--muted)}
 .scrub .mk i{width:10px;height:10px;border-radius:2px;background:var(--panel);border:1.5px solid var(--edge-ui);transform:rotate(45deg)}
 .scrub .mk.past i{background:var(--lime);border-color:var(--lime)}
 .scrub .mk span{position:absolute;bottom:100%;white-space:nowrap;opacity:0;transition:opacity .2s;background:var(--panel);border:1px solid var(--edge);padding:2px 8px;border-radius:6px;color:var(--white)}
@@ -261,6 +352,8 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   html{scroll-behavior:auto}
+  .wipe{clip-path:none}.card{opacity:1;transform:none}
+  h1 .ln>span{transform:none}
 }
 </style>
 </head>
@@ -274,61 +367,121 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
   <nav class="wrap nav" aria-label="Main">
     <a class="brand" href="#top">ELIAZ<b>.</b></a>
     <ul>
-      <li class="hide-sm"><a class="l" href="#hooks">Hook lab</a></li>
+      <li class="hide-sm"><a class="l" href="#anatomy">Process</a></li>
       <li class="hide-sm"><a class="l" href="#work">Work</a></li>
+      <li class="hide-sm"><a class="l" href="#stack">Stack</a></li>
       <li class="hide-sm"><a class="l" href="#about">About</a></li>
-      <li><a class="btn solid" href="#contact">Hire Eliaz</a></li>
+      <li><a class="btn solid magnet" href="#contact">Hire Eliaz</a></li>
     </ul>
   </nav>
 </header>
 
 <main id="top">
   <div class="stage">
+    <div class="scan" aria-hidden="true"></div>
     <div class="wrap hero">
       <div>
         <span class="status mono"><span class="dot"></span>Open for new edit batches</span>
-        <h1><span class="ln">Eliaz</span><span class="ln out">Naimiel</span><span class="ln g">Paz.</span></h1>
+        <h1><span class="ln"><span>Eliaz</span></span><span class="ln out"><span>Naimiel</span></span><span class="ln g"><span>Paz.</span></span></h1>
         <p class="role">I cut <span class="sw" id="swap">DTC ads</span><br>that people don't scroll past.</p>
         <p class="lede">Four years editing performance ads, short-form VSLs and montages in CapCut, Premiere Pro and After Effects. When the footage runs out, I generate the rest with Veo 3, Higgsfield and ElevenLabs.</p>
         <div class="cta">
-          <a class="btn solid" href="#work"><span class="dot"></span>Watch the reel</a>
-          <a class="btn" href="mailto:eng.paz025@gmail.com">Get in touch</a>
+          <a class="btn solid magnet" href="#work"><span class="dot"></span>Watch the reel</a>
+          <a class="btn magnet" href="mailto:eng.paz025@gmail.com">Get in touch</a>
         </div>
       </div>
-      <div class="rig" aria-label="Showreel">
-        <div class="phone ghost l" aria-hidden="true"><div class="scr"><img id="gl" alt=""></div></div>
-        <div class="phone ghost r" aria-hidden="true"><div class="scr"><img id="gr" alt=""></div></div>
-        <div class="phone main">
-          <div class="scr" id="reel">
-            <span class="island"></span>
-            <div class="bars" id="bars"></div>
-            <video id="rv0" muted playsinline preload="auto"></video>
-            <video id="rv1" muted playsinline preload="auto" style="opacity:0"></video>
-            <span class="flash" id="flash"></span>
-            <button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="sndw" d="M16 9l5 6M21 9l-5 6"/></svg></button>
-            <div class="reel-ui"><span class="mono now" id="rnow">NOW PLAYING 01 / 08</span><div class="ttl" id="rttl"></div></div>
+      <div class="rig" id="rig" aria-label="Showreel">
+        <div class="phones" id="phones">
+          <div class="phone ghost l" aria-hidden="true"><div class="scr"><img id="gl" alt=""></div></div>
+          <div class="phone ghost r" aria-hidden="true"><div class="scr"><img id="gr" alt=""></div></div>
+          <div class="phone main">
+            <div class="scr" id="reel">
+              <span class="island"></span>
+              <div class="bars" id="bars"></div>
+              <video id="rv0" muted playsinline preload="auto"></video>
+              <video id="rv1" muted playsinline preload="auto" style="opacity:0"></video>
+              <span class="flash" id="flash"></span>
+              <button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="sndw" d="M16 9l5 6M21 9l-5 6"/></svg></button>
+              <div class="reel-ui"><span class="mono now" id="rnow">NOW PLAYING 01 / 08</span><div class="ttl" id="rttl"></div></div>
+            </div>
           </div>
         </div>
-        <div class="tag a mono"><b id="cnt">421</b>edits on the reel</div>
-        <div class="tag b mono"><b>9:16</b>cut for the feed</div>
+        <div class="float a mono"><b id="cnt">409</b>edits on the reel</div>
+        <div class="float b mono"><b>9:16</b>cut for the feed</div>
+        <div class="float c mono"><span class="kf"><i></i><i></i><i></i></span>keyframes</div>
       </div>
     </div>
   </div>
 
-  <div class="ticker" aria-label="Brands Eliaz has edited for"><div class="track" id="ticker"></div></div>
+  <div class="marq" aria-hidden="true"><div class="mrow" id="m1"></div><div class="mrow rev" id="m2"></div></div>
 
-  <section id="hooks">
+  <section id="anatomy">
     <div class="wrap">
-      <div class="head"><h2>One body. <em>Three hooks.</em></h2><p class="mono idx">B2C2 / AGED GARLIC</p></div>
-      <p class="sub">Media buyers test the first three seconds, so every batch ships with hook variations on one locked body. Play all three side by side and watch where they split.</p>
-      <div class="lab" id="lab"></div>
-      <div class="labbar"><button class="btn solid" type="button" id="labPlay"><span class="dot"></span>Play all three in sync</button><span class="mono idx" id="labTime">00:00 / 00:00</span></div>
+      <span class="trans mono">CROSS DISSOLVE</span>
+      <div class="head"><h2 class="wipe">Anatomy of <em>an edit.</em></h2><p class="mono idx">SCROLL TO BUILD THE CUT</p></div>
+      <p class="sub">Raw footage to a finished ad in six passes. Scroll and watch the same clip get built up layer by layer.</p>
+      <div class="anat">
+        <div class="pin">
+          <div class="mon" id="mon" data-s="0">
+            <video id="anv" muted playsinline loop preload="metadata"></video>
+            <span class="safe" aria-hidden="true"></span>
+            <span class="cutfx" id="cutfx"></span>
+            <div class="hud t mono" aria-hidden="true"><span class="rec"><span class="dot"></span>REC</span><span id="anstep">01 RAW</span></div>
+            <span class="lut mono" aria-hidden="true">LUT: TEAL / SKIN +12</span>
+            <div class="cap" id="cap" aria-hidden="true"></div>
+            <div class="wave" id="wave" aria-hidden="true"></div>
+            <div class="plats" aria-hidden="true"><div><div class="row" id="pl"></div><p class="mono">EXPORTED 1080 × 1920</p></div></div>
+            <div class="hud b mono" aria-hidden="true"><span id="antc">00:00:00:00</span><span>24 FPS</span></div>
+          </div>
+          <div class="mini mono" aria-hidden="true">
+            <div class="tk"><span>V2</span><div class="ln"><b id="t-v2"></b></div></div>
+            <div class="tk"><span>V1</span><div class="ln"><b id="t-v1"></b></div></div>
+            <div class="tk"><span>A1</span><div class="ln"><b id="t-a1"></b></div></div>
+          </div>
+        </div>
+        <ol class="steps" id="steps">
+          <li data-s="0"><span class="mono no">01 / INGEST</span><h3>Raw footage in.</h3><p>Flat, ungraded and untrimmed. First job is sorting takes, syncing audio and marking the moments worth keeping.</p></li>
+          <li data-s="1"><span class="mono no">02 / CUT</span><h3>Cut to the hook.</h3><p>The first three seconds decide everything, so the strongest moment goes first and every pause gets trimmed out.</p></li>
+          <li data-s="2"><span class="mono no">03 / CAPTIONS</span><h3>Words that pop.</h3><p>Most feeds play on mute. Captions land word by word, with the key phrase highlighted so it reads at a glance.</p></li>
+          <li data-s="3"><span class="mono no">04 / COLOR</span><h3>Grade it like a brand.</h3><p>Shots get matched, skin tones protected and one consistent look applied across the whole batch.</p></li>
+          <li data-s="4"><span class="mono no">05 / SOUND</span><h3>Mix the punch.</h3><p>Dialogue cleaned and leveled, music bed under it, and SFX on every transition so the cuts hit.</p></li>
+          <li data-s="5"><span class="mono no">06 / EXPORT</span><h3>Ship to every feed.</h3><p>Exported per platform at the right ratio, size and safe zones, with hook variations ready for testing.</p></li>
+        </ol>
+      </div>
     </div>
   </section>
 
-  <section id="work" style="background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)">
+  <section id="craft" style="background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)">
     <div class="wrap">
-      <div class="head"><h2>Every edit, <em>on the reel.</em></h2><p class="mono idx" id="total"></p></div>
+      <span class="trans mono">WIPE LEFT</span>
+      <h2 class="wipe">Try the <em>edit yourself.</em></h2>
+      <div class="duo">
+        <div>
+          <h3>Color grade</h3><p class="note">Drag across the clip to compare the flat log footage with the final grade.</p>
+          <div class="cmp" id="cmp" style="--cut:50%">
+            <video class="raw" muted playsinline loop preload="metadata"></video>
+            <video class="graded" muted playsinline loop preload="metadata"></video>
+            <span class="tagl mono">LOG</span><span class="tagr mono">GRADED</span>
+            <span class="handle" aria-hidden="true"></span>
+            <label class="sr" for="cut">Compare log footage with the graded version</label>
+            <input type="range" id="cut" min="0" max="100" value="50">
+          </div>
+        </div>
+        <div class="fmt">
+          <div style="align-self:stretch"><h3>One edit, every feed</h3><p class="note">The same ad reframed for each platform. Pick a format or let it cycle.</p></div>
+          <div class="fbox"><div class="frm" id="frm"><video muted playsinline loop preload="metadata"></video><span class="lbl mono" id="flbl"></span></div></div>
+          <div class="fbtns" id="fbtns" role="group" aria-label="Choose a format"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-label="Brands Eliaz has edited for"><div class="track" id="ticker"></div></div>
+
+  <section id="work">
+    <div class="wrap">
+      <span class="trans mono">HARD CUT</span>
+      <div class="head"><h2 class="wipe">Every edit, <em>on the reel.</em></h2><p class="mono idx" id="total"></p></div>
       <p class="sub">Ads, VSLs, montages and test projects, straight from the edit library. Clips marked LIVE preview on hover. Select any video to play it.</p>
       <ul class="filters" id="filters" aria-label="Filter videos"></ul>
       <p class="catnote" id="catnote" aria-live="polite"></p>
@@ -337,20 +490,19 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
     </div>
   </section>
 
-  <section id="capabilities">
+  <section id="stack" style="background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)">
     <div class="wrap">
-      <h2>What I bring <em>to the edit.</em></h2>
-      <div class="caps">
-        <div class="cap"><h3>Post-production</h3><p>Hook-first pacing, color grading, sound design and captions, cut to each platform's spec.</p><ul class="mono"><li>CapCut Pro</li><li>Premiere Pro</li><li>After Effects</li><li>Color</li><li>Sound</li></ul></div>
-        <div class="cap"><h3>AI and media synthesis</h3><p>Footage that doesn't exist yet: AI UGC, animated b-roll, avatars and cloned voice, lip-synced and graded to match the real shots.</p><ul class="mono"><li>Veo 3</li><li>Higgsfield</li><li>Grok Imagine</li><li>Gemini Pro</li><li>Runway</li><li>ElevenLabs</li></ul></div>
-        <div class="cap"><h3>Batch production</h3><p>One locked body, three to five hook variations and AppLovin cuts per batch, organized so media buyers can test fast.</p><ul class="mono"><li>DTC ads</li><li>VSLs</li><li>Micro dramas</li><li>Montages</li></ul></div>
-      </div>
+      <span class="trans mono">MATCH CUT</span>
+      <h2 class="wipe">The stack <em>behind the cut.</em></h2>
+      <p class="sub">Every tool in the pipeline, from first draft to the platforms the ads run on.</p>
+      <div class="stack" id="stackList"></div>
     </div>
   </section>
 
-  <section id="about" style="border-top:1px solid var(--edge)">
+  <section id="about">
     <div class="wrap">
-      <h2>The timeline <em>so far.</em></h2>
+      <span class="trans mono">J-CUT</span>
+      <h2 class="wipe">The timeline <em>so far.</em></h2>
       <div class="about">
         <figure class="vf">
           <img src="https://eliaznaimielpaz-portfolio.netlify.app/me.jpg" alt="Portrait of Eliaz Naimiel Paz" loading="lazy" onerror="this.style.display='none'">
@@ -370,7 +522,7 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
             <div class="trk" role="listitem"><span class="mono idx">A1 Study</span><div class="lane">
               <div class="clip" style="left:0;width:100%"><b>B.S. Computer Engineering, Polytechnic University of the Philippines</b><span class="mono">Graduated 2026. Cisco certifications, embedded systems and IoT, SQL</span></div></div></div>
           </div>
-          <div class="cta"><a class="btn" href="https://drive.google.com/file/d/1yO_P7gVhnf2Oc7hO7VSqdDuq7Q4NFhAu/view" target="_blank" rel="noopener">View résumé</a></div>
+          <div class="cta"><a class="btn magnet" href="https://drive.google.com/file/d/1yO_P7gVhnf2Oc7hO7VSqdDuq7Q4NFhAu/view" target="_blank" rel="noopener">View résumé</a></div>
         </div>
       </div>
     </div>
@@ -378,9 +530,10 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
 
   <section id="contact">
     <div class="wrap">
-      <h2>Let's <em>create.</em></h2>
+      <span class="trans mono">FADE TO BLACK</span>
+      <h2 class="wipe">Let's <em>create.</em></h2>
       <p class="sub">Send the brief and a reference ad. I'll reply with turnaround and a plan for the hooks.</p>
-      <div class="slate mono" aria-label="Project slate">
+      <div class="slate mono" id="slate" aria-label="Project slate">
         <div class="clapper" aria-hidden="true"></div>
         <div><span>PROD.</span><b>Your next batch</b></div>
         <div><span>EDITOR</span><b>E. N. Paz</b></div>
@@ -403,7 +556,6 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
   <div class="rail" id="rail"><span class="fill" id="pfill"></span><span class="head-mk" id="phead"></span></div>
   <span class="lbl" id="plbl">INTRO</span>
 </nav>
-
 <div class="cur" id="cur" aria-hidden="true">PLAY</div>
 
 <dialog id="dlg" aria-label="Video player">
@@ -422,6 +574,7 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
 
 <script>
 const V = [{"id":"1bTSQY3HWbiilTfebibFRQVZo2lBsuvUw","t":"Batch 222, hook 1","c":"featured","cl":"Nomend"},{"id":"11rcN0gVOQkv9H2SZIYSmzlUBPhei8KZH","t":"Batch 234, hook 4","c":"featured","cl":"Nomend"},{"id":"1iLxm16rPOq_wSJBML3d1E8RTp2zyez0-","t":"Batch 358, hook 1","c":"featured","cl":"Nomend"},{"id":"1BmJvHs9WzlUFyLpvTAmNmxYdIiJeAFDx","t":"Batch 391, hook 1","c":"featured","cl":"Nomend"},{"id":"1eopmHiocn8xRLJ1YXi_3bR6PmsMeECGd","t":"Batch 404, hook 1","c":"featured","cl":"Nomend"},{"id":"1oVK82TThBmJxo-H9exLvB-nkcuKmAq9y","t":"Batch 406, hook 3","c":"featured","cl":"Nomend"},{"id":"19lCidHRlhB3nKoPDg7ZayCPK-ZkWDRJR","t":"Aged Garlic AI, batch 1","c":"featured","cl":"DTC brand"},{"id":"1mOvVX3mijz_CTsOSRGVfWZZw-naWwcf-","t":"BOF / Colors Wont Last Scarcity hook 1","c":"featured","cl":"PEAKSTA"},{"id":"10NZ2VRGJ1FP2CJG85WDzzvZsYlQIAjTQ","t":"BOF / Flight Attendant Crew Tip hook 1 UGC","c":"featured","cl":"PEAKSTA"},{"id":"1u2YEnjwl6WQ6SQYuZcMAL6mjetNIFMw1","t":"Exchange Life Keychain Trial v7","c":"featured","cl":"Exchange Life"},{"id":"1LbnP0Hkjo-iK8afa7YuF07GsXmM4iYMw","t":"Exchange Life Talking Head Trial","c":"featured","cl":"Exchange Life"},{"id":"17thHP-ruLnpRZ9JJMlO5b4vQFx2KR5Cm","t":"Batch 236, hook 3","c":"vsl","cl":"Micro drama"},{"id":"1N0Myf1-u2ESr4raFgXmJ_zHfvG8-EGq2","t":"Batch 421, hook 2","c":"vsl","cl":"Micro drama"},{"id":"1wTojcVANI7DDii6eSf5d58YFituvGv_U","t":"SAVARY 19","c":"featured","cl":"Savary"},{"id":"1oM6QeFodPEz0EBGYmm3isX6L01lSWJZt","t":"Impact Clients Test Job","c":"trials","cl":"Test project"},{"id":"1inJfIXo5-LBTaj4OR6tCMgVzp1EZxdDD","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"trials","cl":"Test project"},{"id":"1jRqxWpGF_Z7kQZVTIIAPz_1UR4o0ExVH","t":"Dish 1 - Garlic Chicken Fries","c":"food","cl":"Menu montage"},{"id":"1wvcrtWv_OijxZk6lsAzogM94tvVB2qJy","t":"Dish 10 - Ube Tres Leches Cake","c":"food","cl":"Menu montage"},{"id":"1260v4Uw0Rb8TPNfjhMGH_DgSL1ntf3az","t":"Dish 11 - Wings","c":"food","cl":"Menu montage"},{"id":"1bzTq_gI3YIO-prmxExo2XG_kyqLzpo3I","t":"Dish 12 - Sisig Fries","c":"food","cl":"Menu montage"},{"id":"1BVL-V8-EJbW99KV-hYtZbM8UaYXLgg1v","t":"Dish 12 - Sisig Fries","c":"food","cl":"Menu montage"},{"id":"1h_pZOBlbfLaYkCRgGbVt3LstHGFX7fZU","t":"Dish 13 - sisig tacos","c":"food","cl":"Menu montage"},{"id":"1chS6PacnDUQ24qpjO3WcUg3jIrXD9zDm","t":"Dish 14 - Chicken Katsu Plate","c":"food","cl":"Menu montage"},{"id":"1cby4wraTrZdL33taocD3vK3DJhsLeF38","t":"Dish 15","c":"food","cl":"Menu montage"},{"id":"1riavPZmGFlSXo9ShTAhIwZw0QmVKp79S","t":"Dish 16","c":"food","cl":"Menu montage"},{"id":"1LCmKddNH_Ln4tuFibjm0foNroXCuPDWD","t":"Dish 17 - Sisig Plate","c":"food","cl":"Menu montage"},{"id":"1rHy3qjhX7gszEPy08GKSeVVoNDCBCPqh","t":"Dish 18 - Adobo Plate","c":"food","cl":"Menu montage"},{"id":"1f6HcdSLRZJyz5H-0MPZj9g4tSEVDUKOl","t":"Dish 2 - BBQ Beef Short Rib","c":"food","cl":"Menu montage"},{"id":"1_YZsNB-tvF7GoD8O8c9-gShFPdgHpV6n","t":"Dish 3 - Pandan French Toast","c":"food","cl":"Menu montage"},{"id":"1Urb44MhwboE4ii8wQuPcxDZzGuMn91Bg","t":"Dish 4 - House Salad","c":"food","cl":"Menu montage"},{"id":"1Q1IMfD_EAN7DH-YadC9TRW7uQaButBhE","t":"Dish 5 - Popcorn Chicken","c":"food","cl":"Menu montage"},{"id":"1cz5lVDtD46DZpwcT09aRi623WbfgwAP2","t":"Dish 6 - Pork Lumpia","c":"food","cl":"Menu montage"},{"id":"1ae_TufYGUH0Pre6SP3PNZTgfVKhv5ftS","t":"Dish 7 - Crispy Garlic Tofu Plate","c":"food","cl":"Menu montage"},{"id":"1hET3bgofi4HcAzzAK7xfkH-0tdEmEabd","t":"Dish 8 - The Oribello Burger","c":"food","cl":"Menu montage"},{"id":"1RStuvaAqIMPEUEXvA8smA6AtfOeyAuLl","t":"Dish 9 - House Double Burger","c":"food","cl":"Menu montage"},{"id":"1cZfSCUzrYd6IsSVaXBTFuMok7XwtedgM","t":"Dish 1 - Garlic Chicken Fries","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"19Vz0OBeofeTke1leofCtwO3Q2G8S8qlR","t":"Dish 10 - Ube Tres Leches Cake","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1bRrACl16sDiDRhG3nwpnBl1uFkAFzmqX","t":"Dish 11 - Wings","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1Uz2mStZRgz4U16qihW7GKFXbXaJ0jgzV","t":"Dish 12 - Sisig Fries","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1rZDSFQzzLtz44tUySYEPp4H0BKLxCoGN","t":"Dish 13 - sisig tacos","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1kO9HCTNGoj0o-FGXquaCcllNgNO9KmTe","t":"Dish 14 - Chicken Katsu Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1xRTX7TA6L6MulUXR6TbX9OTKntsH8iWa","t":"Dish 15","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"15KGbck2RCA7D_2WiPu3s3vPt4BHZz83K","t":"Dish 16","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"15SmMBnLjk4L3eaiEWZFXv5hLHYNU4WMH","t":"Dish 17 - Sisig Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"165ku7NwmlAdkWyQADJ8Q_Jn5AFxED9Lc","t":"Dish 18 - Adobo Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1v26S0th2KefHy1g7SwJJIdSoEDmsMxOS","t":"Dish 2 - BBQ Beef Short Rib","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1DQ6OIv-vEJE1sInaEWHK6TyRr5qamexY","t":"Dish 3 - Pandan French Toast","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"18OLW36MI1mLamol_gj01Gg0XxmprqW1N","t":"Dish 4 - House Salad","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1sp-bHSVCKePYi3mp-IKzt9AwFJhJoK_Q","t":"Dish 5 - Popcorn Chicken","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1jsGKGIGg962rtaRjFUc7DNx79ZXVEhjM","t":"Dish 6 - Pork Lumpia","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1PtPAqMGdekpB-eXSN5dvSCTparyPETE5","t":"Dish 7 - Crispy Garlic Tofu Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1KgM96bCpiMg4wlGKpsQGBnlNBJr2enXh","t":"Dish 8 - The Oribello Burger","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1cVkw0owskGsKnonqpo_qQolqcW2GTUq0","t":"Dish 9 - House Double Burger","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1y6Jsup92Rrc2nautAlE1xSwAgHkZpBtQ","t":"Trial Day 1, M1","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1EU9l3gc1MTD1QjbKq6KNjl3zfXw19Wr5","t":"Trial Day 1, M2","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1oS8ZNdrUEXHZZ4QQE7toxAuT9jyQBzbq","t":"Trial Day 1, M3","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1MKaKNUFXbdmi8Gvi8nkmOH4IHD81JVgb","t":"Trial Day 2, M4","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1crg_R_oB0P50TgVdubPEDBZ6WhgK6XF8","t":"Trial Day 2, M5","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1zF1CBsL8ail61t4PD2HEwcTMnbfaXwoV","t":"Trial Day 2, M6","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1j0m0fETEa6OCM3whZ6wffQP6cRLpoCq-","t":"Trial Day 3, M7","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1TFFHeBxtWGi-nhnd2KPxNnPmmhbVRjEg","t":"Trial Day 3, M8","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1TxgqR2lHAzBf6FrL8IYQao0SUUXXQzo9","t":"Trial Day 4, M9","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1h6uzowzhah4vadNKxPMKqruevl2ItXeT","t":"BOF / Colors Wont Last Scarcity hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1pYqM_9ATzQfFEsvfAgM-7HfPVtz4r2pO","t":"BOF / Colors Wont Last Scarcity hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1s1dhgqQV_n370PcczHXHlJN_LOQbxaIs","t":"BOF / Flight Attendant Crew Tip hook 1 UGC","c":"ads","cl":"PEAKSTA"},{"id":"1z-4nncVQ_er6oNeebGhbg00L2bfBGlmw","t":"BOF / Flight Attendant Crew Tip hook 2 UGC","c":"ads","cl":"PEAKSTA"},{"id":"1APHwMz3nmgyUJ37-is8AwrU4EZ7aEjow","t":"BOF / Flight Attendant Crew Tip hook 3 UGC","c":"ads","cl":"PEAKSTA"},{"id":"10EwRKZxxXKM9AlisVebx0bxGh6VeNNmh","t":"BOF / No Risk All Bag Risk Reversal hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1X79lRPtgz18D1DOqLKRLgGCOSmeTIHBe","t":"BOF / No Risk All Bag Risk Reversal hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1l7ONQMLYfG0V4Cx1LF45bQtPV7m8BLLD","t":"BOF / No Risk All Bag Risk Reversal hook 3","c":"ads","cl":"PEAKSTA"},{"id":"18slGGkF-WqFOcEPKaMTudn7QGUzOEjGR","t":"BOF / Shipping Fear Answered Review hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1cT3_L1-D0rN1MIvLav8WBvXMTdaiEt_B","t":"BOF / Shipping Fear Answered Review hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1O7wW0gzlRkEwijVU7K7PASpmEnKLeeg5","t":"BOF / Shipping Fear Answered Review hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1jj_z6S0-irOfPtrKpRRVELeofCu5YwyJ","t":"MOF / Fast Delivery Rebuttal RT hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1vUDt3feUvbRlk-frwkim4U46X6iRsfUv","t":"MOF / Fast Delivery Rebuttal RT hook 2","c":"ads","cl":"PEAKSTA"},{"id":"13_wOjevj2HiaETZSNi2xCYXk9gKIrS93","t":"MOF / Fast Delivery Rebuttal RT hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1aC9251OocgdazOD4VZgRx9zf_cvcSTxC","t":"MOF / Testimonial Montage First Theft hook 1 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1QPAOQOZ7WKPOONkTLw1h_U1bivUmNklE","t":"MOF / Testimonial Montage First Theft hook 2 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1Zs0JnMEgVa6YAV9cMd8Lj2BFxjFyGFib","t":"MOF / Testimonial Montage First Theft hook 3 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1s84AjZPn75GxOZauZpD1775ftn5sKNaI","t":"MOF / Uber Scanner RFIDDemo hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1KsuPHxfGVpWcR-VRuyQPN0YvDRfSg-Cx","t":"MOF / Uber Scanner RFIDDemo hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1EX4VO1mGDfijDCk-lKhiK8negnCSfGPT","t":"MOF / Uber Scanner RFIDDemo hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1BsCrL7MwCHPEthpytWCwX7VYn-t5i9TT","t":"SC2 MOF / Petite Strap Mirror Test hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1-uRWur5GsM-eAZ1H9sqm92jW26fE3qMd","t":"SC2 MOF / Petite Strap Mirror Test hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1ShMlqX7-sGtgcpYl9pOdr_1uT6flipGW","t":"SC2 MOF / Petite Strap Mirror Test hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1HcwoDp6I1DA7Z-zne5UFKCV2KOpzZIn_","t":"SC2 MOF / Scanner Test Own Cards hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1SRwoUKFqLvQgDDxDnmGJntkuxa1iXIL4","t":"SC2 MOF / Scanner Test Own Cards hook 2","c":"ads","cl":"PEAKSTA"},{"id":"10xzIRBlmo_c-Js4bLiMZQXQ_Wdly7lNn","t":"SC2 MOF / Scanner Test Own Cards hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1RKUfFR-56ItEDqgbd8O6YN131OWWQ0PW","t":"SC2 MOF / Sister Swore By Phone Pile hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1jMPm3FbZWwHZ835H3dN_D-lxinwN1p5z","t":"SC2 MOF / Sister Swore By Phone Pile hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1iHGdReT6dK-h7twIQNwHUY53baRoO7wb","t":"SC2 MOF / Sister Swore By Phone Pile hook 3","c":"ads","cl":"PEAKSTA"},{"id":"13IrUYDuTqDFJlt58gPSMtTGsMmYR-V6R","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1uT3MxyLoAZqzJduLNtwWQ7fn98QdcXFD","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1NJpa1xDibhOATeLmUHv-SU86trEI17MI","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1UnhiDbdwJCP2dHKorfWhMHaXDDRDcoUC","t":"TOF / Gate To Gate Terminal hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1NURjVk3C0pHEr2-6gKyXAp1aIJfP_I6z","t":"TOF / Gate To Gate Terminal hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1B3561YVJAQf38FoKUVUzBop8cwVF3QCr","t":"TOF / Gate To Gate Terminal hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1OV8feOGtJOQk1xRSzDprzmnpLecylLTK","t":"TOF / Wear It Four Ways Versatility hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1pe0_gysylN7kBcydQfuarhZepED1dBT0","t":"TOF / Wear It Four Ways Versatility hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1duqlEBi4rm9Y2UT0B3-h36y6js5zWoxV","t":"TOF / Wear It Four Ways Versatility hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1Oiklmye6EQmOyX-Bog_dtfjh-TsRv_Nv","t":"3 Best Foods for High Blood Pressure 1080p","c":"ads","cl":"PGA"},{"id":"1Ynb9XAhhlGx0Qh23McqXijtGsEr3vxt0","t":"B2C1.JAPANESE DOCTOR hook 1","c":"ads","cl":"PGA"},{"id":"1jgmvhlYVPFnnejDVmIjmWCtlLE5bmDgK","t":"B2C1.JAPANESE DOCTOR hook 2","c":"ads","cl":"PGA"},{"id":"1vjmMk6m6CWiRcyTjvZBKI0LhM8ESGMMj","t":"b3c1","c":"ads","cl":"PGA"},{"id":"1ZgsxSd3NK4XX1O_udCHVpm0nu6nzfQv5","t":"BOF / Flight Attendant Crew Tip hook 2 UGC","c":"ads","cl":"DTC brands"},{"id":"1uJbfEo-JpKps6zP6WjFyj9WpjU8E2Tjg","t":"BOF / Flight Attendant Crew Tip hook 3 UGC","c":"ads","cl":"DTC brands"},{"id":"1HY3hD8o2uBARdmkrobl5yfjvd2uVzk6U","t":"BOF / No Risk All Bag Risk Reversal hook 1","c":"ads","cl":"DTC brands"},{"id":"1Y0zJneybnjV_bbadcE3ewv4YLeoDBLbJ","t":"BOF / No Risk All Bag Risk Reversal hook 2","c":"ads","cl":"DTC brands"},{"id":"199sfPRAbczQUe7Rj4wvVOTQj-l4rOcsd","t":"BOF / No Risk All Bag Risk Reversal hook 3","c":"ads","cl":"DTC brands"},{"id":"19L2kGzfOT1K72GduBBEEE4DJzyvkMFIm","t":"BOF / Shipping Fear Answered Review hook 1","c":"ads","cl":"DTC brands"},{"id":"1ye8bTTwsQsSOpOs2vTm4g2bFR7FNpyr9","t":"BOF / Shipping Fear Answered Review hook 2","c":"ads","cl":"DTC brands"},{"id":"1Ed0nL9ZPJ6ASf-GTGhSn-Vk0cPLvGlUS","t":"BOF / Shipping Fear Answered Review hook 3","c":"ads","cl":"DTC brands"},{"id":"1Hv-U1INwD0EwcziKVrmUv1pkEQIGLuS4","t":"(VERSION 2)B2C1.JAPANESE DOCTOR hook 1","c":"ads","cl":"DTC brands"},{"id":"1cCg7VeQ3KDMFQX741qle2z6lqkjmLXli","t":"(VERSION 2)B2C1.JAPANESE DOCTOR hook 2","c":"ads","cl":"DTC brands"},{"id":"1yh8nO4fXG4v_zB1IufC_xwso3eMz-5mV","t":"B1C2.BLACK WOMEN STRUGGLE hook 1","c":"ads","cl":"DTC brands"},{"id":"1HFP-lHIQeoiiOa3NOpnZT-7eTZCqEHpM","t":"B1C2.BLACK WOMEN STRUGGLE hook 2","c":"ads","cl":"DTC brands"},{"id":"1gGXxtCrKwSfAJPFRp38_O9jbPYh3BcdL","t":"B1C2.BLACK WOMEN STRUGGLE hook 3","c":"ads","cl":"DTC brands"},{"id":"1m_kdSFugmPuoZKIx2hQa2xdZrS9UC_T2","t":"B1C3.HEART ATTACK","c":"ads","cl":"DTC brands"},{"id":"10kUiX1AfExOyal_8T2gun7X-hSSIqNVS","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 1","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H1_azaz8f"},{"id":"10D9TmojuKvBd68QFsMGV9-d-Kf7mq4fF","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H2_c6zb54"},{"id":"1bX8nsDi9k869JgBcuHaMvTe4iH-Dvnyq","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H3_wnvc0n"},{"id":"17M0zz5lbfZu5srWf9P4Dl_zSLcyy447Y","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 1","c":"ads","cl":"DTC brands"},{"id":"1qH1dbYdv_BtpWOUiCS2XSqBS-_z_Ailn","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 2","c":"ads","cl":"DTC brands"},{"id":"1v6bRP9GiWgM5SzVG2jlpPVpMFme6d0Pu","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 3","c":"ads","cl":"DTC brands"},{"id":"1sC_u9_S85lWT1sP1VKH_enb1NfVI1-Zc","t":"B2C4.BANNED DOCTOR hook 1","c":"ads","cl":"DTC brands"},{"id":"18-V_IxFQ4gA8hI-UNIY7RBkOFvNAxH0O","t":"B2C4.BANNED DOCTOR hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C4.BANNED_DOCTOR_H2_qbohk8"},{"id":"18jxqPkOsesrh9elfEkDREO0lEIDbD_zw","t":"B2C4.BANNED DOCTOR hook 3","c":"ads","cl":"DTC brands"},{"id":"1HOV1iD6xmcc4gW7ewlWPqN65oCb3Zj23","t":"B3C1.RUINED MY FATHER'S LIFE","c":"ads","cl":"DTC brands"},{"id":"1SvdXES2kHdOK5FdYxbjPb2KkTRkbUGFW","t":"B3C2.BEST FOODS FOR HIGH BP hook 1","c":"ads","cl":"DTC brands"},{"id":"1IbCr5uWtHgktiLRDEXARjGxe25iJjJRV","t":"B3C2.BEST FOODS FOR HIGH BP hook 2","c":"ads","cl":"DTC brands"},{"id":"1QLx4gdiJpG43ks0ckMDmB4vqOqhRGxSp","t":"B3C4.AGED GARLIC KILLED MY DAD","c":"ads","cl":"DTC brands"},{"id":"1GLE3yjyICqbDiWCg_HcweIMvCfnWFiUY","t":"B4C2.ROOT CAUSE OF HIGH BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1dyjTj_Y8X5KyYLiRomZOVKpcte0Op7L5","t":"batch1 Aged Garlic AI","c":"ads","cl":"DTC brands"},{"id":"16V4fHAw03koOFArJXsT8cYUHQbm4ZPlL","t":"BOF / Colors Wont Last Scarcity hook 1","c":"ads","cl":"DTC brands"},{"id":"1yqWXsS_ynUpNkTA_0dKHtV5VWVZ18yY1","t":"BOF / Colors Wont Last Scarcity hook 2","c":"ads","cl":"DTC brands"},{"id":"1jdzYBL2yQG8RWs7UlXQXyN99el_o3QOg","t":"BOF / Colors Wont Last Scarcity hook 3","c":"ads","cl":"DTC brands"},{"id":"13yW5AjR_dMVhbyklY5aHCOE5CDx3d78G","t":"D3C3. ERECTILE DYSFUNCTION hook 1","c":"ads","cl":"DTC brands"},{"id":"1MUDKF_caTxt0bqv3EXRhZY2kjsO4_zSs","t":"D3C3. ERECTILE DYSFUNCTION hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/D3C3._ERECTILE_DYSFUNCTION_H2_xbfsci"},{"id":"1_xIyxgqjf6T9k6DwbB4u2phagb4pLILa","t":"D3C3. ERECTILE DYSFUNCTION hook 3","c":"ads","cl":"DTC brands"},{"id":"1ibbiYtXE-vNviL4rt9P9DQdLI2Q-52pM","t":"D4C1","c":"ads","cl":"DTC brands"},{"id":"12KmR9WKidZzF4fHz2BFM0lSW-WXiRRg2","t":"D4C3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/D4C3_tl67cj"},{"id":"1ZjmkcqszXwlF4URpR2S4Hyxb2eWujHIt","t":"Solsone","c":"ads","cl":"DTC brands"},{"id":"1kILmDr7QmECjFQ3nr_cCJdh92KQk1-95","t":"W1B1C2. BREAKING NEWS hook 1","c":"ads","cl":"DTC brands"},{"id":"1aMqk-1tt_U14Bao_219hcKue_wsJARse","t":"W2B1C1.DOCTORS ARE LYING TO BLACK WOMEN hook 1","c":"ads","cl":"DTC brands"},{"id":"1OPRsrZva4eC3UbOl4rEdLumtkd1dIfwi","t":"W2B1C3.ASIAN SECRET TO LOWER BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1lxVW3aspFVxH-QrRC4TZlPHT02mFEcOd","t":"W2B2C2.APOLOGIES","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/W2B2C2.APOLOGIES_di3scn"},{"id":"1-zkodrKnhcApt7SAmj2nthWsNJK1QV_U","t":"w2b2c3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/w2b2c3_jzp9r1"},{"id":"1hChInyoW-jd4G-QHRqbTddDHKY7-v3r1","t":"W2B2C4","c":"ads","cl":"DTC brands"},{"id":"1PR7Kxc_APziCMytZSAhjNSf03gLNJGP9","t":"W2B3C2.TIBETAN HEALER REVEALS THE HIDDEN NITRIC OXIDE CAUSE OF HIGH BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1_iCeVlFDnKRifYbd_KS5uLhsdJ88Xk5p","t":"KIDORIMAN TRIAL TEST","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/KIDORIMAN_TRIAL_TEST_fc9qkd"},{"id":"15Jj9ZlbPxLEtZ_6fgTT_j1bBCi0WVznh","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/KIDS_ENCYCLOPEDIA_TESTJOB_fkfjs0"},{"id":"1jgrQb0PAkajW0Eep_TtPggQ4ukUcZOky","t":"MOF / Fast Delivery Rebuttal RT hook 1","c":"ads","cl":"DTC brands"},{"id":"1vOe4y6sgbcP78a3kN75XBRRyhndSf8Ul","t":"MOF / Fast Delivery Rebuttal RT hook 2","c":"ads","cl":"DTC brands"},{"id":"16ov-W0dV_YPPm7m9zC9TbidXco0OxjUH","t":"MOF / Fast Delivery Rebuttal RT hook 3","c":"ads","cl":"DTC brands"},{"id":"1jNVb4XgXL5kqhKkwZ8jV4zxmYXHtYq9_","t":"MOF / Testimonial Montage First Theft hook 1 VSL","c":"ads","cl":"DTC brands"},{"id":"14juQXXE0Fe4TH_K3fyM4qgA4FC52hSb4","t":"MOF / Testimonial Montage First Theft hook 2 VSL","c":"ads","cl":"DTC brands"},{"id":"1p5kLIzP1mMrgQ0xbjsuPqWfgDJLZxIZp","t":"MOF / Testimonial Montage First Theft hook 3 VSL","c":"ads","cl":"DTC brands"},{"id":"1fMMdFyVG_8HmXQMN9InPyqxuJJriEAzs","t":"MOF / Uber Scanner RFIDDemo hook 1","c":"ads","cl":"DTC brands"},{"id":"1HUmWoiJFPu0w-KB9qEjjmw4n5ogedIMU","t":"MOF / Uber Scanner RFIDDemo hook 2","c":"ads","cl":"DTC brands"},{"id":"1UZ98OH-s3x3CGo8dJMV_oKDHYvelY_lj","t":"MOF / Uber Scanner RFIDDemo hook 3","c":"ads","cl":"DTC brands"},{"id":"1O8fR-6ArXxSySpTkZB0QV_Pz4kB-4nLx","t":"SC2 MOF / Petite Strap Mirror Test hook 1","c":"ads","cl":"DTC brands"},{"id":"14XwULWnHyCW5YrZxYAYvn9iFs0RQ_Q-n","t":"SC2 MOF / Petite Strap Mirror Test hook 2","c":"ads","cl":"DTC brands"},{"id":"1-N13hICY0YDM-l2v7Ye2HeU7pNTatg5k","t":"SC2 MOF / Petite Strap Mirror Test hook 3","c":"ads","cl":"DTC brands"},{"id":"1uz0e6Z49gkvv0mUST2Wr2urtzgvnZVHf","t":"SC2 MOF / Sister Swore By Phone Pile hook 1","c":"ads","cl":"DTC brands"},{"id":"1ONBaO3sTATfOjVrJTsM2U9JvHfVEGlh5","t":"SC2 MOF / Sister Swore By Phone Pile hook 2","c":"ads","cl":"DTC brands"},{"id":"1n4FL7L0CuTfMugSERz-BKBb8OmybcsDq","t":"SC2 MOF / Sister Swore By Phone Pile hook 3","c":"ads","cl":"DTC brands"},{"id":"1UiuIIxRfJ5CV2PyFi9gycQB6_6dc9gBj","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 1","c":"ads","cl":"DTC brands"},{"id":"1WoqQt309ZjUUS99Yq1ngOZ9ycIhEP-VX","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 2","c":"ads","cl":"DTC brands"},{"id":"18SSMitjoinqf5n4zsqoFqe0f5hpd-ER2","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 3","c":"ads","cl":"DTC brands"},{"id":"1kHnP3RVMMXhe5Jk2Df0nDZu4H2D9fa8E","t":"TOF / Gate To Gate Terminal hook 1","c":"ads","cl":"DTC brands"},{"id":"1syy9r6M8tyDIEkwAauvWfBRa7mTzKLSu","t":"TOF / Gate To Gate Terminal hook 2","c":"ads","cl":"DTC brands"},{"id":"138ubmp-qroypbAPHNqxSE6pUB2vBJO_m","t":"TOF / Gate To Gate Terminal hook 3","c":"ads","cl":"DTC brands"},{"id":"1CsVoFTmimZtwL5tkrik_J_EGo1zjOUbK","t":"JJK GYM ROUTINE FINAL","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/MEMEL_-_JJK_GYM_ROUTINE_FINAL_o5hqku"},{"id":"1Yaj7Y7haJGbmkDwbDos6safWXRVTYO_b","t":"OP GYM ROUTINE PRODUCT","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/OP_GYM_ROUTINE_PRODUCT_g1osry"},{"id":"15aYUpwC6EN-9IDKLpTzKbvV-D3Deh3Ft","t":"Introduction FA Fitness","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Introduction_FA_Fitness_ejvqhg"},{"id":"15JZkjacJnI99csfASoR3GOrOcvJF6Fpk","t":"MW2 SHORT 5","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%202/MW2_SHORT_5_vg8mzr"},{"id":"10iv-rSWxzG1JANPPp7SRC5Kywh6ZrL35","t":"MW2 SHORT 6","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%202/MW2_SHORT_6_pcnrwl"},{"id":"1h2K0XXCjUaOQIPVlk1StBDIPxZldlgjm","t":"MW2 SHORT 9","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week%203/MW2_SHORT_9_usajn4"},{"id":"1O17r8xCv5jYLat1RDB-MYAlspmZMqQiz","t":"MW4 SHORT 14","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/MW4_SHORT_14_d8vonk"},{"id":"1bSychFiaZMaRuA6K-D87mNSLCmlr8ezM","t":"SHORT 13","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/SHORT_13_z8uwbe"},{"id":"1ckEG_hzQUpf9famE0EkaUHrpOI2SMs5H","t":"SHORT 14","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/SHORT_14_ksrswf"},{"id":"1irEswXPPYCGTc8bZFDH3jOs_mYV2igcm","t":"Fitness short","c":"social","cl":"Fitness creator"},{"id":"1mvgEQhiHYYDgr3pkWhw_XESzg0L9i0kC","t":"MW1 SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/MW1_SHORT_1_pcicja"},{"id":"1YB5YPDC8F6-M-DHfmaCQfUDXd4BrBsMm","t":"MW1 SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/MW1_SHORT_2_u1ijad"},{"id":"1B8FKeauwu6I1BZlpSwnWLzgyDrJCUTc3","t":"short 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/short_1_q8hlss"},{"id":"16a4QhaIRMfBBH0s7RtZ-YXXIRHBtmu1e","t":"Short 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/Short_2_rucim5"},{"id":"1oJZkWp9S14ZK3kICJ9u5WQc0uEqMsgzk","t":"SHORT 7","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_7_czdyyg"},{"id":"1e_I5prB0tfGFvLB-HMDMnNFxnrnqgLR3","t":"SHORT 1 The 60-Minute Myth","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_1_The_60-Minute_Myth_lkcvlj"},{"id":"1UVB8S0HQjp416dcJcitXB-OS7OmOxu6z","t":"SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_1_k1qlsa"},{"id":"14Ik0ewy-L8RyTIG87GiYrc45JewE6Wt4","t":"SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_2_u6oj0a"},{"id":"1DOzIDDqWoJxayn1nmkn6y86JD5oGz-SX","t":"SHORT 3 - The Accountant Reframe","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_3_-_The_Accountant_Reframe_lmj3xz"},{"id":"1I-80pN57xNyVklkiY7XpiyTQHKGUwaSv","t":"SHORT 3","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_3_bu372o"},{"id":"1-IKKhUuxMsf0_mjZRDKMlyZ2IFes83jj","t":"SHORT 4","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_4_f3e9fy"},{"id":"1RG6Id1NrhxcV5PCVQzxWCnkQ4-cRavrv","t":"SHORT 5 - The Mechanical Tension Secret","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_5_-_The_Mechanical_Tension_Secret_c6olhy"},{"id":"1KOgzZiihe4XUawh9YjA77zVOKAgIMPeN","t":"SHORT 5","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_5_tei5pu"},{"id":"1ZgZU4v2b6p7iL8cEy5UTKRmNY509_s3L","t":"SHORT 6","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_6_klaeqe"},{"id":"1ZlfKunyEPMvE37wbE2zCq6loPRWljs8w","t":"SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_1_jupkwd"},{"id":"1MaEOXQlA9RrpRwq7S6CS8zPXVomUUELL","t":"SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_2_vddsle"},{"id":"1y-3EwcH-9Asbbwda6knv06MAOwQEqadb","t":"SHORT 3","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_3_rebkrj"},{"id":"1q024-rkX48rUTLZpTJw2eqOk7xjpvleD","t":"SHORT 4","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_4_eov1sf"},{"id":"18zwGi_c5Qu5jMFhpv0OKClDrqRP_LbKY","t":"M1","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M1_cpkan1"},{"id":"1I7oEsIVXW54Iv3Fd7E7-ep1z6IQ7Ofzd","t":"M2","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M2_ojai4k"},{"id":"1zqlHKiS0NEBCjYTG6MPFRN0Fp1abST3n","t":"M3","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M3_zvam0d"},{"id":"1gAdqdWOXfS92rwBZYhR8y6o2ifwhRblh","t":"M4","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M4_fvb7ce"},{"id":"1pbH5wlTMsOQ1q8P52-db7gE3EPhSQuD7","t":"M5","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M5_xczb63"},{"id":"1VD0AHeiX8I5d8cn6IX8ls28wlfqbcXIa","t":"M6","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M6_yfh2np"},{"id":"1ca7d7QKRgEdIP6xua1gE0-VLtrlBO6Pb","t":"M7","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M7_bezjc1"},{"id":"1thrTTyLbrGxv4b39pdUAH4uz9ieNzkTu","t":"M8","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M8_fanfyi"},{"id":"19ZFlapc3W1jg635-l0-S4TFrG4MLUNtG","t":"M9","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M9_j3bkgi"},{"id":"1-FoyEVOJpDo56kkTPZFzMHNHdet_XmOi","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/KIDS_ENCYCLOPEDIA_TESTJOB_hj1nuc"},{"id":"1t8cIHKUWbRKwLL0_oHZwI7SlzOSBJ_FL","t":"Quick Sweep 4","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/QuickSweep_4_qsqzyg"},{"id":"1XE4MEtI42d9CvOyaYC5Hb0gP9ZHJEq5g","t":"SAVARY 1 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_1_with_banner_-_RAIN_jfuy0m"},{"id":"1aV59niu4fk3-uMqqs1Nj_LNpzTlWFCGe","t":"SAVARY 10","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_10_-_RAIN_f8kkz1"},{"id":"1iSi0yWxAjFW4CU35Ra7uvKTEd19GvkuP","t":"SAVARY 11","c":"vsl","cl":"Short-form VSL"},{"id":"1YwL98PfgJQfCmTsvu_TolbVgsF3e98tl","t":"SAVARY 12","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_12_-_RAIN_t5g9k5"},{"id":"1-ymoJPFcAwa24C5SFaGxbFO9xXI0feN-","t":"SAVARY 13","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_13_-_RAIN_vo1dxm"},{"id":"16CF0dkhXrSwCcy15XsSwaWEz-x5AjqUo","t":"SAVARY 14","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_14_-_MAX_ytwynz"},{"id":"1M8Bwt3FdomgtuXyhYPVqK7Vnq0GjTfbu","t":"SAVARY 15","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_15_-_MAX_hbamkg"},{"id":"1u8Msl_vSAL5w7bV-un932drLQHHg6Zwr","t":"SAVARY 16","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_16_-_MAX_kepted"},{"id":"1vZc0qMnP-cF4Ysv3oZvUSjUXdlfnNM5p","t":"SAVARY 17","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_17_-_CHARLES_xefmli"},{"id":"1mJUbRVyH1XujWZiZ1-u0xazD1se_kKJ_","t":"SAVARY 18","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_18_-_CHARLES_e5duod"},{"id":"1WF7qBLIq3xjKePYm4bwnTOyc-TZVyGzY","t":"SAVARY 26","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_26_-_MAX_maqnee"},{"id":"1WL0KiPxXy-goa9IkgFX5N3zfhCg6QWcO","t":"SAVARY 29","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_29_-_RAIN_hige7t"},{"id":"1cr9xro7aa02s4Q-8PWFPqJOgNKSYWUCz","t":"SAVARY 5 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_5_-_MAX_with_banner_vczjwy"},{"id":"1PFBdJDGZWUJyp0bTb1e6pMT5QaM8XoNW","t":"SAVARY 6","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_6_-_RAIN_qtguo9"},{"id":"1f2zWJcvFecznVDyWM9kyk50rjvsp7KEW","t":"SAVARY 7","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_7_-_CHARLES_ay04sj"},{"id":"1Ae1s1mxHNvANL43bKm9vj8PgpdoWrt5C","t":"SAVARY 8 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_8_-_MAX_with_banner_kfmcc4"},{"id":"1UGxXo3qzERZp1EMOgDzBeiVXX57r8oFI","t":"SAVARY 9","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_9_-_RAIN_xhalf6"},{"id":"1NTvIZPwBV7NDAy-P47QAqsQiVUfqZJKl","t":"SHORT 1 The 60-Minute Myth","c":"vsl","cl":"Short-form VSL"},{"id":"1b-CqgN0fokx0ivckmMo_Nz-y4MOslrBR","t":"SHORT 3 - The Accountant Reframe","c":"vsl","cl":"Short-form VSL"},{"id":"19TMQ3nF4Ib1e92Xjh7BE1y-r1VmrN8-9","t":"SHORT 5 - The Mechanical Tension Secret","c":"vsl","cl":"Short-form VSL"},{"id":"1mnYeiETRfLLF-YQS4XQZ-L_FNqfEzg66","t":"Solsone","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/Solsone_q2y2jz"},{"id":"1L6ycFu8kXTmPD2Y-FkSjU7fi_uyxlVlF","t":"ZYNTRA FINAL","c":"trials","cl":"Trial: 2-part test"},{"id":"14ifN4Z8aqMdXzOqTmlyuAKC9bAG40DDL","t":"Podcast clip, EP251","c":"trials","cl":"Trial project"},{"id":"1z5CMa_TsCIpqMh6MHVe2HUVJbJp5U2Iz","t":"Test video","c":"trials","cl":"Trial project"},{"id":"16R7vQUMqV1jtNCdmRKf0NMgn17F7EGYA","t":"Short Form AI Avatar Best","c":"trials","cl":"Trial: AylexTV"},{"id":"1GOb0ulJtvE5aS3tSpJ9TtwZ9I5DDG09Z","t":"NIUD TEST TASK","c":"trials","cl":"Trial project"},{"id":"1aadmVRrTfL6zLVxqMwsO9O6T5cIQdPzf","t":"Avatar","c":"trials","cl":"Trial project"},{"id":"1OhBqhJi13jFr5W2gk5FbF04wjJ0gCwm8","t":"SCRIPT 1","c":"trials","cl":"Trial project"},{"id":"1gpFTOKZIjs3WE9mP9BzTg1uvPGjzwX9U","t":"SCRIPT 3","c":"trials","cl":"Trial project"},{"id":"1HP6dP4vfSrDpCYWs__e0hXHILLXjCEyM","t":"Script 4 Old lady","c":"trials","cl":"Trial project"},{"id":"1XQXJmBkjfUjcZdio5_WQSGWCna0GrMj4","t":"Script 4","c":"trials","cl":"Trial project"},{"id":"1CnaeDJMnQ-B4yt5jxOMo6LSJsEq7Ll_t","t":"Noralife NO WM","c":"trials","cl":"Trial project"},{"id":"1Ho2eU9d9ZtTbILtl667EcnWgLybzUAq_","t":"Hugaboo Test Trial","c":"trials","cl":"Trial: Hugaboo"},{"id":"1gukO4HGJ769VOmBXxxVVnPCvDIl7ng9J","t":"Purriq Silvervine Sticks","c":"trials","cl":"Trial: Karos"},{"id":"1ay9isNcITEaFyd6l0DloBiLYCrfYM98Q","t":"Trial Edit","c":"trials","cl":"Trial project"},{"id":"1L5iHQ3BDmXRjL9XXZRz_fkPbAYwvOhsN","t":"OP GYM ROUTINE PRODUCT","c":"trials","cl":"Test project"},{"id":"1zSASgchT8lopvoMmwGnUHltCb5aXltcO","t":"RYER FG28 v2","c":"trials","cl":"Trial: Ryer"},{"id":"1fUMEIibaUNPC7x4XFQ6YFqYYaMqaG4oT","t":"SK40 Style2","c":"trials","cl":"Trial: SK Renewal"},{"id":"12WRELWCgYFJ65ve1pxAd6YOUDyOKxf_f","t":"SK40 Style3","c":"trials","cl":"Trial: SK Renewal"},{"id":"1nvWmyE3UP7mJ-ljCtmwXf_rQl5xp5kxL","t":"SK40 Style4","c":"trials","cl":"Trial: SK Renewal"},{"id":"1Z8Ku2IS0GmD795Rbt9mdG1_zkcgsSVGr","t":"Test Video MMC","c":"trials","cl":"Test project"},{"id":"1IcPqBPzqldC_vkXC87e1xb4ruom8jr0-","t":"Pawly Lab Trial","c":"trials","cl":"Trial project"},{"id":"1RhAUWWJDK5tcoSH4g_89gfNofw7nEegP","t":"Colon Animation","c":"trials","cl":"Trial project"},{"id":"13NxYRc0zd3alHgiSotEpTVab8gVUP3Yc","t":"Trial task","c":"trials","cl":"Trial project"},{"id":"1tr0IGm8d_VErecnmMe_6s63IYG2Znopw","t":"Thalique ad","c":"ads","cl":"Thalique"},{"id":"1hpEDBlmyZWgisELM0ltKW0WZ_b5KHL-2","t":"THALIQUE EARCLEANER hook 1","c":"ads","cl":"Thalique"},{"id":"1ekunLgJml5zJouRwJvWJOiPxBTZv9pbx","t":"THALIQUE EARCLEANER hook 2","c":"ads","cl":"Thalique"},{"id":"14m_DwVb2YGT_WN3WlasTL24qgvXHqFLe","t":"THALIQUE EARCLEANER hook 3","c":"ads","cl":"Thalique"},{"id":"1j0Vq6YvUK02X-hPqXmYsiGKZnEyiDEqm","t":"THALIQUE EARCLEANER hook 4","c":"ads","cl":"Thalique"},{"id":"1r6lsV1mBhjEEu_niqrSQodd48pJDXfE9","t":"batch 298 - h1","c":"ads","cl":"Nomend LumaLean"},{"id":"1E0qWAkJ9mDEKap8CqG4Z4lvrcaH2XWfK","t":"batch 298 - h2","c":"ads","cl":"Nomend LumaLean"},{"id":"1p6R5MFYGyIrnuBmzLnbuWnHMnUoHkv-w","t":"Batch 298, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1X827joO0SV0tq2KwrsAnrTZ9nz3ReUCm","t":"batch 300 - h1","c":"ads","cl":"Nomend LumaLean"},{"id":"12fIG4mRtd7J4q33gdI7yLTWAoNlCz63H","t":"batch 300 - h2","c":"ads","cl":"Nomend LumaLean"},{"id":"1kG_H_z5a1CaOHOl-icse3t0zTlqJImUK","t":"batch 300 - h3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XDW_5NrriavL9NiFmRQ1k97R72qKLoeM","t":"Batch 307, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"11VTa5kqBo--1GtFkKzoKGe9oIwp25dWC","t":"Batch 307, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1OqUsSdlcCho6MfysPusri36JU-3jg5Gq","t":"Batch 307, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1PuTGU9bn6DmCrD0WBGA4w1edt9tk8RkU","t":"Batch 308, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1c3Fd_YzVMfkoEt0VVCjXxdiWppBameCn","t":"Batch 308, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"13cfsxLdtJfF2iRtdIWjr5lT9czZGHdCC","t":"Batch 308, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1mFVCnK71Of2HzNVWK6MuZtSIzayGRDsH","t":"Batch 313, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1T0mchucoHEtlKGGVcX98ASI8lwIIcurN","t":"Batch 313, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Tw-fIc2golDb34HZg8068suLcGlOtc1I","t":"Batch 313, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1OFVscHOLvKqkpRnWSmJj1BwFFBAFGD8-","t":"Batch 314, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1CQlaxUUY8Hq6zfYesA4wOpk7I9kwGx2H","t":"Batch 314, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"12RUdLTeXV9YiiBif6xacJI4yJG-N1WSo","t":"Batch 314, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1IZXumuVSXTFg2HzWcNtV5vQM9249Z-LZ","t":"batch315 v1","c":"ads","cl":"Nomend LumaLean"},{"id":"1AnhEmpzLMNDJ8zXfEwRv_BNIoZ64n2rb","t":"batch315 v2","c":"ads","cl":"Nomend LumaLean"},{"id":"1ju-Fd0SyLovW1KIReq0ph-sWBPVyOSux","t":"batch315 v3","c":"ads","cl":"Nomend LumaLean"},{"id":"1SgZgpL8tTyMl5PwnzR64N10gaaELhTJv","t":"Batch 337, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1rDKQOh57_0ZsUWfdtGxqePACpIW4XoEs","t":"Batch 337, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1l29fcZNVoDYNkqeeUlBxGqCE4JN8GRy7","t":"Batch 337, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1QIuGbE2i1TBdA-c0DezKX4zjinGVQImC","t":"Batch 353, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1J8uAb4MtujEEEpaxu3JvCcXT4ly_iQdl","t":"Batch 353, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1q50ewn419Za-BTU_rVCzX0jb0lcDNYoR","t":"Batch 353, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1WkNwgz6DFO-AvscHo98M6lnd7-mD57cD","t":"Batch 358, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1wW2vd-XpXmRTTSZhzveXeliRWFoi8KkB","t":"Batch 358, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1mIqjwfGZe8cOYl0OyhBOvDx_cibMk9R9","t":"Batch 367, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1OSnY1UAHsb9uijEeObuM2S6D7_Vr5Bh0","t":"Batch 367, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Xc9k4Az6etKT3HGIrK0m11IAn1P9Owgu","t":"Batch 367, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1cn54EUuQ5RJjsS4JiDf5B4uPRKCha6Vq","t":"Batch 380, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"16-jcZ8JJWGbWECx01pCpO_AbDcag80LP","t":"Batch 380, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"15ztCGwUp4fgm78VkAvUs0wq7Vd6ZYLjv","t":"Batch 380, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1bReqtnLkQx5wMUi0eVEj1q8TO2aJ-8L2","t":"Batch 380, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1n2BvT7Aln3-zb6clmcke031Tzm7qdpmt","t":"Batch 380, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1zPhKmUblHioX6DwB9JD4MZdS91VV0CHq","t":"Batch 380, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1ejZivNADk4IyQ6lCkLtdPKuNN2etUW-h","t":"Batch 383, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1M5hDm4dw9dVwbTlbinZKY6QX5rv_YRl6","t":"Batch 383, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1ftPKUvfTuI2eAqeCjd2iSWa1d9nesVCx","t":"Batch 383, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1MRY8Sdl04o-2lWg47obE9PJU-WgNcI08","t":"Batch 387, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1zG8qYEdbjOrgvuN6V1qb_uW5om5VRiaW","t":"Batch 387, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1OyIrK251iNUipLIwfprbb70mA1LP4PFq","t":"Batch 387, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1OKFHg6gerR_pkRvxm9c66ulGnifrPhVY","t":"Batch 387, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1kx4isXP_rmWyfelVf4cFDpdgOQk3B-m9","t":"Batch 387, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Vu6PDnlb-6ubJmPJ9Ui6VG8i1acBHBBi","t":"Batch 387, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1QdK_XTflWUGXMpzIfdGiIugUjlvlK8UH","t":"Batch 391, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1GJ3_ifUuH_Se1Vvp2RFlGhbTGl8iQLyF","t":"Batch 391, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"17f2B8l2e0Hz6DL60qu5UEeUXVba_iEuL","t":"Batch 391, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1XDE6namJj27I8aTQ7L2qwyzBZDQTjo5c","t":"Batch 391, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1N9sDK2jk_Iy8sV09Bu4A241vF74riXkW","t":"Batch 391, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"18sxbWqiTK7RMGr7lT4Gpn_8pkpobX-Xf","t":"Batch 396, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1MO-N9EM6SfgZMwB7U4mwre5wjoi747f1","t":"Batch 396, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"18PnrRg4sQXJyICjtEa6wOvLoQF6Vt_4C","t":"Batch 396, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1kURW71lRQvjz3jC32Kow5sZzS_lVirv3","t":"Batch 396, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1ucXjd5WZz78hLBUy5LXjqcn-BmgsiwYy","t":"Batch 396, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1wNyTtIjRJus1tWKCza2jdPJHms5sOVqW","t":"Batch 396, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1TBa3qDuR79oxwlAeDWN3ZhR5QQauoYKw","t":"Batch 397, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"15_b1DPe5SlZ2ofS3JbDuBdqvzG0SPsgP","t":"Batch 397, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1342EbVRbfPCMfwQ2HLeB_akJfXHWSkcf","t":"Batch 397, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1z88XUjc02wp1aE_UaVZ4jO0xjWH-Vj-A","t":"Batch 397, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1cvAj-vADi4NZY1PKmz5Ao9-v_icz99D0","t":"Batch 397, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1fLNCW7nWPqfPOFluKCsMl3k1HUImqIG5","t":"Batch 397, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XfHUPLnzN9KcuBctZvcoVkV2KDSy6R1E","t":"Batch 404, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1f3ti0Alr7lGkbilMR0Pp4MTO8R62MXcw","t":"Batch 404, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1gRkmFgH-_E4ar4uN99Qg39RjZ0w3bY5o","t":"Batch 404, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1sO1rxZgD0QlYO2THnDutX6_HnbqEJdtB","t":"Batch 404, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1s8I-GqdFAfkTdjPjZG7ifUToLzk62Jyp","t":"Batch 404, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"11aPUWSQa61C9R31ppbrYLJlxe9T0Z_5l","t":"Batch 406, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1YXljkZMVC2rkDmBgqJr1Q3TXevc1G_5n","t":"Batch 406, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1ixfVry0ikQfzXbSpu0ANkyaqtR2GBB4e","t":"Batch 406, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1xKcayIZZ5WHD2zWIvhvDTN-wF-8_aID8","t":"Batch 406, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1JW0ElLk--h-QN7BWqZ7rWeilYbf6YoP0","t":"Batch 406, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1XneX9QtYLSxOH_T7p3ahdcP76jbUw8kA","t":"Batch 421, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"16Gt6iG91yAKELzBrfePzxmYT65HyNB-u","t":"Batch 421, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1mMobgTcww3jFMsoj1K3aqUT8c0iXvsRN","t":"Batch 421, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XtslHma_MrF23Tgzr1H_yt38X3PpMFxH","t":"Batch 421, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1q9I_wabBjDCGol70xeU-xzUS-GzR5VWo","t":"Batch 421, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"14tYhWoohLxsvXGKBaUtqMPNb0MHpbSze","t":"Batch 423, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1JKlJgQQO5GqONcx6juGodY7pSWlWmc6T","t":"Batch 423, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"13kFMBt_epCoCTbSS_VOUMAUvji_zZOEl","t":"Batch 423, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1r13YSV36MLase2qBQcWiVmPtp5nCRmMK","t":"Batch 423, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1SYrU46e4odqnFv9Eh4UwbXa7EI5zp-8J","t":"Batch 423, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1ILQ8Y66X7hzieyfML4UyiJN9r__IQ8Nk","t":"Batch 425, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1H9rIx7tfdP-VmMuG0tUbPeYoqdrHKFqt","t":"Batch 425, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1vXC_o255piRHkffSWhdyORXVo5Cqt8Px","t":"Batch 425, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1i7gKXyn68DJRHNPPJ55_XEn7VviuO_Pn","t":"Batch 425, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1s15JvGSjo3OQdrrsvNEMw2O2jv7x8IgT","t":"Batch 425, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1PpVRiluEJxYheAHqKNZrrRZEEkinA8IX","t":"Batch 438, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1gpAVe7Wg5Ky0Kfo-0dtV_G83QGkCdFJh","t":"Batch 438, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"15w72ZVBT_v_FCemWMXbs_aH-3TMqMaLq","t":"Batch 438, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1Kv2uUDHnTjCxdUPgDkuk7Bd_2hTk5xQR","t":"Batch 438, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1kz_kXqBosHnRGTw7VeWf6ePVIHHKKdU5","t":"Batch 439, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1snJ3Z_EfHW-aTB0Fx9Whbpenl83dViKQ","t":"Batch 439, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"10dtGE-nXwxQwWvu6Q_5Z_7NFFtYRcLyz","t":"Batch 439, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1DFK3I36Xmu4_wuID_-pbEmMZOo9ZOYzK","t":"Batch 439, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1gNv-QhFNMc-oQ4m1BpYu6blqRqDlOTsP","t":"Batch 441, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1-Vz-8IMnnd71rEu_VCsgCfgBjYPlVbf9","t":"Batch 441, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1s9EU6XFjR89PbHyik2FgDs0PluSjpxBW","t":"Batch 441, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"11L0oHktXmcjWUjZJTX5Vs81kRiD3j3vx","t":"Batch 441, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1GB8LxrD3gikl02nTCeVvqiurUz0wyp3w","t":"Batch 441, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1CJoBoWxNBdokmYuJGvyPz7hxv3TgE5yY","t":"Batch 222, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"12QlhN7uobXP4eug8vNo6BLgsjkHlJJJY","t":"Batch 222, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1_fFoxS7dqFB-OUTuyym5e6ZmbWDfX0iH","t":"Batch 222, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1vlfiOlFcgbk4s2M9nCHhu1Xtcnlx1Cvv","t":"Batch 222, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"181ythdpkwLkfwsu927KEEyTrCmUhPU7f","t":"Batch 222, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1bqg3D8H6ujSOCv8-tEg5EvpBaaCnAQJ2","t":"Batch 234, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Chwwpyz5guw0HmOq6CpDeDPpN0uTdNrw","t":"Batch 234, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1e8HlF85a_WnnLDov4CG3duY8hAvgPeme","t":"Batch 234, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1GvAJbcH2o3zjUXhXuSjhAXCWoan0JMMG","t":"Batch 234, hook 4 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1DQYEFHqzxM7lqL1ab11WA4x6e76ip3Mh","t":"Batch 234, hook 5 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1e3bJRklUpKG4BDo_EUkj9i2HzklD1KJy","t":"Batch 234, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1l4Hcec43JFavJJ4CDd6xuatBKv_Bj2UB","t":"Batch 234, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1eExrZwukal8ecrD1xKhF2aNny-vkepOA","t":"Batch 234, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Qmu7cfg4rpQxV0MuBe9PdJ9PSaVpJi5F","t":"Batch 234, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1_LS5I9-tJnhAR3qPGv6GW9B-GYP7fvW6","t":"Batch 236, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1H6n6vi6xYkkNuc77C1nu9NERBTObCwzT","t":"Batch 236, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"17uIYHa-8Z_99j3Nep1hC50GrSOZlVSqY","t":"Batch 236, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1TUof8jxX_GQleEUbEiqeJD5n1cGrJNwd","t":"Batch 236, hook 4 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Tj3ztujPjW30R9TLrtD9hoTe1SeRJtYk","t":"Batch 236, hook 5 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1OEY5rVCa48LAK9U4h8vupJqrz4eyS8Sy","t":"Batch 236, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1H4JT1wImVnVkUEJJ9OvM0RwkbfLrFQzq","t":"Batch 236, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1MzKIhQdlzQzbT66o3CXW9VOESxtFDZP1","t":"Batch 236, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1mFqExKolTPQ47j3cRXwXL0oh7KXBDpYX","t":"Batch 236, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1xykcbLMLwUts2j8oMq9I03BOW4rcu3kJ","t":"Batch 236, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1w2x5m9FDfok5T2EQEGW044qY7xy1R4-L","t":"Batch 240, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Khje-BGfRC56CT7UInAA9Oa5e6FniMti","t":"Batch 240, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1PJe4L0SeJdVwgdOAyVsihCq5LxeWzGQm","t":"Batch 240, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1k42kV7B9GLUGC4zF8OdKeO1UvpljFdFD","t":"Batch 240, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1LGphg3me_hlyNtbHDpzF2Lt4qy5UZ7Zp","t":"Batch 240, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"12b0A-x9keXIISKmqGXwAIGluToB7u3Hg","t":"Batch 260, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"13oNqvUr7EVGif8YPQd5qYncOjNBF46RR","t":"Batch 260, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1PqgaYkZog3iFpMBrCe8tKSQS8WJcnvcB","t":"Batch 260, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1QlVBot7yKLdTzmV0feL0wnqaoViX10rw","t":"Batch 260, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1-HUKo8YukjJ9xTgIhEC7ichbEZLONQdp","t":"Batch 260, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1iIvKFDealb7FIMmXYXA0Opj9p86WPTrl","t":"Batch 265, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1M8bo6568XlwBj9vLMHR9JZzKEQ8tsPf0","t":"Batch 265, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1otVDskVCXDjIYZO_WaFTQ_0Sp6-RrlDp","t":"Batch 265, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1RsIj4_gqKHLwNk3Y9Nhc4F6DBnJNYIeH","t":"Batch 265, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1fIXzKKpvmb_Fe3dCiIOH7in3Tg8RTCUA","t":"Batch 265, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1TkY_71LS_dOl8PGEGSkTi_8r7JAtGrlI","t":"Batch 292, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1T75ZVR6eV1QKyj7BWRuR31RAXGGBWG-M","t":"Batch 292, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1gecmMD1Ju9GAUw4nYRLl0w5RGvik6lpJ","t":"Batch 292, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1OsuhZjryDURuaO8ASR76fgSTssblwK5E","t":"Batch 292, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1ZghfUoCnQjRgpYeOb9WsKgLAmWgWE-K5","t":"AD 1","c":"ads","cl":"Vivint"},{"id":"1Kfjr_qyB0wSZ1i0UoXEF9bAZ33je-oRm","t":"AD 2","c":"ads","cl":"Vivint"},{"id":"1FikFplDbaQbH5N3EWxEKqNe0w-MubTHD","t":"AD 1 REVISED","c":"ads","cl":"Vivint"},{"id":"1v1nKP2rOHVZ2g0A5vOkxdkFR-AdXQWOD","t":"AD 2 REVISED","c":"ads","cl":"Vivint"}];
+const LOGOS = [["Platforms",[{"n":"YouTube","vb":"0 0 256 180","b":"<path fill=\"red\" d=\"M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134\"/><path fill=\"#fff\" d=\"m102.421 128.06l66.328-38.418l-66.328-38.418z\"/>","c":null},{"n":"TikTok","vb":"0 0 256 290","b":"<path fill=\"#ff004f\" d=\"M189.72 104.421c18.678 13.345 41.56 21.197 66.273 21.197v-47.53a67 67 0 0 1-13.918-1.456v37.413c-24.711 0-47.59-7.851-66.272-21.195v96.996c0 48.523-39.356 87.855-87.9 87.855c-18.113 0-34.949-5.473-48.934-14.86c15.962 16.313 38.222 26.432 62.848 26.432c48.548 0 87.905-39.332 87.905-87.857v-96.995zm17.17-47.952c-9.546-10.423-15.814-23.893-17.17-38.785v-6.113h-13.189c3.32 18.927 14.644 35.097 30.358 44.898M69.673 225.607a40 40 0 0 1-8.203-24.33c0-22.192 18.001-40.186 40.21-40.186a40.3 40.3 0 0 1 12.197 1.883v-48.593c-4.61-.631-9.262-.9-13.912-.801v37.822a40.3 40.3 0 0 0-12.203-1.882c-22.208 0-40.208 17.992-40.208 40.187c0 15.694 8.997 29.281 22.119 35.9\"/><path d=\"M175.803 92.849c18.683 13.344 41.56 21.195 66.272 21.195V76.631c-13.794-2.937-26.005-10.141-35.186-20.162c-15.715-9.802-27.038-25.972-30.358-44.898h-34.643v189.843c-.079 22.132-18.049 40.052-40.21 40.052c-13.058 0-24.66-6.221-32.007-15.86c-13.12-6.618-22.118-20.206-22.118-35.898c0-22.193 18-40.187 40.208-40.187c4.255 0 8.356.662 12.203 1.882v-37.822c-47.692.985-86.047 39.933-86.047 87.834c0 23.912 9.551 45.589 25.053 61.428c13.985 9.385 30.82 14.86 48.934 14.86c48.545 0 87.9-39.335 87.9-87.857z\"/><path fill=\"#00f2ea\" d=\"M242.075 76.63V66.516a66.3 66.3 0 0 1-35.186-10.047a66.47 66.47 0 0 0 35.186 20.163M176.53 11.57a68 68 0 0 1-.728-5.457V0h-47.834v189.845c-.076 22.13-18.046 40.05-40.208 40.05a40.06 40.06 0 0 1-18.09-4.287c7.347 9.637 18.949 15.857 32.007 15.857c22.16 0 40.132-17.918 40.21-40.05V11.571zM99.966 113.58v-10.769a89 89 0 0 0-12.061-.818C39.355 101.993 0 141.327 0 189.845c0 30.419 15.467 57.227 38.971 72.996c-15.502-15.838-25.053-37.516-25.053-61.427c0-47.9 38.354-86.848 86.048-87.833\"/>","c":null},{"n":"Instagram","vb":"0 0 256 256","b":"<path fill=\"#0a0a08\" d=\"M128 23.064c34.177 0 38.225.13 51.722.745c12.48.57 19.258 2.655 23.769 4.408c5.974 2.322 10.238 5.096 14.717 9.575s7.253 8.743 9.575 14.717c1.753 4.511 3.838 11.289 4.408 23.768c.615 13.498.745 17.546.745 51.723s-.13 38.226-.745 51.723c-.57 12.48-2.655 19.257-4.408 23.768c-2.322 5.974-5.096 10.239-9.575 14.718s-8.743 7.253-14.717 9.574c-4.511 1.753-11.289 3.839-23.769 4.408c-13.495.616-17.543.746-51.722.746s-38.228-.13-51.723-.746c-12.48-.57-19.257-2.655-23.768-4.408c-5.974-2.321-10.239-5.095-14.718-9.574c-4.479-4.48-7.253-8.744-9.574-14.718c-1.753-4.51-3.839-11.288-4.408-23.768c-.616-13.497-.746-17.545-.746-51.723s.13-38.225.746-51.722c.57-12.48 2.655-19.258 4.408-23.769c2.321-5.974 5.095-10.238 9.574-14.717c4.48-4.48 8.744-7.253 14.718-9.575c4.51-1.753 11.288-3.838 23.768-4.408c13.497-.615 17.545-.745 51.723-.745M128 0C93.237 0 88.878.147 75.226.77c-13.625.622-22.93 2.786-31.071 5.95c-8.418 3.271-15.556 7.648-22.672 14.764S9.991 35.738 6.72 44.155C3.555 52.297 1.392 61.602.77 75.226C.147 88.878 0 93.237 0 128s.147 39.122.77 52.774c.622 13.625 2.785 22.93 5.95 31.071c3.27 8.417 7.647 15.556 14.763 22.672s14.254 11.492 22.672 14.763c8.142 3.165 17.446 5.328 31.07 5.95c13.653.623 18.012.77 52.775.77s39.122-.147 52.774-.77c13.624-.622 22.929-2.785 31.07-5.95c8.418-3.27 15.556-7.647 22.672-14.763s11.493-14.254 14.764-22.672c3.164-8.142 5.328-17.446 5.95-31.07c.623-13.653.77-18.012.77-52.775s-.147-39.122-.77-52.774c-.622-13.624-2.786-22.929-5.95-31.07c-3.271-8.418-7.648-15.556-14.764-22.672S220.262 9.99 211.845 6.72c-8.142-3.164-17.447-5.328-31.071-5.95C167.122.147 162.763 0 128 0m0 62.27c-36.302 0-65.73 29.43-65.73 65.73s29.428 65.73 65.73 65.73c36.301 0 65.73-29.428 65.73-65.73c0-36.301-29.429-65.73-65.73-65.73m0 108.397c-23.564 0-42.667-19.103-42.667-42.667S104.436 85.333 128 85.333s42.667 19.103 42.667 42.667s-19.103 42.667-42.667 42.667m83.686-110.994c0 8.484-6.876 15.36-15.36 15.36s-15.36-6.876-15.36-15.36s6.877-15.36 15.36-15.36s15.36 6.877 15.36 15.36\"/>","c":null},{"n":"Facebook","vb":"0 0 256 256","b":"<path fill=\"#1877f2\" d=\"M256 128C256 57.308 198.692 0 128 0S0 57.308 0 128c0 63.888 46.808 116.843 108 126.445V165H75.5v-37H108V99.8c0-32.08 19.11-49.8 48.348-49.8C170.352 50 185 52.5 185 52.5V84h-16.14C152.959 84 148 93.867 148 103.99V128h35.5l-5.675 37H148v89.445c61.192-9.602 108-62.556 108-126.445\"/><path fill=\"#fff\" d=\"m177.825 165l5.675-37H148v-24.01C148 93.866 152.959 84 168.86 84H185V52.5S170.352 50 156.347 50C127.11 50 108 67.72 108 99.8V128H75.5v37H108v89.445A129 129 0 0 0 128 256a129 129 0 0 0 20-1.555V165z\"/>","c":null},{"n":"Snapchat","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M12.206.793c.99 0 4.347.276 5.93 3.821c.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51c.075.045.203.09.401.09c.3-.016.659-.12 1.033-.301a1 1 0 0 1 .464-.104c.182 0 .359.029.509.09c.45.149.734.479.734.838q.022.674-1.213 1.168c-.089.029-.209.075-.344.119c-.45.135-1.139.36-1.333.81c-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014c.255.044.435.27.42.509a.6.6 0 0 1-.045.225c-.24.569-1.273.988-3.146 1.271c-.059.091-.12.375-.164.57c-.029.179-.074.36-.134.553c-.076.271-.27.405-.555.405h-.03a3 3 0 0 1-.538-.074a6 6 0 0 0-1.273-.135c-.3 0-.599.015-.913.074c-.6.104-1.123.464-1.723.884c-.853.599-1.826 1.288-3.294 1.288c-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288c-.599-.42-1.107-.779-1.707-.884a7 7 0 0 0-.928-.074c-.54 0-.958.089-1.272.149a3 3 0 0 1-.54.074c-.374 0-.523-.224-.583-.42c-.061-.192-.09-.389-.135-.567c-.046-.181-.105-.494-.166-.57c-1.918-.222-2.95-.642-3.189-1.226a.6.6 0 0 1-.055-.225a.496.496 0 0 1 .42-.509c3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869c-.195-.434-.884-.658-1.332-.809a2 2 0 0 1-.346-.119c-1.107-.435-1.257-.93-1.197-1.273c.09-.479.674-.793 1.168-.793c.146 0 .27.029.383.074c.42.194.789.3 1.104.3c.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z\"/>","c":"#0B1220"},{"n":"X","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z\"/>","c":"#0B1220"},{"n":"Meta","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a7 7 0 0 0 .265.86a5.3 5.3 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927c1.497 0 2.633-.671 3.965-2.444c.76-1.012 1.144-1.626 2.663-4.32l.756-1.339l.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314c1.046.987 1.992 1.22 3.06 1.22c1.075 0 1.876-.355 2.455-.843a3.7 3.7 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745c0-2.72-.681-5.357-2.084-7.45c-1.282-1.912-2.957-2.93-4.716-2.93c-1.047 0-2.088.467-3.053 1.308c-.652.57-1.257 1.29-1.82 2.05c-.69-.875-1.335-1.547-1.958-2.056c-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999c1.132 1.748 1.647 4.195 1.647 6.4c0 1.548-.368 2.9-1.839 2.9c-.58 0-1.027-.23-1.664-1.004c-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a45 45 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327c1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446c.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338c-1.191 1.649-1.81 1.817-2.486 1.817c-.524 0-1.038-.237-1.383-.794c-.263-.426-.464-1.13-.464-2.046c0-2.221.63-4.535 1.66-6.088c.454-.687.964-1.226 1.533-1.533a2.26 2.26 0 0 1 1.088-.285\"/>","c":"#0467DF"},{"n":"Vimeo","vb":"0 0 256 223","b":"<path fill=\"#32b8e8\" d=\"M255.876 51.662c-1.139 24.968-18.545 59.157-52.209 102.55q-52.21 67.99-88.343 67.989c-14.918 0-27.551-13.799-37.863-41.406c-6.892-25.306-13.775-50.61-20.664-75.915c-7.663-27.592-15.878-41.406-24.661-41.406c-1.915 0-8.617 4.038-20.091 12.081L0 60.008a3257 3257 0 0 0 37.36-33.38C54.21 12.038 66.86 4.366 75.29 3.59q29.886-2.876 36.79 40.938c4.974 31.514 8.415 51.116 10.35 58.788c5.742 26.145 12.06 39.201 18.965 39.201c5.358 0 13.407-8.478 24.138-25.436c10.722-16.963 16.464-29.868 17.24-38.733c1.525-14.638-4.22-21.975-17.24-21.975c-6.128 0-12.447 1.413-18.946 4.206c12.58-41.29 36.618-61.343 72.1-60.199c26.304.773 38.705 17.867 37.19 51.282\"/>","c":null}]],["Editing",[{"n":"CapCut","vb":"0 0 48 48","b":"<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M43.5 35.9L4.505 16.242v-1.383a3.717 3.717 0 0 1 3.722-3.728h21.998a3.717 3.717 0 0 1 3.722 3.728v1.695\"/><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m43.5 11.836l-39 19.66l.005 1.645a3.717 3.717 0 0 0 3.723 3.728h21.996a3.717 3.717 0 0 0 3.723-3.728v-1.948\"/>","c":"#0B1220"},{"n":"Premiere Pro","vb":"0 0 256 250","b":"<path fill=\"#00005b\" d=\"M45.333 0h165.334C235.733 0 256 20.267 256 45.333v158.934c0 25.066-20.267 45.333-45.333 45.333H45.333C20.267 249.6 0 229.333 0 204.267V45.333C0 20.267 20.267 0 45.333 0\"/><path fill=\"#99f\" d=\"M60.8 175.04V65.28c0-.747.32-1.173 1.067-1.173l1.548-.003l1.198-.01l.845-.016l.9-.023l.967-.034l.515-.021c.96-.04 1.935-.065 2.93-.086l3.055-.064q.521-.012 1.051-.028l1.07-.035q1.44-.052 2.952-.08l3.093-.055l2.141-.047l1.095-.032c2.204-.07 4.361-.094 6.502-.102l3.204-.004c8.747 0 16 1.066 21.974 3.306A38.1 38.1 0 0 1 131.2 75.52a34 34 0 0 1 7.787 12.16c1.6 4.48 2.453 9.067 2.453 13.867q0 13.76-6.4 22.72c-4.267 5.973-10.24 10.453-17.173 13.013c-7.012 2.578-14.721 3.56-23.128 3.623H91.69l-1.187-.012l-.761-.018l-.448-.019l-.402-.024l-.359-.03a16 16 0 0 0-.692-.052l-.52-.023l-.57-.015l-.951-.013l-1.853-.004v34.24c.106.747-.427 1.387-1.174 1.494H62.08c-.853 0-1.28-.427-1.28-1.387m23.253-90.347v35.84l1.254.09a43 43 0 0 0 2.906.124h5.654c4.16 0 8.32-.64 12.266-1.92c3.414-.96 6.4-2.987 8.747-5.654c2.24-2.666 3.307-6.293 3.307-10.986a17.56 17.56 0 0 0-2.454-9.494c-1.737-2.657-4.161-4.727-7.082-5.928l-.384-.152c-3.947-1.6-8.214-2.24-12.587-2.133l-2.466.003l-1.159.007l-1.107.015l-1.051.024q-.769.02-1.47.058a37 37 0 0 0-.688-.028l-.639-.014l-.3-.002l-.566.003l-.514.014l-.238.01l-.437.025l-.384.03l-.173.016l-.303.035zm72.32 6.187h18.667c1.007 0 1.825.666 2.182 1.549l.058.158c.32.853.533 1.706.64 2.666c.213 1.067.427 2.24.533 3.307l.09 1.032c.07.881.124 1.818.124 2.808a39.7 39.7 0 0 1 10.82-8.849l.593-.324c4.907-2.774 10.56-4.16 16.213-4.16c.747-.107 1.387.426 1.494 1.173v21.227c0 .853-.534 1.173-1.707 1.173c-3.584-.1-7.26.173-10.77.903l-.75.164q-4.64.96-8.96 2.88c-2.027.96-3.947 2.24-5.44 3.946v54.4c0 1.067-.427 1.494-1.387 1.494H157.76c-.853.106-1.6-.427-1.707-1.28v-59.52c0-2.56 0-5.227-.106-8l-.064-2.08l-.086-4.16q-.024-1.04-.064-2.08c0-2.454-.213-4.8-.426-7.254c-.107-.533.213-1.066.746-1.173c0-.091.157-.104.269-.04z\"/>","c":null},{"n":"After Effects","vb":"0 0 256 250","b":"<rect width=\"256\" height=\"249.6\" fill=\"#00005b\" rx=\"42.5\"/><path fill=\"#99f\" d=\"M102.843 149.333H63.172L55.1 174.454a2.02 2.02 0 0 1-1.901 1.547L32.947 176q-1.72 0-1.202-1.89l34.347-98.509l.343-1.035l.114-.354l.23-.74c.114-.382.228-.787.343-1.226c.45-2.291.68-4.62.687-6.955a1.063 1.063 0 0 1 1.202-1.202h27.306q1.2 0 1.374.859l38.983 109.335q.515 1.718-1.03 1.717h-22.326a1.59 1.59 0 0 1-1.717-1.202zm-33.488-21.181h27.134l-.387-1.277l-.621-2.022l-.909-2.896l-1.745-5.467l-1.662-5.254l-3.092-9.789a336 336 0 0 1-2.46-8.138l-.878-3.096l-.948-3.393l-.866-3.147h-.172a139 139 0 0 1-3.136 12.23l-1.16 3.723l-2.79 9l-1.414 4.585q-.383 1.242-.765 2.456l-.76 2.398l-.756 2.342l-.752 2.284l-.748 2.227q-.559 1.65-1.113 3.234m130.518 11.404h-33.831a24.1 24.1 0 0 0 3.263 9.461a17.67 17.67 0 0 0 7.813 6.44a32.6 32.6 0 0 0 13.653 2.676a62 62 0 0 0 11.077-1.216a40.8 40.8 0 0 0 9.523-2.482q.859-.685.86.858v16.315c.028.445-.061.889-.259 1.288c-.196.312-.46.576-.772.773a43.7 43.7 0 0 1-10.64 3.17a75.5 75.5 0 0 1-15.113 1.287q-11.814 0-19.917-3.545l-.52-.233a36.4 36.4 0 0 1-13.394-10.132a39.7 39.7 0 0 1-7.385-13.996A55.1 55.1 0 0 1 142 134.678a54.1 54.1 0 0 1 2.662-16.916a44.2 44.2 0 0 1 7.985-14.597a38.4 38.4 0 0 1 12.88-10.133c5.037-2.46 10.991-3.343 17.86-3.343a38.8 38.8 0 0 1 16.573 3.263a29.2 29.2 0 0 1 11.248 8.495a39 39 0 0 1 6.354 12.107a43.2 43.2 0 0 1 2.061 13.052q0 3.78-.257 6.87l-.153 1.764l-.16 1.674l-.095.848l-.022.179a1.556 1.556 0 0 1-1.545 1.374l-.471.01l-.587.03l-.457.033l-1.068.091l-.938.093q-.383.04-.795.075l-.851.067l-.909.06l-.965.05l-1.022.043l-.533.018l-1.107.03c-1.095.027-2.217-.041-3.368-.125l-1.746-.128a40 40 0 0 0-2.7-.106m-33.831-15.645h23.386l1.992-.013l1.354-.019l.877-.02l.984-.034a6 6 0 0 0 2.49-.825v-1.03a13.7 13.7 0 0 0-.686-3.95a14.03 14.03 0 0 0-13.91-9.79a14.92 14.92 0 0 0-14.169 8.072a24.8 24.8 0 0 0-2.318 7.61\"/>","c":null},{"n":"Photoshop","vb":"0 0 256 250","b":"<rect width=\"256\" height=\"249.6\" fill=\"#001e36\" rx=\"42.5\"/><path fill=\"#31a8ff\" d=\"M57.644 175.035V65.297q0-1.201 1.031-1.202l1.087-.003l1.858-.02l2.582-.051l8.65-.183l9.275-.172q4.893-.085 9.702-.086q13.05 0 21.982 3.263a38.1 38.1 0 0 1 14.34 8.758a33.6 33.6 0 0 1 7.814 12.108a40.2 40.2 0 0 1 2.405 13.824q0 13.741-6.355 22.669a35.9 35.9 0 0 1-16.6 12.756l-.573.21c-6.973 2.601-14.695 3.541-23.164 3.6l-1.316.004l-1.953-.01l-.985-.014l-1.098-.026l-.662-.026l-.402-.021l-.989-.036l-1.209-.025l-1.82-.013l-.405-.001v34.263a1.366 1.366 0 0 1-1.546 1.546H58.847q-1.204.001-1.203-1.374M80.84 84.703v35.792q2.23.173 4.12.172h5.668a40.3 40.3 0 0 0 11.533-1.727l.746-.233a18.5 18.5 0 0 0 8.759-5.668q3.228-3.807 3.344-10.492l.005-.499c.09-3.322-.774-6.6-2.491-9.445a16 16 0 0 0-7.47-6.097a31.8 31.8 0 0 0-12.537-2.146l-2.178.006l-1.374.012l-1.311.017l-1.85.036l-1.35.038l-.701.026l-.937.044l-.798.049l-.455.036l-.393.038l-.173.02zm123.93 29.284a40.2 40.2 0 0 0-9.458-3.442l-.76-.164a54.3 54.3 0 0 0-11.009-1.363l-.926-.011a22.2 22.2 0 0 0-6.44.773a5.8 5.8 0 0 0-3.35 2.146a5.4 5.4 0 0 0-.858 2.92a4.56 4.56 0 0 0 1.03 2.747a11.7 11.7 0 0 0 3.235 2.637l.372.197a72 72 0 0 0 7.556 3.52a75 75 0 0 1 16.4 7.814a24.94 24.94 0 0 1 8.416 8.845a23.6 23.6 0 0 1 2.49 10.99a24.7 24.7 0 0 1-4.122 14.169a27.1 27.1 0 0 1-11.936 9.53q-7.556 3.32-18.557 3.432l-.762.004a70 70 0 0 1-13.556-1.188l-.956-.186a46.3 46.3 0 0 1-10.905-3.435a2.22 2.22 0 0 1-1.202-1.89v-18.718a1.01 1.01 0 0 1 .43-.945a.83.83 0 0 1 .944.086a45.9 45.9 0 0 0 13.223 5.238a54.5 54.5 0 0 0 12.537 1.632q6.009 0 8.844-1.546a4.86 4.86 0 0 0 2.834-4.465q0-2.23-2.576-4.293q-1.08-.864-3.097-1.88l-.643-.316l-.686-.323l-.36-.164l-.754-.334l-.393-.17l-.82-.344l-.427-.175l-.886-.355l-.46-.18l-.953-.367l-.997-.373a63 63 0 0 1-15.199-7.728a26.2 26.2 0 0 1-8.071-9.016a23.7 23.7 0 0 1-2.49-10.905a24.6 24.6 0 0 1 3.606-12.88c2.7-4.27 6.576-7.67 11.163-9.788q7.555-3.776 18.89-3.779a83.6 83.6 0 0 1 13.224.945a34.7 34.7 0 0 1 9.206 2.49c.473.136.854.485 1.03.945c.117.419.174.852.172 1.288v17.345c.025.41-.172.803-.515 1.03a1.66 1.66 0 0 1-1.478 0\"/>","c":null},{"n":"Illustrator","vb":"0 0 256 250","b":"<rect width=\"256\" height=\"249.6\" fill=\"#300\" rx=\"42.5\"/><path fill=\"#ff9a00\" d=\"M124.054 149.79h-39.67l-8.072 25.073a2.02 2.02 0 0 1-2.061 1.546H54.158q-1.718 0-1.202-1.89l34.347-98.918q.515-1.545 1.03-3.52c.45-2.292.68-4.62.687-6.955a1.063 1.063 0 0 1 1.202-1.203h27.306q1.2 0 1.374.86l38.983 109.908q.515 1.72-1.03 1.718h-22.326a1.59 1.59 0 0 1-1.717-1.202zm-33.488-21.638H117.7l-.387-1.277l-.621-2.022l-.443-1.42l-.707-2.236l-1.503-4.707l-1.322-4.173l-3.433-10.87a334 334 0 0 1-2.46-8.138l-.628-2.21l-.734-2.613l-1.12-4.05l-.21-.763h-.171a139 139 0 0 1-3.136 12.23l-2.548 8.196l-1.402 4.528l-1.415 4.584q-.383 1.242-.765 2.456l-.76 2.398l-.756 2.342l-.752 2.284l-.748 2.227q-.372 1.1-.743 2.17zm90.501-46.025a12.46 12.46 0 0 1-9.445-3.778a13.6 13.6 0 0 1-3.607-9.789a12.6 12.6 0 0 1 3.864-9.53a13.27 13.27 0 0 1 9.165-3.697l.366.004q6.183 0 9.704 3.692a13.26 13.26 0 0 1 3.52 9.531a13.4 13.4 0 0 1-3.692 9.79a13.18 13.18 0 0 1-9.508 3.79zm-11.85 92.564V92.603q-.001-1.546 1.374-1.546h21.124q1.373 0 1.374 1.546v82.088q0 1.72-1.374 1.718h-20.952q-1.464 0-1.541-1.542z\"/>","c":null},{"n":"Lightroom","vb":"0 0 256 250","b":"<rect width=\"256\" height=\"249.6\" fill=\"#001e36\" rx=\"42.5\"/><path fill=\"#31a8ff\" d=\"M134.443 176.409H66.78q-1.719 0-1.717-1.89V65.47a1.366 1.366 0 0 1 1.545-1.546H87.56a1.064 1.064 0 0 1 1.202 1.203v89.645h49.287q1.545 0 1.203 1.545l-3.092 18.547a1.64 1.64 0 0 1-.687 1.288a2.3 2.3 0 0 1-1.03.258m17-85.352h18.719c1.044.01 1.956.71 2.232 1.718a8.3 8.3 0 0 1 .86 2.404q.358 1.659.514 3.349q.17 1.803.172 3.864a40.1 40.1 0 0 1 11.42-9.188a32.15 32.15 0 0 1 15.886-3.864a1.366 1.366 0 0 1 1.545 1.546v20.78q0 1.203-1.717 1.202a43.36 43.36 0 0 0-20.179 3.606a18.2 18.2 0 0 0-5.753 3.95v54.44q0 1.545-1.374 1.545h-20.78a1.517 1.517 0 0 1-1.717-1.717v-59.077q0-2.157-.028-4.457l-.035-2.334q-.01-.593-.023-1.194a418 418 0 0 0-.178-6.263l-.08-2.066a54.5 54.5 0 0 0-.686-7.041a.987.987 0 0 1 1.075-1.227z\"/>","c":null},{"n":"Audition","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M19.75.3H4.25C1.9.3 0 2.2 0 4.55v14.9c0 2.35 1.9 4.25 4.25 4.25h15.5c2.35 0 4.25-1.9 4.25-4.25V4.55C24 2.2 22.1.3 19.75.3M12.5 16.8h-2.09c-.07.011-.14-.04-.16-.11l-.82-2.39H5.71l-.76 2.36c-.02.09-.1.15-.19.14H2.88c-.11 0-.14-.06-.11-.18l3.22-9.24c.03-.1.06-.21.1-.33c.05-.21.08-.42.08-.64c-.01-.05.03-.1.08-.11h2.59c.07 0 .12.03.13.08l3.63 10.261c.03.109 0 .159-.1.159m7.75.011h-1.721a.19.19 0 0 1-.189-.11c-.02-.08-.04-.171-.061-.25c-.02-.07-.02-.14-.02-.21c-.32.289-.71.5-1.13.619c-.36.101-.739.15-1.11.15c-.369 0-.74-.05-1.09-.17a2.1 2.1 0 0 1-.85-.55c-.26-.28-.45-.61-.561-.97a4.6 4.6 0 0 1-.199-1.42V8.94a.11.11 0 0 1 .1-.13h1.939c.061-.01.121.03.131.1v4.731c0 .439.1.789.289 1.039c.191.25.58.381 1.031.381c.229 0 .459-.041.68-.121q.344-.12.63-.33V8.92c0-.07.05-.11.14-.11h1.91c.051-.01.109.03.109.08v6.16c0 .271 0 .511.011.72c.01.211.021.391.03.551c.02.16.029.25.039.359c.012.09-.028.131-.108.131M8.33 10.73c-.1-.31-.19-.61-.29-.92s-.19-.6-.27-.89c-.08-.28-.15-.54-.22-.78h-.02c-.09.43-.2.86-.34 1.29c-.15.48-.3.98-.46 1.48c-.13.51-.29.98-.44 1.4h2.54c-.06-.21-.14-.46-.23-.72c-.09-.27-.18-.56-.27-.86\"/>","c":"#9999FF"},{"n":"DaVinci Resolve","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M17.621 0L5.977.004c-1.37 0-2.756.345-3.762 1.11a4.9 4.9 0 0 0-1.61 2.003C.233 3.93 0 5.02 0 5.951l.012 12.2c.002 1.604.479 3.057 1.461 4.112c.984 1.056 2.462 1.683 4.331 1.691L16.856 24c1.26.005 3.095-.036 4.303-.714c1.075-.605 2.025-1.556 2.497-2.984c.278-.84.345-2.084.344-3.147l-.021-11.13c-.002-.888-.15-2.023-.547-2.934c-.425-.976-1.181-1.815-2.322-2.425C20.353.26 19.123 0 17.622 0zm0 .93c1.378 0 2.538.295 3.04.565c.977.523 1.544 1.166 1.889 1.96c.315.721.47 1.793.473 2.572l.018 11.13c.002 1.013-.097 2.257-.298 2.86c-.396 1.202-1.146 1.946-2.063 2.462c-.814.457-2.612.593-3.82.588l-11.05-.044c-1.657-.007-2.832-.534-3.626-1.386c-.792-.851-1.212-2.06-1.212-3.485L.999 5.95c0-.829.196-1.827.474-2.437c.345-.757.75-1.207 1.365-1.674C3.585 1.27 4.868.97 6.08.97zm-5.66 3.423c-1.976.089-3.204 1.658-3.214 3.29c.019 1.443 1.635 3.481 2.884 4.53c.12.099.154.109.33.18c.062.025.198-.047.327-.135c.36-.245.993-.947 1.648-1.738a7.7 7.7 0 0 0 1.031-1.683c.409-.89.261-1.599.235-1.888a4 4 0 0 0-.99-1.692a3.36 3.36 0 0 0-2.251-.864m4.172 7.922a10.2 10.2 0 0 0-3.244.61c-.15.058-.26.1-.374.17c-.057.036-.11.135-.105.292c.017.433.29 1.278.624 2.27c.384 1.135 1.066 2.27 1.844 2.74a3.23 3.23 0 0 0 2.53.342c.832-.243 1.595-.868 1.962-1.546c.986-1.818.19-3.548-1.121-4.417c-.447-.296-1.133-.445-1.89-.46zm-8.432.038a6 6 0 0 0-.752.047c-.596.078-.932.273-1.29.51a3.18 3.18 0 0 0-1.365 1.979c-.075.552-.086 1.053.033 1.507c.433 1.389 1.326 2.222 2.847 2.452c.636.028 1.37-.063 1.99-.45c1.269-.782 2.08-3.17 2.412-4.742c.053-.176.035-.357-.013-.42c-.005-.067-.044-.113-.19-.183c-.398-.192-1.32-.417-2.375-.6a7.7 7.7 0 0 0-1.297-.1\"/>","c":"#0B1220"},{"n":"Descript","vb":"0 0 256 302","b":"<path fill=\"#f73b3b\" d=\"M0 274.127c0 16.488 10.704 27.15 27.15 27.15h79.319c47.328 0 86.044-15.994 112.333-44.047H0zM106.469 0H27.15C10.704 0 0 10.663 0 27.15v16.898h218.843C192.513 15.995 153.797 0 106.469 0m69.228 193.579c0 13.329 8.695 21.983 22.065 21.983h47.534c5.372-13.37 9.023-28.053 10.704-43.925h-58.238c-13.37 0-22.065 8.654-22.065 21.983zm-65.865-85.757c0 13.33 8.694 21.982 22.064 21.982H256c-1.681-15.871-5.29-30.554-10.704-43.924h-113.4c-13.37 0-22.064 8.654-22.064 21.983zm22.023 85.757c0-13.329-8.694-21.983-22.065-21.983H0v43.925h109.79c13.37 0 22.065-8.654 22.065-21.983zM65.99 107.822c0-13.33-8.694-21.983-22.065-21.983H0v43.925h43.924c13.37 0 22.065-8.654 22.065-21.983z\"/>","c":null}]],["Design",[{"n":"Canva","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12s12-5.373 12-12S18.627 0 12 0M6.962 7.68c.754 0 1.337.549 1.405 1.2c.069.583-.171 1.097-.822 1.406c-.343.171-.48.172-.549.069c-.034-.069 0-.137.069-.206c.617-.514.617-.926.548-1.508c-.034-.378-.308-.618-.583-.618c-1.2 0-2.914 2.674-2.674 4.629c.103.754.549 1.646 1.509 1.646c.308 0 .65-.103.96-.24c.5-.264.799-.47 1.097-.8c-.073-.885.704-2.046 1.851-2.046c.515 0 .926.205.96.583c.068.514-.377.582-.514.582s-.378-.034-.378-.17c-.034-.138.309-.07.275-.378c-.035-.206-.24-.274-.446-.274c-.72 0-1.131.994-1.029 1.611c.035.275.172.549.447.549c.205 0 .514-.31.617-.755c.068-.308.343-.514.583-.514c.102 0 .17.034.205.171v.138c-.034.137-.137.548-.102.651c0 .069.034.171.17.171c.092 0 .436-.18.777-.459c.117-.59.253-1.298.253-1.357c.034-.24.137-.48.617-.48c.103 0 .171.034.205.171v.138l-.136.617c.445-.583 1.097-.994 1.508-.994c.172 0 .309.102.309.274c0 .103 0 .274-.069.446c-.137.377-.309.96-.412 1.474c0 .137.035.274.207.274s.685-.206 1.096-.754l.007-.004c-.002-.068-.007-.134-.007-.202c0-.411.035-.754.104-.994c.068-.274.411-.514.617-.514c.103 0 .205.069.205.171c0 .035 0 .103-.034.137c-.137.446-.24.857-.24 1.269c0 .24.034.582.102.788c0 .034.035.069.07.069c.068 0 .548-.445.89-1.028c-.308-.206-.48-.549-.48-.96c0-.72.446-1.097.858-1.097c.343 0 .617.24.617.72c0 .308-.103.65-.274.96h.102a.77.77 0 0 0 .584-.24a.3.3 0 0 1 .134-.117c.335-.425.83-.74 1.41-.74c.48 0 .924.205.959.582c.068.515-.378.618-.515.618l-.002-.002c-.138 0-.377-.035-.377-.172s.309-.068.274-.376c-.034-.206-.24-.275-.446-.275c-.686 0-1.13.891-1.028 1.611c.034.275.171.583.445.583c.206 0 .515-.308.652-.754c.068-.274.343-.514.583-.514c.103 0 .17.034.205.171c0 .069 0 .206-.137.652c-.17.308-.171.48-.137.617c.034.274.171.48.309.583c.034.034.068.102.068.102c0 .069-.034.138-.137.138c-.034 0-.068 0-.103-.035c-.514-.205-.72-.548-.789-.891c-.205.24-.445.377-.72.377c-.445 0-.89-.411-.96-.926a1.6 1.6 0 0 1 .075-.649c-.203.13-.422.203-.623.203h-.17c-.447.652-.927 1.098-1.27 1.303a.9.9 0 0 1-.377.104c-.068 0-.171-.035-.205-.104c-.095-.152-.156-.392-.193-.667c-.481.527-1.145.805-1.453.805c-.343 0-.548-.206-.582-.55v-.376c.102-.754.377-1.2.377-1.337a.074.074 0 0 0-.069-.07c-.24 0-1.028.824-1.166 1.373l-.103.445c-.068.309-.377.515-.582.515c-.103 0-.172-.035-.206-.172v-.137l.046-.233c-.435.31-.87.508-1.075.508c-.308 0-.48-.172-.514-.412c-.206.274-.445.412-.754.412c-.352 0-.696-.24-.862-.593c-.244.275-.523.553-.852.764c-.48.309-1.028.549-1.68.549c-.582 0-1.097-.309-1.371-.583c-.412-.377-.651-.96-.686-1.509c-.205-1.68.823-3.84 2.4-4.8c.378-.205.755-.343 1.132-.343m9.77 3.291c-.104 0-.172.172-.172.343c0 .274.137.583.309.755a1.7 1.7 0 0 0 .102-.583c0-.343-.137-.515-.24-.515z\"/>","c":"#00C4CC"},{"n":"Figma","vb":"0 0 256 384","b":"<path fill=\"#0acf83\" d=\"M64 384c35.328 0 64-28.672 64-64v-64H64c-35.328 0-64 28.672-64 64s28.672 64 64 64\"/><path fill=\"#a259ff\" d=\"M0 192c0-35.328 28.672-64 64-64h64v128H64c-35.328 0-64-28.672-64-64\"/><path fill=\"#f24e1e\" d=\"M0 64C0 28.672 28.672 0 64 0h64v128H64C28.672 128 0 99.328 0 64\"/><path fill=\"#ff7262\" d=\"M128 0h64c35.328 0 64 28.672 64 64s-28.672 64-64 64h-64z\"/><path fill=\"#1abcfe\" d=\"M256 192c0 35.328-28.672 64-64 64s-64-28.672-64-64s28.672-64 64-64s64 28.672 64 64\"/>","c":null},{"n":"Notion","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514c-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233l4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632\"/>","c":"#0B1220"}]],["AI",[{"n":"Gemini","vb":"0 0 256 256","b":"<defs><filter id=\"SVGqoIxVV2h\" width=\"39.274\" height=\"43.217\" x=\"-19.824\" y=\"13.152\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"2.46\"/></filter><filter id=\"SVGOahAkcjC\" width=\"84.868\" height=\"85.688\" x=\"-15.001\" y=\"-40.257\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"11.891\"/></filter><filter id=\"SVGyT4fLePl\" width=\"79.454\" height=\"90.917\" x=\"-20.776\" y=\"11.927\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"10.109\"/></filter><filter id=\"SVGonSETbRF\" width=\"79.731\" height=\"81.505\" x=\"-19.845\" y=\"15.459\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"10.109\"/></filter><filter id=\"SVGSN7ofz6B\" width=\"75.117\" height=\"73.758\" x=\"29.832\" y=\"-11.552\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"9.606\"/></filter><filter id=\"SVGHvbpPvOn\" width=\"78.135\" height=\"78.758\" x=\"-38.583\" y=\"-16.253\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"8.706\"/></filter><filter id=\"SVG7JmfweRd\" width=\"78.877\" height=\"77.539\" x=\"8.107\" y=\"-5.966\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"7.775\"/></filter><filter id=\"SVGgGkiybCN\" width=\"56.272\" height=\"51.81\" x=\"13.587\" y=\"-18.488\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"6.957\"/></filter><filter id=\"SVGxEY6lcrm\" width=\"70.856\" height=\"69.306\" x=\"-15.526\" y=\"-31.297\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"5.876\"/></filter><filter id=\"SVGMZLCp0yD\" width=\"55.502\" height=\"51.571\" x=\"-14.168\" y=\"20.964\" color-interpolation-filters=\"sRGB\" filterUnits=\"userSpaceOnUse\"><feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/><feBlend in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/><feGaussianBlur result=\"effect1_foregroundBlur_10859_4895\" stdDeviation=\"7.273\"/></filter><linearGradient id=\"SVG1oAMmOOu\" x1=\"18.447\" x2=\"52.153\" y1=\"43.42\" y2=\"15.004\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#4893fc\"/><stop offset=\".27\" stop-color=\"#4893fc\"/><stop offset=\".777\" stop-color=\"#969dff\"/><stop offset=\"1\" stop-color=\"#bd99fe\"/></linearGradient></defs><path fill=\"#fff\" d=\"M228.265 114.441c-19.721-8.49-36.974-20.134-51.776-34.927c-14.792-14.789-26.436-32.056-34.93-51.779a154 154 0 0 1-7.884-23.295A5.86 5.86 0 0 0 127.999 0a5.86 5.86 0 0 0-5.674 4.44a154 154 0 0 1-7.882 23.295c-8.494 19.723-20.141 36.99-34.929 51.779c-14.794 14.793-32.058 26.437-51.779 34.927a154 154 0 0 1-23.297 7.889A5.855 5.855 0 0 0 0 127.999a5.86 5.86 0 0 0 4.438 5.678a154 154 0 0 1 23.297 7.886c19.721 8.49 36.978 20.139 51.779 34.93c14.795 14.789 26.435 32.055 34.929 51.774a154 154 0 0 1 7.882 23.297a5.854 5.854 0 0 0 5.674 4.436a5.85 5.85 0 0 0 5.676-4.436a154 154 0 0 1 7.884-23.297q12.742-29.58 34.93-51.774c14.793-14.791 32.055-26.44 51.776-34.93a154 154 0 0 1 23.297-7.886a5.86 5.86 0 0 0 4.438-5.678a5.855 5.855 0 0 0-4.438-5.669a154.4 154.4 0 0 1-23.297-7.889\"/><g filter=\"url(#SVGqoIxVV2h)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"14.407\" cy=\"16.95\" fill=\"#ffe432\" rx=\"14.407\" ry=\"16.95\" transform=\"rotate(19.552 -44.576 -16.496)\"/></g><g filter=\"url(#SVGOahAkcjC)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"27.433\" cy=\"2.587\" fill=\"#fc413d\" rx=\"18.652\" ry=\"19.062\"/></g><g filter=\"url(#SVGyT4fLePl)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"18.951\" cy=\"57.386\" fill=\"#00b95c\" rx=\"19.493\" ry=\"25.253\" transform=\"rotate(-2.799 18.951 57.386)\"/></g><g filter=\"url(#SVGyT4fLePl)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"18.951\" cy=\"57.386\" fill=\"#00b95c\" rx=\"19.493\" ry=\"25.253\" transform=\"rotate(-2.799 18.951 57.386)\"/></g><g filter=\"url(#SVGonSETbRF)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"20.02\" cy=\"56.211\" fill=\"#00b95c\" rx=\"19.107\" ry=\"21.035\" transform=\"rotate(-31.318 20.02 56.211)\"/></g><g filter=\"url(#SVGSN7ofz6B)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"67.391\" cy=\"25.327\" fill=\"#3186ff\" rx=\"18.346\" ry=\"17.667\"/></g><g filter=\"url(#SVGHvbpPvOn)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"21.222\" cy=\"22.384\" fill=\"#fbbc04\" rx=\"21.222\" ry=\"22.384\" transform=\"rotate(37.252 9.752 -8.009)\"/></g><g filter=\"url(#SVG7JmfweRd)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"24.469\" cy=\"22.604\" fill=\"#3186ff\" rx=\"24.469\" ry=\"22.604\" transform=\"rotate(34.51 19.587 64.852)\"/></g><g filter=\"url(#SVGgGkiybCN)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><path fill=\"#749bff\" d=\"M54.984-2.336c2.833 3.852-.808 11.34-8.131 16.727s-15.557 6.631-18.39 2.78c-2.833-3.853.807-11.342 8.13-16.728s15.558-6.631 18.39-2.78\"/></g><g filter=\"url(#SVGxEY6lcrm)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"19.902\" cy=\"3.356\" fill=\"#fc413d\" rx=\"27.971\" ry=\"17.388\" transform=\"rotate(-42.848 19.902 3.356)\"/></g><g filter=\"url(#SVGMZLCp0yD)\" mask=\"url(#SVGWpw6Gcvj)\" transform=\"translate(-.101 -.049)scale(3.9436)\"><ellipse cx=\"13.583\" cy=\"46.75\" fill=\"#ffee48\" rx=\"14.989\" ry=\"8.717\" transform=\"rotate(35.592 13.583 46.75)\"/></g><mask id=\"SVGWpw6Gcvj\" width=\"65\" height=\"65\" x=\"0\" y=\"0\" maskUnits=\"userSpaceOnUse\" style=\"mask-type:alpha\"><path d=\"M32.447 0c.68 0 1.273.465 1.439 1.125a39 39 0 0 0 1.999 5.905q3.23 7.5 8.854 13.125q5.627 5.626 13.125 8.855a39 39 0 0 0 5.906 1.999c.66.166 1.124.758 1.124 1.438s-.464 1.273-1.125 1.439a39 39 0 0 0-5.905 1.999q-7.5 3.23-13.125 8.854q-5.625 5.627-8.854 13.125a39 39 0 0 0-2 5.906a1.485 1.485 0 0 1-1.438 1.124c-.68 0-1.272-.464-1.438-1.125a39 39 0 0 0-2-5.905q-3.227-7.5-8.854-13.125q-5.625-5.625-13.125-8.854a39 39 0 0 0-5.905-2A1.485 1.485 0 0 1 0 32.448c0-.68.465-1.272 1.125-1.438a39 39 0 0 0 5.905-2q7.5-3.228 13.125-8.854q5.626-5.624 8.855-13.125a39 39 0 0 0 1.999-5.905A1.485 1.485 0 0 1 32.447 0\"/><path fill=\"url(#SVG1oAMmOOu)\" d=\"M32.447 0c.68 0 1.273.465 1.439 1.125a39 39 0 0 0 1.999 5.905q3.23 7.5 8.854 13.125q5.627 5.626 13.125 8.855a39 39 0 0 0 5.906 1.999c.66.166 1.124.758 1.124 1.438s-.464 1.273-1.125 1.439a39 39 0 0 0-5.905 1.999q-7.5 3.23-13.125 8.854q-5.625 5.627-8.854 13.125a39 39 0 0 0-2 5.906a1.485 1.485 0 0 1-1.438 1.124c-.68 0-1.272-.464-1.438-1.125a39 39 0 0 0-2-5.905q-3.227-7.5-8.854-13.125q-5.625-5.625-13.125-8.854a39 39 0 0 0-5.905-2A1.485 1.485 0 0 1 0 32.448c0-.68.465-1.272 1.125-1.438a39 39 0 0 0 5.905-2q7.5-3.228 13.125-8.854q5.626-5.624 8.855-13.125a39 39 0 0 0 1.999-5.905A1.485 1.485 0 0 1 32.447 0\"/></mask>","c":null},{"n":"ChatGPT","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M22.282 9.821a6 6 0 0 0-.516-4.91a6.05 6.05 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a6 6 0 0 0-3.998 2.9a6.05 6.05 0 0 0 .743 7.097a5.98 5.98 0 0 0 .51 4.911a6.05 6.05 0 0 0 6.515 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.772-4.206a6 6 0 0 0 3.997-2.9a6.06 6.06 0 0 0-.747-7.073M13.26 22.43a4.48 4.48 0 0 1-2.876-1.04l.141-.081l4.779-2.758a.8.8 0 0 0 .392-.681v-6.737l2.02 1.168a.07.07 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494M3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085l4.783 2.759a.77.77 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646M2.34 7.896a4.5 4.5 0 0 1 2.366-1.973V11.6a.77.77 0 0 0 .388.677l5.815 3.354l-2.02 1.168a.08.08 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.08.08 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667m2.01-3.023l-.141-.085l-4.774-2.782a.78.78 0 0 0-.785 0L9.409 9.23V6.897a.07.07 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.8.8 0 0 0-.393.681zm1.097-2.365l2.602-1.5l2.607 1.5v2.999l-2.597 1.5l-2.607-1.5Z\"/>","c":"#0B1220"},{"n":"Grok","vb":"0 0 256 246","b":"<path d=\"M63.83 56.843c27.469-27.48 67.635-34.865 101.712-21.87l2.314.917c7.645 2.844 14.309 6.89 19.507 10.651l-28.857 13.342c-26.869-11.286-57.649-3.609-76.435 15.2c-25.405 25.414-30.539 69.484-.764 97.96L0 245.764c4.296-5.923 9.457-11.573 14.75-17.178l5.815-6.13l2.608-2.774c15.53-16.655 28.81-33.77 20.496-56.709l-.766-1.98c-14.592-35.497-6.094-77.096 20.928-104.15m156.956-21.587L256 0l-10.128 14.069c-21.094 29.716-30.456 48.424-21.11 88.659l-.065-.065c7.23 30.728-.503 64.803-25.472 89.802c-31.478 31.538-81.852 38.558-123.336 10.17l28.923-13.407c26.476 10.41 55.442 5.839 76.26-15.003c20.818-20.844 25.493-51.2 15.03-76.462c-1.989-4.79-7.952-5.992-12.125-2.909L98.87 157.755L220.786 35.147z\"/>","c":null},{"n":"Higgsfield","vb":"0 0 256 256","b":"<path fill=\"#dafd55\" d=\"M64 0h128c35.346 0 64 28.654 64 64v128c0 35.346-28.654 64-64 64H64c-35.346 0-64-28.654-64-64V64C0 28.654 28.654 0 64 0\"/><path fill=\"#1a1a1a\" d=\"m214.838 126.297l-.165-1.876c-1.569-18.013-12.871-51.9-44.224-51.9c-23.266 0-40.842 23.816-56.353 44.813c-12.377 16.816-23.1 31.241-34.9 31.241c-3.136-.34-7.178-1.963-9.652-5.633c-2.228-3.33-2.805-7.597-1.651-12.72c1.814-8.109 12.211-15.621 23.183-23.645c6.022-4.267 12.212-8.792 16.502-13.145c12.377-12.377 18.647-21.34 18.647-35.765s-7.673-21.597-14.108-24.67c-12.872-6.145-31.764-2.56-43.81 8.197c-1.814 1.708-3.63 3.328-5.282 4.864C50.897 57.241 42.73 64.84 24 59.032v23.389c24.834 11.354 45.71-10.33 53.63-20.315c6.105-6.573 12.54-10.415 17.327-10.415h.249c2.145.086 3.96.94 5.281 2.477c2.145 2.562 2.97 5.55 2.557 8.877c-.908 7.001-7.921 15.194-20.792 24.157c-15.1 10.5-40.345 28.084-42.327 50.192c-1.486 15.879 6.435 31.756 18.812 37.9c28.877 14.17 46.452-10.243 65.097-36.022c14.274-19.89 27.805-38.754 46.617-38.754c16.913 0 23.183 14.511 23.183 23.646v1.793l-1.65.34c-41.005 7.513-63.365 47.291-63.365 65.643S143.635 226 162.116 226c21.618 0 48.349-19.121 52.64-72.898l.165-1.963H232V126.3h-17.162zm-22.36 27.57c-3.299 32.181-19.224 47.206-28.877 47.206c-4.373 0-10.477-3.757-10.477-10.755c0-7.852 11.303-31.669 36.714-38.753l2.97-.768l-.33 3.073z\"/>","c":null},{"n":"Runway","vb":"0 0 256 256","b":"<path d=\"M196.254 255.842c-31.015 2.836-56.948-33.508-76.827-51.942C109.375 276.33-.075 269.463 0 195.99C.037 165.13 0 89.715 0 59.826C0 49.08 2.952 38.259 8.483 29.079C18.983 11.28 39.273-.213 59.938.011c31.127.037 106.086-.038 136.316 0c73.54 0 80.527 109.407 7.847 119.259l34.492 34.442c37.89 35.635 9.452 103.697-42.339 102.13m-16.703-43.099c21.374 22.017 55.49-12.09 33.48-33.433l-59.787-59.705H119.8v33.435l51.68 51.607zM36.21 196.027c-.486 30.598 47.83 30.711 47.345 0v-136.2c.411-15.262-15.732-27.39-30.305-22.688c-.635.187-1.233.373-1.794.597C42.3 41.132 35.948 50.498 36.21 60.275zm160.045-112.58c30.716.485 30.68-47.763 0-47.278h-81.2c6.166 12.986 4.597 33.21 4.71 47.278z\"/>","c":null},{"n":"ElevenLabs","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M4.604 0v24h4.931V0zm9.86 0v24h4.933V0z\"/>","c":"#0B1220"},{"n":"Midjourney","vb":"0 0 256 214","b":"<path fill=\"#1a222d\" d=\"M240.86 162.892c.662 1.719.119 3.158-1.35 4.34c-13.753 11.071-28.19 21.114-43.904 29.24l-13.12 6.776c2.706 2.161 5.76 2.769 9.003 2.648c3.55-.133 6.524-1.763 9.27-3.858c3.283-2.504 6.387-5.274 9.836-7.519c8.35-5.435 17.35-4.944 25.248 1.185c3.355 2.604 6.439 5.578 9.92 7.988c1.683 1.165 3.838 1.8 5.904 2.257l.457.099c2.507.528 4.03 1.79 3.863 3.955c-.165 2.148-1.867 3.403-4.437 3.237c-5.445-.352-9.713-3.16-13.713-6.556c-2.498-2.12-4.91-4.38-7.606-6.219c-4.999-3.409-10.303-3.508-15.396-.235c-3.001 1.929-5.73 4.289-8.539 6.508c-4.527 3.578-9.413 6.212-15.374 6.302c-6.538.099-11.8-2.835-16.62-6.866c-1.724-1.442-3.431-2.905-5.188-4.306c-6.586-5.254-13.334-5.251-19.943.004a177 177 0 0 0-2.292 1.86l-1.52 1.25a122 122 0 0 1-3.849 3.062c-8.09 6.115-17.355 6.407-25.738.681c-3.05-2.083-5.831-4.561-8.74-6.853c-6.61-5.205-12.096-5.19-18.824-.022l-.55.424l-1.65 1.275c-2.2 1.7-4.415 3.385-6.74 4.896c-8.76 5.696-17.677 5.458-26.384-.047c-3.603-2.278-6.892-5.052-10.305-7.631l-.513-.386c-1.362-1.017-2.708-2.059-4.106-3.024c-1.95-1.346-4.05-1.722-6.162-.44c-3.732 2.266-7.42 4.604-11.116 6.928c-3.493 2.196-6.868 4.61-10.5 6.542c-1.968 1.046-4.332 1.533-6.575 1.82c-2.088.266-3.524-1.284-3.604-3.24c-.078-1.926 1.18-3.136 3.135-3.692l.114-.031c2.078-.556 4.219-1.262 6.022-2.395c5.087-3.199 10.017-6.649 15.003-10.008c.142-.095.224-.276.393-.493l-3.095-5.854q-1.552-2.93-3.093-5.87c-1.8-3.438-.629-5.744 3.237-6.02c10.423-.745 20.853-1.384 31.28-2.055l60.021-3.852c14.187-.913 28.373-1.835 42.56-2.75q30.008-1.936 60.018-3.87c5.32-.342 10.64-.676 15.96-1.024l5.32-.353c1.832-.123 3.302.43 3.982 2.192m-15.22 6.079l-.179-.437l-198.607 12.787l.49.916c1.288 2.412 2.428 4.59 3.673 6.706c.115.195.517.235.938.25l.43.01l.129.005l.122.007c1.726.127 3.612-.177 5.145.428c2.446.966 4.784 2.35 6.94 3.876c3.86 2.733 7.432 5.881 11.34 8.536c6.946 4.716 13.487 4.576 20.32-.206c2.883-2.018 5.618-4.248 8.475-6.306c8.932-6.435 17.394-6.302 26.113.417c2.548 1.964 4.977 4.082 7.52 6.051c6.378 4.938 12.849 4.956 19.194.051c2.113-1.633 4.125-3.397 6.199-5.082c9.406-7.641 18.94-8.378 28.19-1.563l.28.208c2.96 2.232 5.163 2.12 8.113.649l1.436-.718c13.157-6.597 26.065-13.607 37.982-22.318c1.928-1.41 3.838-2.844 5.756-4.267M41.217.675c21.496 9.698 40.8 22.744 58.345 38.424c21.83 19.512 39.036 42.552 51.744 68.903c6.688 13.87 11.89 28.276 14.28 43.572l.114.75l.174 1.198c.003 2.96-2.368 4.699-4.84 3.7c-12.272-4.959-24.944-8.398-38.039-10.362c-17.305-2.596-34.393-1.95-51.217 3.115c-11.157 3.36-21.77 7.942-31.632 14.195c-1.821 1.155-3.752.953-4.94-.46c-1.236-1.467-1.234-3.238.193-4.787c10.303-11.187 16.298-24.622 20.273-39.068c3.883-14.115 5.301-28.538 4.431-43.13c-.653-10.967-3.283-21.579-6.725-31.996c-4.453-13.477-10.231-26.36-17.198-38.717c-1.138-2.02-1.117-3.593.034-4.885c1.191-1.338 2.725-1.48 5.003-.452m66.27 25.192c1.993.581 4.678 1.155 7.204 2.137c10.083 3.925 18.77 10.152 27.046 16.955c13.45 11.056 25.765 23.285 36.779 36.772c7.665 9.387 13.953 19.713 19.686 30.371c6.5 12.087 12.099 24.582 16.85 37.454l.33.899c.126.342.255.683.37 1.028c.501 1.488.439 2.928-.727 4.065c-1.19 1.161-2.618 1.238-4.125.648l-.105-.042c-2.16-.888-4.35-1.707-6.505-2.604l-.922-.389c-6.066-2.604-12.3-3.124-18.72-1.666c-.592.135-1.192.237-1.792.329c-2.382.367-3.87-.564-4.52-2.87c-6.253-22.186-15.069-43.311-26.23-63.467l-.558-1.004c-7.196-12.857-15.434-24.948-26.14-35.22c-6.321-6.067-12.973-11.722-20.32-16.525c-1.702-1.113-2.34-2.658-1.78-4.344c.552-1.658 1.84-2.31 4.18-2.527M47.645 11.789c.02.561.171 1 .375 1.41c4.672 9.423 8.735 19.102 12.034 29.089c3.13 9.474 5.53 19.13 6.68 29.06c1.287 11.114.758 22.2-.767 33.254c-2.007 14.558-6.045 28.482-13.009 41.487l-.81 1.515l-1.228 2.303c.257.07.388.153.472.12a64 64 0 0 0 2.185-.907c14.78-6.488 30.181-10.406 46.357-10.809c18.47-.46 36.36 2.87 53.83 8.67l1.193.396c.864.284 1.786.576 2.98.963c-7.077-30.978-21.748-57.605-41.522-81.557c-19.063-23.09-42.249-41.132-68.77-54.994m87.764 37.559l.234.265l.465.518c.18.202.343.392.496.59a274 274 0 0 0 3.305 4.18l1.819 2.262c2.732 3.404 5.43 6.832 7.802 10.47c15.005 23.014 26.039 47.899 34.082 74.124l.243.795c.418 1.373.992 1.759 2.33 1.557l.093-.015c6.017-1.002 11.898-.481 17.6 1.715l.295.115c.545.216 1.127.336 2.183.645c-7.725-19.275-16.855-37.217-28.408-53.942c-9.99-14.462-36.741-40.14-42.54-43.28\"/>","c":null},{"n":"Suno","vb":"0 0 24 24","b":"<path fill=\"currentColor\" d=\"M16.5 0C20.642 0 24 5.373 24 12h-9c0 6.627-3.358 12-7.5 12S0 18.627 0 12h9c0-6.627 3.358-12 7.5-12\"/>","c":"#0B1220"}]],["Workflow",[{"n":"Google Drive","vb":"0 0 256 238","b":"<defs><linearGradient id=\"SVGjzk6ueva\" x1=\"86.924%\" x2=\"7.63%\" y1=\"94.294%\" y2=\"45.952%\"><stop offset=\"9%\" stop-color=\"#ffe921\"/><stop offset=\"100%\" stop-color=\"#fec700\"/></linearGradient><linearGradient id=\"SVGb0f7AcFJ\" x1=\"99.538%\" x2=\"23.437%\" y1=\"93.901%\" y2=\"54.033%\"><stop offset=\"15%\" stop-color=\"#a9a8ff\"/><stop offset=\"33%\" stop-color=\"#6d97ff\"/><stop offset=\"48%\" stop-color=\"#3186ff\"/></linearGradient><linearGradient id=\"SVGxMwz6dYk\" x1=\"87.128%\" x2=\"-.639%\" y1=\"51.518%\" y2=\"93.078%\"><stop offset=\"55%\" stop-color=\"#0ebc5f\"/><stop offset=\"85%\" stop-color=\"#78c9ff\"/></linearGradient><path id=\"SVGAiIt3btS\" d=\"M77.303 29.27c22.531-39.026 78.863-39.027 101.394 0l69.373 120.158c22.531 39.027-5.633 87.81-50.698 87.81H58.628c-45.065 0-73.23-48.783-50.698-87.81z\"/></defs><mask id=\"SVG6FLXsceq\" fill=\"#fff\"><use href=\"#SVGAiIt3btS\"/></mask><g mask=\"url(#SVG6FLXsceq)\"><path fill=\"url(#SVGjzk6ueva)\" d=\"M341.719 295.937H200.166l-29.293-50.735l70.777-122.589z\" transform=\"translate(-42.87 -58.67)\"/><path fill=\"url(#SVGb0f7AcFJ)\" d=\"m0 295.916l100.069-173.325v.003l-29.282 50.723h58.57l70.783 122.596l-200.138.001z\" transform=\"translate(-42.87 -58.67)\"/><path fill=\"url(#SVGxMwz6dYk)\" d=\"m170.881 0l70.781 122.6l-29.286 50.726H70.812z\" transform=\"translate(-42.87 -58.67)\"/></g>","c":null},{"n":"Loom","vb":"0 0 256 256","b":"<path fill=\"#625df5\" d=\"M256 113.765h-74.858l64.83-37.43l-14.237-24.667l-64.83 37.43l37.421-64.825l-24.667-14.246l-37.421 64.826V0h-28.476v74.86L76.326 10.027L51.667 24.266L89.096 89.09L24.265 51.668l-14.238 24.66l64.83 37.43H0v28.477h74.85l-64.823 37.43l14.238 24.667l64.824-37.423l-37.43 64.825l24.667 14.239l37.429-64.832V256h28.476v-74.853l37.422 64.826l24.665-14.239l-37.428-64.832l64.83 37.43l14.24-24.667l-64.825-37.423h74.85v-28.477zM128 166.73c-21.472 0-38.876-17.403-38.876-38.876S106.528 88.977 128 88.977s38.875 17.404 38.875 38.876c0 21.473-17.403 38.876-38.875 38.876\"/>","c":null}]]];
 const CLD = "https://res.cloudinary.com/dbqigfl0g/video/upload/";
 const cvid = (p, w=540) => `${CLD}q_auto,w_${w}/${p}.mp4`;
 const cimg = p => `${CLD}so_1,q_auto,w_480/${p}.jpg`;
@@ -438,7 +591,6 @@ const CATS = [
 ];
 const BRANDS = ["Nomend LumaLean","PEAKSTA","Vivint","Thalique","Exchange Life","Nomend Nourish","PGA","Savary","Oribello's Kitchen + Bar"];
 const REEL = ["SHORT%20FORM/Montages/M9_j3bkgi","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/OP_GYM_ROUTINE_PRODUCT_g1osry","SHORT%20FORM/Short%20form%20VSLs/SAVARY_7_-_CHARLES_ay04sj","SHORT%20FORM/Montages/M5_xczb63","SHORT%20FORM/ADS/B2C4.BANNED_DOCTOR_H2_qbohk8","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/MEMEL_-_JJK_GYM_ROUTINE_FINAL_o5hqku","SHORT%20FORM/Montages/M7_bezjc1","SHORT%20FORM/FITNESS/SHORT_1_The_60-Minute_Myth_lkcvlj"];
-const HOOKS = ["SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H1_azaz8f","SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H2_c6zb54","SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H3_wnvc0n"];
 const PAGE = 30;
 let cat = "featured", shown = PAGE;
 const $ = s => document.querySelector(s);
@@ -446,16 +598,20 @@ const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(pointer:fine)").matches;
 const pad = n => String(n).padStart(2,"0");
-const titleOf = p => { const v = V.find(x => x.cv===p); return v ? `${v.t}, ${v.cl}` : decodeURIComponent(p.split("/").pop()).replace(/_[a-z0-9]{6}$/,"").replace(/_/g," "); };
+const tcode = f => `00:${pad(Math.floor(f/1440)%60)}:${pad(Math.floor(f/24)%60)}:${pad(f%24)}`;
+const titleOf = p => { const v = V.find(x => x.cv===p); return v ? `${v.t}, ${v.cl}` : ""; };
+const LOGO = {}; LOGOS.forEach(([g,items]) => items.forEach(i => LOGO[i.n] = i));
+const svg = (i, label) => `<svg viewBox="${i.vb}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true"'} ${i.c ? `style="color:${i.c}" fill="currentColor"` : ""}>${i.b}</svg>`;
+const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n], label)}</span>`;
 
 /* ---- intro leader ---- */
 (function(){
   const el = $("#leader"); let seen = false;
   try { seen = sessionStorage.getItem("leader") === "1"; } catch(e){}
-  const done = () => { el.classList.add("out"); setTimeout(() => el.remove(), 750); try{sessionStorage.setItem("leader","1")}catch(e){} };
-  if (reduce || seen) { el.remove(); return; }
+  const done = () => { if (!el.isConnected) return; el.classList.add("out"); document.body.classList.add("ready"); setTimeout(() => el.remove(), 750); try{sessionStorage.setItem("leader","1")}catch(e){} };
+  if (reduce || seen) { el.remove(); document.body.classList.add("ready"); return; }
   $("#skipLeader").addEventListener("click", done);
-  addEventListener("keydown", function k(){ done(); removeEventListener("keydown", k); }, {once:true});
+  addEventListener("keydown", done, {once:true});
   const ring = el.querySelector(".ring"), num = $("#lnum"); const t0 = performance.now(); const per = 520;
   (function tick(now){
     const t = now - t0, i = Math.floor(t/per), frac = (t % per)/per;
@@ -471,15 +627,15 @@ const titleOf = p => { const v = V.find(x => x.cv===p); return v ? `${v.t}, ${v.
   $("#bars").innerHTML = REEL.map(() => "<i><b></b></i>").join("");
   const bars = [...document.querySelectorAll("#bars i")];
   $("#gl").src = cimg(REEL[3]); $("#gr").src = cimg(REEL[2]);
-  function load(v, p){ v.src = cvid(p); v.currentTime = 0; }
+  const load = (v, p) => { v.src = cvid(p); };
   function show(i){
     const a = vids[cur], b = vids[1-cur];
     bars.forEach((x,j) => { x.classList.toggle("done", j < i); x.classList.remove("on"); });
     void bars[i].offsetWidth; bars[i].style.setProperty("--dur", SEG+"s"); bars[i].classList.add("on");
     $("#rnow").textContent = `NOW PLAYING ${pad(i+1)} / ${pad(REEL.length)}`;
     $("#rttl").textContent = titleOf(REEL[i]);
-    a.style.opacity = 1; b.style.opacity = 0; a.play().catch(()=>{});
-    if (!reduce) { $("#flash").classList.remove("go"); void $("#flash").offsetWidth; $("#flash").classList.add("go"); }
+    a.style.opacity = 1; b.style.opacity = 0; a.currentTime = 0; a.play().catch(()=>{});
+    $("#flash").classList.remove("go"); void $("#flash").offsetWidth; $("#flash").classList.add("go");
     load(b, REEL[(i+1) % REEL.length]);
   }
   load(vids[0], REEL[0]);
@@ -491,25 +647,77 @@ const titleOf = p => { const v = V.find(x => x.cv===p); return v ? `${v.t}, ${v.
     e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
     $("#sndw").setAttribute("d", on ? "M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" : "M16 9l5 6M21 9l-5 6");
   });
-  // rotating word
-  const words = ["DTC ads","VSLs","hooks","montages","micro dramas"]; let w = 0;
-  setInterval(() => { w = (w+1) % words.length; $("#swap").textContent = words[w]; }, 2200);
+  // typewriter word swap
+  const words = ["DTC ads","VSLs","hooks","montages","micro dramas"]; let w = 0; const sw = $("#swap");
+  async function type(word){ for (let k = sw.textContent.length; k >= 0; k--) { sw.textContent = sw.textContent.slice(0,k); await new Promise(r=>setTimeout(r,35)); }
+    for (let k = 1; k <= word.length; k++) { sw.textContent = word.slice(0,k); await new Promise(r=>setTimeout(r,60)); } }
+  setInterval(() => { w = (w+1) % words.length; type(words[w]); }, 2600);
+  // 3D tilt on the phone rig
+  if (fine) { const rig = $("#rig"), ph = $("#phones");
+    rig.addEventListener("pointermove", e => { const r = rig.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+      ph.style.transform = `rotateY(${x*14}deg) rotateX(${-y*10}deg)`; });
+    rig.addEventListener("pointerleave", () => ph.style.transform = ""); }
 })();
 
-/* ---- hook lab ---- */
+/* ---- logo marquee ---- */
 (function(){
-  $("#lab").innerHTML = HOOKS.map((p,i) => `<figure><div class="scr" data-hook="${i}"><span class="lbl mono">HOOK ${i+1}</span>
-    <video muted playsinline preload="metadata" poster="${cimg(p)}" src="${cvid(p)}"></video></div>
-    <figcaption>Hook ${i+1}<span class="mono">Variation ${"ABC"[i]}</span></figcaption></figure>`).join("");
-  const vs = [...document.querySelectorAll("#lab video")]; let playing = false;
-  const btn = $("#labPlay");
-  btn.addEventListener("click", () => {
-    playing = !playing;
-    if (playing) { vs.forEach(v => { v.currentTime = 0; v.play().catch(()=>{}); }); btn.innerHTML = '<span class="dot"></span>Pause'; }
-    else { vs.forEach(v => v.pause()); btn.innerHTML = '<span class="dot"></span>Play all three in sync'; }
-  });
-  vs[0].addEventListener("timeupdate", () => { const t = vs[0].currentTime, d = vs[0].duration || 0; $("#labTime").textContent = `${pad(Math.floor(t/60))}:${pad(Math.floor(t%60))} / ${pad(Math.floor(d/60))}:${pad(Math.floor(d%60))}`; });
-  vs[0].addEventListener("ended", () => { playing = false; btn.innerHTML = '<span class="dot"></span>Play all three in sync'; });
+  const all = LOGOS.flatMap(([,items]) => items.map(i => i.n));
+  const half = Math.ceil(all.length/2);
+  const row = list => { const h = list.map(n => appTile(n)).join(""); return h + h; };
+  $("#m1").innerHTML = row(all.slice(0, half)); $("#m2").innerHTML = row(all.slice(half));
+  $("#stackList").innerHTML = LOGOS.map(([g, items]) => `<div class="sgrp"><h3>${esc(g)}<small>${items.length} tools</small></h3>
+    <ul class="tools">${items.map(i => `<li class="tool">${appTile(i.n)}<span>${esc(i.n)}</span></li>`).join("")}</ul></div>`).join("");
+})();
+
+/* ---- anatomy of an edit ---- */
+(function(){
+  const mon = $("#mon"), v = $("#anv"), steps = [...document.querySelectorAll("#steps li")];
+  v.src = cvid("SHORT%20FORM/Montages/M5_xczb63"); v.poster = cimg("SHORT%20FORM/Montages/M5_xczb63");
+  $("#wave").innerHTML = Array.from({length:36}, (_,i) => `<i style="animation-delay:${(i*37%90)/100}s"></i>`).join("");
+  $("#pl").innerHTML = ["YouTube","TikTok","Instagram","Facebook"].map((n,i) => `<span class="app" style="animation-delay:${i*.08}s">${svg(LOGO[n])}</span>`).join("");
+  const names = ["01 RAW","02 CUT","03 CAPTIONS","04 COLOR","05 SOUND","06 EXPORT"];
+  const capWords = ["This","is","where","the","<b>hook</b>","lands."];
+  let s = -1, cutTimer = null;
+  function setStep(n){
+    if (n === s) return; s = n; mon.dataset.s = n; $("#anstep").textContent = names[n];
+    steps.forEach((li,i) => li.classList.toggle("on", i===n));
+    $("#t-v1").style.width = n >= 0 ? "100%" : "0"; $("#t-v1").className = n >= 1 ? "on cuts" : "";
+    $("#t-v2").style.width = n >= 2 ? "100%" : "0"; $("#t-v2").className = n >= 3 ? "on" : "";
+    $("#t-a1").style.width = n >= 4 ? "100%" : "18%"; $("#t-a1").className = n >= 4 ? "on" : "";
+    if (n >= 2) $("#cap").innerHTML = capWords.map((w,i) => `<span style="animation-delay:${i*.12}s">${w}</span>`).join(" ");
+    clearInterval(cutTimer);
+    if (n === 1 && !reduce) cutTimer = setInterval(() => { v.currentTime = Math.random() * Math.max(1, (v.duration||10) - 1); const f = $("#cutfx"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go"); }, 900);
+  }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setStep(+e.target.dataset.s); }), {rootMargin:"-45% 0px -45% 0px"});
+  steps.forEach(li => io.observe(li));
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !reduce) v.play().catch(()=>{}); else v.pause(); })).observe(mon);
+  v.addEventListener("timeupdate", () => $("#antc").textContent = tcode(Math.floor(v.currentTime*24)));
+  setStep(0);
+})();
+
+/* ---- color grade compare ---- */
+(function(){
+  const box = $("#cmp"), [a,b] = box.querySelectorAll("video"), p = "SHORT%20FORM/Montages/M7_bezjc1";
+  [a,b].forEach(v => { v.src = cvid(p); v.poster = cimg(p); });
+  $("#cut").addEventListener("input", e => box.style.setProperty("--cut", e.target.value + "%"));
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !reduce) { a.play().catch(()=>{}); b.play().catch(()=>{}); } else { a.pause(); b.pause(); } })).observe(box);
+  setInterval(() => { if (!a.paused && Math.abs(a.currentTime - b.currentTime) > .08) b.currentTime = a.currentTime; }, 1000);
+})();
+
+/* ---- format reframe ---- */
+(function(){
+  const F = [["9/16","9:16","TikTok","TikTok, Reels, Shorts"],["4/5","4:5","Instagram","Instagram feed"],["1/1","1:1","Facebook","Facebook feed"],["16/9","16:9","YouTube","YouTube"]];
+  const frm = $("#frm"), v = frm.querySelector("video"), p = "SHORT%20FORM/Montages/M9_j3bkgi";
+  v.src = cvid(p); v.poster = cimg(p);
+  $("#fbtns").innerHTML = F.map((f,i) => `<button class="fbtn" type="button" data-i="${i}" aria-pressed="${i===0}">${f[1]}</button>`).join("");
+  let i = 0, auto = !reduce;
+  function set(n){ i = n; const f = F[n]; frm.style.setProperty("--ar", f[0]); frm.style.height = (f[0]==="16/9") ? "56%" : (f[0]==="1/1" ? "80%" : "100%");
+    $("#flbl").innerHTML = `${svg(LOGO[f[2]])}${f[3]} / ${f[1]}`;
+    document.querySelectorAll(".fbtn").forEach((b,j) => b.setAttribute("aria-pressed", j===n)); }
+  $("#fbtns").addEventListener("click", e => { const b = e.target.closest(".fbtn"); if (b) { auto = false; set(+b.dataset.i); } });
+  setInterval(() => { if (auto) set((i+1) % F.length); }, 2400);
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !reduce) v.play().catch(()=>{}); else v.pause(); })).observe(frm);
+  set(0);
 })();
 
 /* ---- ticker ---- */
@@ -524,7 +732,7 @@ function tile(v, n){
     ${v.cv ? '<span class="pv mono" aria-hidden="true"><span class="dot"></span>LIVE</span>' : ""}
     <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></span></button>`;
 }
-function list(){ return cat==="all" ? V : V.filter(v => v.c===cat); }
+const list = () => cat==="all" ? V : V.filter(v => v.c===cat);
 function renderFilters(){
   $("#filters").innerHTML = CATS.map(([k,l]) => {
     const n = k==="all" ? V.length : V.filter(v=>v.c===k).length;
@@ -533,9 +741,10 @@ function renderFilters(){
   $("#total").textContent = `${V.length} EDITS / ${CATS.length-1} CATEGORIES`;
   $("#cnt").textContent = V.length;
 }
-function render(){
+function render(from = 0){
   const items = list();
-  $("#grid").innerHTML = items.slice(0, shown).map((v,i) => `<li class="card">${tile(v,i+1)}<h3>${esc(v.t)}</h3><p>${esc(v.cl)}</p></li>`).join("");
+  const html = items.slice(from, shown).map((v,i) => `<li class="card" style="animation-delay:${Math.min(i,12)*40}ms">${tile(v,from+i+1)}<h3>${esc(v.t)}</h3><p>${esc(v.cl)}</p></li>`).join("");
+  if (from === 0) $("#grid").innerHTML = html; else $("#grid").insertAdjacentHTML("beforeend", html);
   $("#catnote").textContent = CATS.find(c=>c[0]===cat)[2];
   const rest = items.length - Math.min(shown, items.length);
   $("#moreBtn").hidden = rest <= 0;
@@ -549,10 +758,9 @@ $("#filters").addEventListener("click", e => {
   render();
 });
 $("#moreBtn").addEventListener("click", () => {
-  const first = shown; shown += PAGE; render();
+  const first = shown; shown += PAGE; render(first);
   const next = document.querySelectorAll("#grid .tile")[first]; if(next) next.focus();
 });
-// hover preview for LIVE clips
 if (fine && !reduce) {
   $("#grid").addEventListener("pointerover", e => {
     const t = e.target.closest(".tile"); if (!t || t.dataset.live) return;
@@ -565,18 +773,19 @@ if (fine && !reduce) {
   });
 }
 
-/* ---- custom cursor ---- */
+/* ---- cursor, glow, magnetic buttons ---- */
 if (fine && !reduce) {
   const c = $("#cur");
   addEventListener("pointermove", e => {
     c.style.left = e.clientX+"px"; c.style.top = e.clientY+"px";
     document.body.style.setProperty("--mx", e.clientX+"px"); document.body.style.setProperty("--my", e.clientY+"px");
-    const over = e.target.closest && e.target.closest(".grid .tile, .lab .scr");
-    c.classList.toggle("on", !!over);
-    if (over) c.textContent = over.classList.contains("scr") ? "SYNC" : "PLAY";
+    c.classList.toggle("on", !!(e.target.closest && e.target.closest(".grid .tile")));
   }, {passive:true});
+  document.querySelectorAll(".magnet").forEach(b => {
+    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.2}px,${(e.clientY-r.top-r.height/2)*.3}px)`; });
+    b.addEventListener("pointerleave", () => b.style.transform = "");
+  });
 }
-document.addEventListener("click", e => { const s = e.target.closest(".lab .scr"); if (s) $("#labPlay").click(); });
 
 /* ---- player ---- */
 const dlg = $("#dlg"); let lastFocus = null;
@@ -597,30 +806,32 @@ $("#pclose").addEventListener("click", () => dlg.close());
 $("#orient").addEventListener("click", () => { const l = dlg.classList.toggle("landscape"); $("#orient").textContent = l ? "Portrait" : "Landscape"; });
 document.addEventListener("click", e => { const t = e.target.closest(".grid .tile"); if(t) openPlayer(t.dataset.id); });
 
-/* ---- page scrubber: the page is a timeline ---- */
+/* ---- heading wipes + clapper ---- */
+// observe a wrapper, not the clipped heading (a fully clipped element never reports as intersecting)
+const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (e.target.id==="slate") e.target.classList.add("clap"); else e.target.querySelectorAll(".wipe").forEach(w => w.classList.add("in")); rv.unobserve(e.target); } }), {rootMargin:"0px 0px -15% 0px"});
+document.querySelectorAll("section > .wrap, #slate").forEach(el => rv.observe(el));
+
+/* ---- page scrubber ---- */
 (function(){
-  const secs = [["top","INTRO"],["hooks","HOOK LAB"],["work","WORK"],["capabilities","CRAFT"],["about","TIMELINE"],["contact","CONTACT"]];
-  const rail = $("#rail"); const TOTAL = 90; // the page "runs" 90 seconds
+  const secs = [["top","INTRO"],["anatomy","PROCESS"],["craft","CRAFT"],["work","WORK"],["stack","STACK"],["about","TIMELINE"],["contact","CONTACT"]];
+  const rail = $("#rail"); const TOTAL = 120;
   const max = () => document.documentElement.scrollHeight - innerHeight;
   rail.insertAdjacentHTML("beforeend", secs.map(([id,l]) => `<button class="mk" type="button" data-to="${id}" aria-label="Jump to ${l.toLowerCase()}"><i></i><span>${l}</span></button>`).join(""));
   const mks = [...rail.querySelectorAll(".mk")];
-  function place(){ mks.forEach((m,i) => { const el = document.getElementById(secs[i][0]); m.dataset.y = Math.max(0, el.offsetTop - 70); m.style.left = Math.min(100, m.dataset.y / max() * 100) + "%"; }); }
+  function place(){ mks.forEach((m,i) => { const el = document.getElementById(secs[i][0]); m.dataset.y = Math.max(0, el.getBoundingClientRect().top + scrollY - 70); m.style.left = Math.min(100, m.dataset.y / max() * 100) + "%"; }); }
   function upd(){
     const p = Math.min(1, scrollY / Math.max(1, max()));
     $("#pfill").style.width = p*100+"%"; $("#phead").style.left = p*100+"%";
-    const f = Math.round(p*TOTAL*24); $("#ptc").textContent = `00:${pad(Math.floor(f/1440))}:${pad(Math.floor(f/24)%60)}:${pad(f%24)}`;
+    $("#ptc").textContent = tcode(Math.round(p*TOTAL*24));
     let cur = secs[0][1]; mks.forEach((m,i) => { const past = scrollY + 2 >= +m.dataset.y; m.classList.toggle("past", past); if (past) cur = secs[i][1]; });
     $("#plbl").textContent = cur;
   }
   rail.addEventListener("click", e => { const m = e.target.closest(".mk"); if (m) document.getElementById(m.dataset.to).scrollIntoView({behavior: reduce ? "auto" : "smooth"}); });
   addEventListener("scroll", upd, {passive:true}); addEventListener("resize", () => { place(); upd(); });
-  addEventListener("load", () => { place(); upd(); }); place(); upd();
+  addEventListener("load", () => { place(); upd(); }); setTimeout(() => { place(); upd(); }, 1500); place(); upd();
 })();
 
-/* ---- viewfinder timecode ---- */
-if (!reduce) { const t0 = performance.now(), tc = $("#tc");
-  setInterval(() => { const f = Math.floor((performance.now()-t0)/1000*24); tc.textContent = `00:${pad(Math.floor(f/1440)%60)}:${pad(Math.floor(f/24)%60)}:${pad(f%24)}`; }, 42); }
-
+if (!reduce) { const t0 = performance.now(), tc = $("#tc"); setInterval(() => tc.textContent = tcode(Math.floor((performance.now()-t0)/1000*24)), 42); }
 renderFilters(); render();
 </script>
 </body>
