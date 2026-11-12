@@ -41,7 +41,7 @@ h1,h2,h3{color:var(--white)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* ---------- film leader ---------- */
-.leader{position:fixed;inset:0;z-index:100;background:var(--navy);display:grid;place-items:center;transition:clip-path .7s var(--ease)}
+.leader{position:fixed;inset:0;z-index:200;background:var(--navy);display:grid;place-items:center;transition:clip-path .7s var(--ease)}
 .leader.out{clip-path:inset(0 0 100% 0)}
 .leader .ring{position:relative;width:min(56vmin,420px);aspect-ratio:1;border-radius:50%;border:2px solid var(--edge-ui);display:grid;place-items:center;overflow:hidden}
 .leader .ring::before{content:"";position:absolute;inset:0;background:conic-gradient(var(--lime-soft) var(--sweep,0deg),transparent 0)}
@@ -49,7 +49,7 @@ h1,h2,h3{color:var(--white)}
 .leader .x,.leader .y{position:absolute;background:var(--edge)}
 .leader .x{left:0;right:0;top:50%;height:1px}.leader .y{top:0;bottom:0;left:50%;width:1px}
 .leader .num{position:relative;font-size:min(28vmin,210px);font-weight:900;color:var(--white);line-height:1}
-.leader .meta{position:absolute;bottom:32px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 32px;color:var(--muted)}
+.leader .meta{position:absolute;bottom:32px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:0 32px;color:var(--muted)}
 .leader button{background:none;border:1px solid var(--edge-ui);border-radius:999px;padding:8px 16px;color:var(--body);min-height:44px}
 .leader button:hover{border-color:var(--lime);color:var(--lime)}
 
@@ -201,6 +201,22 @@ h1:hover .ln:first-child>span{text-shadow:-3px 0 rgba(255,77,77,.75),3px 0 rgba(
   .seq.tri{width:100%}
   .rintro{bottom:14%}
 }
+
+
+body.intro .scrub{visibility:hidden}
+/* sound toggle */
+.sbtn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--edge-ui);background:transparent;color:var(--body);font-family:var(--mono);font-size:12px}
+.sbtn:hover{border-color:var(--lime);color:var(--lime)}
+.sbtn .eq{display:flex;align-items:flex-end;gap:2px;height:14px}
+.sbtn .eq i{width:3px;height:3px;background:currentColor;border-radius:1px}
+.sbtn[aria-pressed="true"]{color:var(--lime);border-color:var(--lime)}
+.sbtn[aria-pressed="true"] .eq i{animation:lvl .8s ease-in-out infinite alternate}
+.sbtn .eq i:nth-child(2){animation-delay:.2s}.sbtn .eq i:nth-child(3){animation-delay:.4s}.sbtn .eq i:nth-child(4){animation-delay:.1s}
+@keyframes lvl{from{height:3px}to{height:14px}}
+.btn{white-space:nowrap}
+@media (max-width:820px){#sfxLbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.sbtn{padding:0 12px}.nav ul{gap:10px}}
+.leader .enter{display:flex;gap:10px}
+.leader .enter button.on{background:var(--lime);border-color:var(--lime);color:var(--navy)}
 
 /* logo marquee */
 .marq{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:var(--panel);overflow:hidden;padding:18px 0;display:grid;gap:14px;
@@ -436,10 +452,10 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
 }
 </style>
 </head>
-<body>
+<body class="intro">
 <div class="leader" id="leader" aria-hidden="true">
   <div class="ring"><span class="x"></span><span class="y"></span><span class="num" id="lnum">3</span></div>
-  <div class="meta mono"><span>ELIAZ NAIMIEL PAZ / REEL 2026</span><button type="button" id="skipLeader">Skip intro</button></div>
+  <div class="meta mono"><span>ELIAZ NAIMIEL PAZ / REEL 2026</span><span class="enter"><button type="button" class="on" id="leaderSound">Enter with sound</button><button type="button" id="skipLeader">Skip intro</button></span></div>
 </div>
 <a class="skip" href="#work">Skip to the work</a>
 <header class="top">
@@ -450,6 +466,7 @@ dialog::backdrop{background:rgba(2,6,12,.93)}
       <li class="hide-sm"><a class="l" href="#work">Work</a></li>
       <li class="hide-sm"><a class="l" href="#stack">Stack</a></li>
       <li class="hide-sm"><a class="l" href="#about">About</a></li>
+      <li><button class="sbtn" type="button" id="sfxBtn" aria-pressed="false" aria-label="Sound effects and ambience"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="sfxLbl">SOUND OFF</span></button></li>
       <li><a class="btn solid magnet" href="#contact">Hire Eliaz</a></li>
     </ul>
   </nav>
@@ -686,6 +703,7 @@ const CATS = [
 const BRANDS = ["Nomend LumaLean","PEAKSTA","Vivint","Thalique","Exchange Life","Nomend Nourish","PGA","Savary","Oribello's Kitchen + Bar"];
 const REEL = ["SHORT%20FORM/Montages/M9_j3bkgi","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/OP_GYM_ROUTINE_PRODUCT_g1osry","SHORT%20FORM/Short%20form%20VSLs/SAVARY_7_-_CHARLES_ay04sj","SHORT%20FORM/Montages/M5_xczb63","SHORT%20FORM/ADS/B2C4.BANNED_DOCTOR_H2_qbohk8","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/MEMEL_-_JJK_GYM_ROUTINE_FINAL_o5hqku","SHORT%20FORM/Montages/M7_bezjc1","SHORT%20FORM/FITNESS/SHORT_1_The_60-Minute_Myth_lkcvlj"];
 const PAGE = 30;
+const inView = {hero:true};
 const PFX = [["whip","WHIP PAN"],["punch","ZOOM PUNCH"],["glitch","GLITCH"],["iris","IRIS IN"],["spin","SPIN"],["slide","SLIDE UP"]];
 let cat = "featured", shown = PAGE;
 const $ = s => document.querySelector(s);
@@ -699,18 +717,102 @@ const LOGO = {}; LOGOS.forEach(([g,items]) => items.forEach(i => LOGO[i.n] = i))
 const svg = (i, label) => `<svg viewBox="${i.vb}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true"'} ${i.c ? `style="color:${i.c}" fill="currentColor"` : ""}>${i.b}</svg>`;
 const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n], label)}</span>`;
 
+
+/* ---- sound: synthesized ambience + UI effects (Web Audio, no files) ---- */
+const SFX = (function(){
+  let ctx = null, master = null, amb = null, on = false, lastHover = 0, hoverEl = null;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  function init(){
+    if (ctx || !AC) return !!ctx;
+    ctx = new AC(); master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    return true;
+  }
+  function noiseBuf(sec, brown){
+    const b = ctx.createBuffer(1, ctx.sampleRate*sec, ctx.sampleRate), d = b.getChannelData(0); let last = 0;
+    for (let i = 0; i < d.length; i++){ const w = Math.random()*2-1; if (brown){ last = (last + .02*w)/1.02; d[i] = last*3.5; } else d[i] = w; }
+    return b;
+  }
+  function ambience(){
+    const g = ctx.createGain(); g.gain.value = 0; g.connect(master);
+    // projector room tone: brown noise, low-passed, fluttering at 24 fps
+    const n = ctx.createBufferSource(); n.buffer = noiseBuf(4, true); n.loop = true;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 520;
+    const flut = ctx.createGain(); flut.gain.value = .55;
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 24; const lfoG = ctx.createGain(); lfoG.gain.value = .12; lfo.connect(lfoG).connect(flut.gain);
+    n.connect(lp).connect(flut).connect(g); n.start(); lfo.start();
+    // soft evolving pad (A minor 9), very quiet
+    const pad = ctx.createGain(); pad.gain.value = .5;
+    const pf = ctx.createBiquadFilter(); pf.type = "lowpass"; pf.frequency.value = 700; pf.Q.value = .7;
+    const sweep = ctx.createOscillator(); sweep.frequency.value = .05; const sw = ctx.createGain(); sw.gain.value = 300; sweep.connect(sw).connect(pf.frequency); sweep.start();
+    [110, 164.81, 220, 246.94, 329.63].forEach((f,i) => { const o = ctx.createOscillator(); o.type = i%2 ? "sine" : "triangle"; o.frequency.value = f; o.detune.value = (i-2)*4;
+      const og = ctx.createGain(); og.gain.value = .06/(i+1); o.connect(og).connect(pf); o.start(); });
+    pf.connect(pad).connect(g);
+    return g;
+  }
+  function env(node, t, a, peak, d){ node.gain.setValueAtTime(0, t); node.gain.linearRampToValueAtTime(peak, t+a); node.gain.exponentialRampToValueAtTime(.0001, t+a+d); }
+  const play = {
+    tick(){ const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(); o.type = "sine"; o.frequency.setValueAtTime(2400, t); o.frequency.exponentialRampToValueAtTime(1500, t+.03);
+      env(g, t, .002, .05, .035); o.connect(g).connect(master); o.start(t); o.stop(t+.06); },
+    whoosh(up = true, len = .28, vol = .22){ const t = ctx.currentTime, s = ctx.createBufferSource(); s.buffer = noiseBuf(len+.05);
+      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.2; bp.frequency.setValueAtTime(up ? 500 : 3200, t); bp.frequency.exponentialRampToValueAtTime(up ? 3200 : 400, t+len);
+      const g = ctx.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+len*.6); g.gain.exponentialRampToValueAtTime(.0001, t+len);
+      s.connect(bp).connect(g).connect(master); s.start(t); s.stop(t+len+.05); },
+    shutter(){ const t = ctx.currentTime; [0, .05].forEach((dt,k) => { const s = ctx.createBufferSource(); s.buffer = noiseBuf(.05);
+      const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = k ? 2500 : 1600; const g = ctx.createGain(); env(g, t+dt, .001, .14, .04);
+      s.connect(hp).connect(g).connect(master); s.start(t+dt); s.stop(t+dt+.06); }); },
+    thump(){ const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t+.18);
+      env(g, t, .004, .35, .22); o.connect(g).connect(master); o.start(t); o.stop(t+.3); },
+    ding(){ const t = ctx.currentTime; [[880,.08],[1320,.04],[1760,.02]].forEach(([f,v]) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f; env(g, t, .003, v, .45); o.connect(g).connect(master); o.start(t); o.stop(t+.5); }); },
+    clap(){ const t = ctx.currentTime, s = ctx.createBufferSource(); s.buffer = noiseBuf(.15); const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1400; bp.Q.value = .8;
+      const g = ctx.createGain(); env(g, t, .001, .5, .09); s.connect(bp).connect(g).connect(master); s.start(t); s.stop(t+.16); },
+    beep(){ const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(); o.type = "square"; o.frequency.value = 1000; env(g, t, .002, .035, .12); 
+      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2200; o.connect(lp).connect(g).connect(master); o.start(t); o.stop(t+.16); }
+  };
+  function fire(name, ...a){ if (!on || !ctx) return; try { play[name](...a); } catch(e){} }
+  function set(v){
+    if (v && !init()) return;
+    on = v;
+    if (ctx){ if (v) ctx.resume(); const t = ctx.currentTime;
+      if (v && !amb) amb = ambience();
+      master.gain.cancelScheduledValues(t); master.gain.setTargetAtTime(v ? .9 : 0, t, .15);
+      if (amb){ amb.gain.cancelScheduledValues(t); amb.gain.setTargetAtTime(v ? .32 : 0, t, v ? 1.2 : .15); } }
+    const b = $("#sfxBtn"); b.setAttribute("aria-pressed", v); $("#sfxLbl").textContent = v ? "SOUND ON" : "SOUND OFF";
+    try { localStorage.setItem("sfx", v ? "1" : "0"); } catch(e){}
+    if (v) setTimeout(() => fire("ding"), 60);
+  }
+  // hover ticks on anything interactive, at most one per element entry
+  document.addEventListener("pointerover", e => {
+    const el = e.target.closest && e.target.closest("a, button, .tile, .pn, .chip, .tool, .app, input[type=range]");
+    if (!el || el === hoverEl) return; hoverEl = el;
+    const now = performance.now(); if (now - lastHover < 45) return; lastHover = now; fire("tick");
+  });
+  document.addEventListener("pointerout", e => { if (hoverEl && !hoverEl.contains(e.relatedTarget)) hoverEl = null; });
+  document.addEventListener("click", e => {
+    const el = e.target.closest && e.target.closest("a, button, .tile, .pn");
+    if (!el || el.id === "sfxBtn") return;
+    if (el.classList.contains("chip") || el.classList.contains("fbtn")) fire("ding");
+    else if (el.classList.contains("tile") || el.classList.contains("pn")) fire("whoosh", true, .35, .28);
+    else if (el.classList.contains("mk")) fire("whoosh", false, .3, .18);
+    else fire("shutter");
+  });
+  $("#sfxBtn").addEventListener("click", () => set(!on));
+  return { fire, set, get on(){ return on; } };
+})();
+
 /* ---- intro leader ---- */
 (function(){
   const el = $("#leader"); let seen = false;
   try { seen = sessionStorage.getItem("leader") === "1"; } catch(e){}
-  const done = () => { if (!el.isConnected) return; el.classList.add("out"); document.body.classList.add("ready"); setTimeout(() => el.remove(), 750); try{sessionStorage.setItem("leader","1")}catch(e){} };
-  if (reduce || seen) { el.remove(); document.body.classList.add("ready"); return; }
+  const done = () => { if (!el.isConnected) return; el.classList.add("out"); document.body.classList.add("ready"); document.body.classList.remove("intro"); setTimeout(() => el.remove(), 750); try{sessionStorage.setItem("leader","1")}catch(e){} };
+  if (reduce || seen) { el.remove(); document.body.classList.add("ready"); document.body.classList.remove("intro"); return; }
   $("#skipLeader").addEventListener("click", done);
+  $("#leaderSound").addEventListener("click", () => { SFX.set(true); SFX.fire("thump"); done(); });
   addEventListener("keydown", done, {once:true});
-  const ring = el.querySelector(".ring"), num = $("#lnum"); const t0 = performance.now(); const per = 520;
+  const ring = el.querySelector(".ring"), num = $("#lnum"); const t0 = performance.now(); const per = 700;
   (function tick(now){
     const t = now - t0, i = Math.floor(t/per), frac = (t % per)/per;
     if (i >= 3) return done();
+    if (num.textContent !== String(3 - i)) SFX.fire("beep");
     num.textContent = 3 - i; ring.style.setProperty("--sweep", (frac*360)+"deg");
     requestAnimationFrame(tick);
   })(t0);
@@ -733,6 +835,7 @@ const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n]
     const fx = PFX[i % PFX.length];
     PFX.forEach(f => a.classList.remove("fx-"+f[0])); void a.offsetWidth; a.classList.add("fx-"+fx[0]);
     const ph = document.querySelector(".phone.main"); ph.classList.remove("shake"); void ph.offsetWidth; ph.classList.add("shake");
+    if (inView.hero) SFX.fire("shutter");
     const nm = $("#fxname"); nm.textContent = fx[1]; nm.classList.remove("go"); void nm.offsetWidth; nm.classList.add("go");
     if (fx[0] === "punch" || fx[0] === "glitch") { $("#flash").classList.remove("go"); void $("#flash").offsetWidth; $("#flash").classList.add("go"); }
     load(b, REEL[(i+1) % REEL.length]);
@@ -758,6 +861,7 @@ const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n]
     rig.addEventListener("pointerleave", () => ph.style.transform = ""); }
 })();
 
+new IntersectionObserver(es => es.forEach(e => inView.hero = e.isIntersecting)).observe(document.querySelector(".stage"));
 /* ---- logo marquee ---- */
 (function(){
   const all = LOGOS.flatMap(([,items]) => items.map(i => i.n));
@@ -778,7 +882,7 @@ const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n]
   const capWords = ["This","is","where","the","<b>hook</b>","lands."];
   let s = -1, cutTimer = null;
   function setStep(n){
-    if (n === s) return; s = n; mon.dataset.s = n; $("#anstep").textContent = names[n];
+    if (n === s) return; if (s !== -1) SFX.fire("shutter"); s = n; mon.dataset.s = n; $("#anstep").textContent = names[n];
     steps.forEach((li,i) => li.classList.toggle("on", i===n));
     $("#t-v1").style.width = n >= 0 ? "100%" : "0"; $("#t-v1").className = n >= 1 ? "on cuts" : "";
     $("#t-v2").style.width = n >= 2 ? "100%" : "0"; $("#t-v2").className = n >= 3 ? "on" : "";
@@ -851,6 +955,7 @@ const appTile = (n, label) => `<span class="app" title="${esc(n)}">${svg(LOGO[n]
     void seq.offsetWidth; seq.classList.add("t-"+s.t);
     const f = $("#rflash"); f.classList.remove("go"); void f.offsetWidth; if (s.t !== "iris") f.classList.add("go");
     const w = $("#rword"); w.classList.remove("go"); w.textContent = s.w; void w.offsetWidth; if (s.w) w.classList.add("go");
+    SFX.fire("whoosh", true, .3, .2); if (s.w) setTimeout(() => SFX.fire("thump"), 120);
     $("#rfx").textContent = `${FXN[s.t]} / ${s.l.toUpperCase()} x${s.n}`;
     const pr = $("#rprog"); pr.style.transition = "none"; pr.style.width = "0"; void pr.offsetWidth; pr.style.transition = `width ${s.d}ms linear`; pr.style.width = "100%";
     timer = setTimeout(shot, s.d);
@@ -945,9 +1050,9 @@ function openPlayer(id){
   $("#ptitle").textContent = v.t; $("#pclient").textContent = v.cl;
   $("#popen").href = `https://drive.google.com/file/d/${id}/view`;
   dlg.classList.remove("landscape"); $("#orient").textContent = "Landscape";
-  dlg.showModal(); $("#pclose").focus();
+  dlg.showModal(); $("#pclose").focus(); SFX.fire("thump");
 }
-dlg.addEventListener("close", () => { $("#frame").innerHTML = ""; if(lastFocus) lastFocus.focus(); });
+dlg.addEventListener("close", () => { SFX.fire("whoosh", false, .3, .18); $("#frame").innerHTML = ""; if(lastFocus) lastFocus.focus(); });
 dlg.addEventListener("click", e => { if(e.target===dlg) dlg.close(); });
 $("#pclose").addEventListener("click", () => dlg.close());
 $("#orient").addEventListener("click", () => { const l = dlg.classList.toggle("landscape"); $("#orient").textContent = l ? "Portrait" : "Landscape"; });
@@ -955,7 +1060,7 @@ document.addEventListener("click", e => { const t = e.target.closest(".grid .til
 
 /* ---- heading wipes + clapper ---- */
 // observe a wrapper, not the clipped heading (a fully clipped element never reports as intersecting)
-const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (e.target.id==="slate") e.target.classList.add("clap"); else e.target.querySelectorAll(".wipe").forEach(w => w.classList.add("in")); rv.unobserve(e.target); } }), {rootMargin:"0px 0px -15% 0px"});
+const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (e.target.id==="slate") { e.target.classList.add("clap"); setTimeout(() => SFX.fire("clap"), 300); } else e.target.querySelectorAll(".wipe").forEach(w => w.classList.add("in")); rv.unobserve(e.target); } }), {rootMargin:"0px 0px -15% 0px"});
 document.querySelectorAll("section > .wrap, #slate").forEach(el => rv.observe(el));
 
 /* ---- page scrubber ---- */
@@ -979,6 +1084,8 @@ document.querySelectorAll("section > .wrap, #slate").forEach(el => rv.observe(el
 })();
 
 if (!reduce) { const t0 = performance.now(), tc = $("#tc"); setInterval(() => tc.textContent = tcode(Math.floor((performance.now()-t0)/1000*24)), 42); }
+let pref = null; try { pref = localStorage.getItem("sfx"); } catch(e){}
+if (pref === "1") addEventListener("pointerdown", function first(){ if (!SFX.on) SFX.set(true); }, {once:true});
 renderFilters(); render();
 </script>
 </body>
