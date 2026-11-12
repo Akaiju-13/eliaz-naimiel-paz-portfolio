@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eliaz Naimiel Paz | Video Editor</title>
+<meta name="description" content="Eliaz Naimiel Paz edits performance ads, short-form VSLs and montages for DTC brands. 400+ edits on the reel.">
+<meta name="theme-color" content="#040B16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://res.cloudinary.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#040B16; --panel:#0A1428; --raised:#111D3A; --edge:#1C2A4A; --edge-ui:#5B6B8F;
+  --white:#FFFFFF; --body:#D1D5DB; --muted:#9CA3AF;
+  --lime:#75F94C; --lime-soft:rgba(117,249,76,.12); --rec:#FF4D4D;
+  --r:14px; --wrap:1280px;
+  --s2:8px; --s3:16px; --s4:24px; --s5:40px; --s6:64px; --s7:120px;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--body);font-family:Outfit,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:56px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px circle at var(--mx,50%) var(--my,30%),rgba(117,249,76,.07),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.06;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main,header,footer{position:relative;z-index:1}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--s4)}
+.mono{font-family:var(--mono);font-size:13px;letter-spacing:.02em}
+.skip{position:absolute;left:-999px;top:8px;background:var(--lime);color:var(--navy);padding:8px 14px;z-index:99}
+.skip:focus{left:8px}
+h1,h2,h3{color:var(--white)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* ---------- film leader intro ---------- */
+.leader{position:fixed;inset:0;z-index:100;background:var(--navy);display:grid;place-items:center;transition:clip-path .7s cubic-bezier(.77,0,.18,1)}
+.leader.out{clip-path:inset(0 0 100% 0)}
+.leader .ring{position:relative;width:min(56vmin,420px);aspect-ratio:1;border-radius:50%;border:2px solid var(--edge-ui);display:grid;place-items:center;overflow:hidden}
+.leader .ring::before{content:"";position:absolute;inset:0;background:conic-gradient(var(--lime-soft) var(--sweep,0deg),transparent 0)}
+.leader .ring::after{content:"";position:absolute;inset:12%;border-radius:50%;border:1px solid var(--edge)}
+.leader .x,.leader .y{position:absolute;background:var(--edge)}
+.leader .x{left:0;right:0;top:50%;height:1px}.leader .y{top:0;bottom:0;left:50%;width:1px}
+.leader .num{position:relative;font-size:min(28vmin,210px);font-weight:900;color:var(--white);line-height:1;font-variant-numeric:tabular-nums}
+.leader .meta{position:absolute;bottom:32px;left:0;right:0;display:flex;justify-content:space-between;padding:0 32px;color:var(--muted)}
+.leader button{background:none;border:1px solid var(--edge-ui);border-radius:999px;padding:8px 16px;color:var(--body);min-height:40px}
+.leader button:hover{border-color:var(--lime);color:var(--lime)}
+
+/* ---------- nav ---------- */
+header.top{position:sticky;top:0;z-index:30;background:rgba(4,11,22,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--edge)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{font-weight:800;font-size:22px;text-decoration:none;color:var(--white);letter-spacing:-.02em}
+.brand b{color:var(--lime)}
+.nav ul{display:flex;gap:var(--s4);list-style:none;padding:0;align-items:center}
+.nav a.l{text-decoration:none;padding:10px 2px;color:var(--body);transition:color .2s}
+.nav a.l:hover{color:var(--lime)}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--edge-ui);color:var(--white);background:transparent;transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
+.btn:hover{border-color:var(--lime);color:var(--lime)}
+.btn.solid{background:var(--lime);border-color:var(--lime);color:var(--navy)}
+.btn.solid:hover{background:#9BFF7A;color:var(--navy)}
+.btn:active{transform:scale(.97)}
+@media (max-width:760px){.nav ul li.hide-sm{display:none}}
+
+/* ---------- hero ---------- */
+.stage{position:relative;overflow:hidden;isolation:isolate}
+.hero{min-height:calc(100vh - 124px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--s5);align-items:center;padding:var(--s6) var(--s4)}
+.status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid var(--edge);border-radius:999px;background:rgba(10,20,40,.6);color:var(--body)}
+.status .dot{color:var(--lime);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(117,249,76,.6)}70%,100%{box-shadow:0 0 0 10px rgba(117,249,76,0)}}
+h1{margin-top:var(--s4);font-size:clamp(56px,8.2vw,124px);line-height:.88;font-weight:900;letter-spacing:-.045em}
+h1 .ln{display:block}
+h1 .out{color:transparent;-webkit-text-stroke:1.5px var(--white);font-weight:800}
+h1 .g{background:linear-gradient(100deg,#fff 0%,#D1D5DB 40%,var(--lime) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.role{margin-top:var(--s4);font-size:clamp(19px,1.9vw,24px);line-height:1.35;color:var(--white);font-weight:500;max-width:32ch}
+.role .sw{display:inline-block;color:var(--lime);min-width:7ch}
+.lede{margin-top:var(--s3);max-width:52ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--s5)}
+
+/* phones */
+.rig{position:relative;height:min(76vh,700px);display:grid;place-items:center}
+.phone{position:absolute;aspect-ratio:9/19.5;height:100%;max-height:640px;border-radius:44px;padding:10px;background:linear-gradient(145deg,#1b2747,#070e1c);box-shadow:0 40px 80px -20px rgba(0,0,0,.7),inset 0 0 0 1.5px #2a3a60}
+.phone .scr{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#000}
+.phone .scr video,.phone .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phone.ghost{height:82%;opacity:.45;filter:saturate(.6) brightness(.7)}
+.phone.ghost.l{transform:translateX(-58%) rotate(-9deg)}
+.phone.ghost.r{transform:translateX(58%) rotate(9deg)}
+.phone.main{z-index:2}
+.island{position:absolute;top:18px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:20px;background:#000;z-index:3}
+.reel-ui{position:absolute;inset:auto 0 0 0;z-index:3;padding:56px 18px 18px;background:linear-gradient(transparent,rgba(0,0,0,.8));color:var(--white)}
+.reel-ui .now{color:var(--lime)}
+.reel-ui .ttl{font-weight:600;font-size:15px;line-height:1.3;margin-top:2px}
+.bars{display:flex;gap:4px;position:absolute;top:52px;left:16px;right:16px;z-index:3}
+.bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}
+.bars i b{display:block;height:100%;width:0;background:var(--white)}
+.bars i.done b{width:100%}
+.bars i.on b{animation:fill var(--dur,3s) linear forwards}
+@keyframes fill{to{width:100%}}
+.snd{position:absolute;top:66px;right:14px;z-index:4;min-width:44px;min-height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;display:grid;place-items:center}
+.snd svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:2;pointer-events:none}
+.flash.go{animation:flash .18s ease-out}
+@keyframes flash{0%{opacity:.35}100%{opacity:0}}
+.tag{position:absolute;z-index:4;padding:10px 14px;border-radius:12px;background:rgba(10,20,40,.92);border:1px solid var(--edge);color:var(--white);box-shadow:0 20px 40px -15px rgba(0,0,0,.6)}
+.tag b{display:block;font-size:22px;font-weight:800;line-height:1.1;color:var(--lime)}
+.tag.a{left:0;top:16%}.tag.b{right:-2%;bottom:14%}
+@media (max-width:960px){.hero{grid-template-columns:1fr;min-height:auto}.rig{height:560px}.tag.a{left:2%}.tag.b{right:2%}}
+@media (max-width:520px){.phone.ghost{display:none}.rig{height:520px}}
+
+/* ticker */
+.ticker{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:var(--panel);overflow:hidden;white-space:nowrap}
+.ticker .track{display:inline-flex;gap:48px;padding:18px 0;animation:slide 50s linear infinite}
+.ticker span{font-size:clamp(20px,2.4vw,30px);font-weight:300;color:var(--white)}
+.ticker span.sep{color:var(--lime)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+section{padding:var(--s7) 0;scroll-margin-top:68px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s4);flex-wrap:wrap}
+h2{font-size:clamp(42px,5.6vw,80px);line-height:.95;font-weight:800;letter-spacing:-.04em;max-width:15ch}
+h2 em{font-style:normal;color:var(--lime)}
+.sub{margin-top:var(--s3);max-width:58ch}
+.idx{color:var(--muted)}
+
+/* ---------- hook lab ---------- */
+.lab{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);margin-top:var(--s5);align-items:start}
+.lab figure{position:relative}
+.lab .scr{position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:var(--panel);border:1px solid var(--edge)}
+.lab video{width:100%;height:100%;object-fit:cover}
+.lab figcaption{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--white);font-weight:600}
+.lab figcaption span{color:var(--muted)}
+.lab .lbl{position:absolute;top:12px;left:12px;z-index:2;background:var(--lime);color:var(--navy);padding:4px 10px;border-radius:6px;font-weight:600}
+.labbar{display:flex;gap:12px;align-items:center;margin-top:var(--s4);flex-wrap:wrap}
+@media (max-width:760px){.lab{grid-template-columns:repeat(3,minmax(160px,1fr));overflow-x:auto;scroll-snap-type:x mandatory}.lab figure{scroll-snap-align:start}}
+
+/* ---------- work ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:var(--s5) 0 var(--s3);padding:0;list-style:none}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--edge-ui);background:rgba(10,20,40,.6);font-weight:500;font-size:15px;display:inline-flex;gap:10px;align-items:center;color:var(--body);transition:all .2s ease}
+.chip .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.chip:hover{border-color:var(--lime);color:var(--white)}
+.chip[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--navy)}
+.chip[aria-pressed="true"] .n{color:var(--navy)}
+.catnote{margin-bottom:var(--s5);max-width:64ch;min-height:1.6em;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:var(--s5) var(--s4);list-style:none;padding:0}
+.tile{position:relative;display:block;width:100%;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--raised),var(--panel));border:1px solid var(--edge);padding:0;transition:border-color .25s ease,transform .25s ease}
+.tile img,.tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile img{transition:transform .5s ease,opacity .3s ease}
+.tile video{opacity:0;transition:opacity .25s ease}
+.tile.live video{opacity:1}
+.tile:hover{border-color:var(--lime);transform:translateY(-4px)}
+.tile:hover img{transform:scale(1.05)}
+.tile .ph{position:absolute;inset:0;display:none;align-items:flex-end;padding:14px;font-size:14px;font-weight:600;text-align:left;color:var(--white)}
+.tile.noimg .ph{display:flex}
+.tile .tc{position:absolute;top:10px;left:10px;z-index:2;padding:3px 8px;border-radius:6px;background:rgba(4,11,22,.78);color:var(--lime)}
+.tile .pv{position:absolute;top:10px;right:10px;z-index:2;padding:3px 8px;border-radius:6px;background:rgba(4,11,22,.78);color:var(--white);display:flex;align-items:center;gap:6px}
+.tile .pv .dot{color:var(--rec);width:6px;height:6px}
+.play{position:absolute;left:50%;top:50%;z-index:2;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--lime);display:grid;place-items:center;transform:scale(.6);opacity:0;transition:all .25s ease}
+.tile:focus-visible .play{opacity:1;transform:scale(1)}
+@media (pointer:coarse){.tile:hover .play{opacity:1;transform:scale(1)}}
+.play svg{width:20px;height:20px;fill:var(--navy);margin-left:3px}
+.card h3{font-size:16px;line-height:1.3;font-weight:600;margin-top:12px;overflow-wrap:anywhere}
+.card p{font-size:14px;color:var(--muted);margin-top:2px}
+.more{margin-top:var(--s6);display:flex;gap:var(--s4);align-items:center;flex-wrap:wrap}
+.count{color:var(--muted)}
+@media (max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:var(--s4) 12px}.card h3{font-size:14.5px}}
+
+/* custom play cursor */
+.cur{position:fixed;left:0;top:0;z-index:90;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:var(--lime);color:var(--navy);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:500;pointer-events:none;transform:scale(0);transition:transform .2s ease}
+.cur.on{transform:scale(1)}
+@media (pointer:fine){.grid .tile,.lab .scr{cursor:none}}
+
+/* capabilities */
+.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin-top:var(--s5)}
+.cap{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r);padding:var(--s4);transition:border-color .25s}
+.cap:hover{border-color:rgba(117,249,76,.45)}
+.cap h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.cap p{margin-top:var(--s2);font-size:16px}
+.cap ul{list-style:none;padding:0;margin-top:var(--s3);display:flex;flex-wrap:wrap;gap:6px}
+.cap li{padding:5px 10px;border-radius:6px;background:var(--raised);color:var(--body)}
+@media (max-width:900px){.caps{grid-template-columns:1fr}}
+
+/* about + timeline */
+.about{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:var(--s6);align-items:start;margin-top:var(--s5)}
+.vf{position:relative;width:100%;aspect-ratio:4/5;border-radius:6px;overflow:hidden;background:var(--panel)}
+.vf img{width:100%;height:100%;object-fit:cover}
+.vf::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,11,22,.7),transparent 40%)}
+.br{position:absolute;width:26px;height:26px;border:2px solid var(--white);z-index:2}
+.br.tl{top:14px;left:14px;border-right:0;border-bottom:0}.br.tr{top:14px;right:14px;border-left:0;border-bottom:0}
+.br.bl{bottom:14px;left:14px;border-right:0;border-top:0}.br.brr{bottom:14px;right:14px;border-left:0;border-top:0}
+.hud{position:absolute;z-index:2;left:50px;right:50px;color:var(--white);display:flex;justify-content:space-between;align-items:center}
+.hud.top{top:20px}.hud.bot{bottom:20px}
+.rec{color:var(--rec);display:inline-flex;align-items:center;gap:6px}
+.rec .dot{animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.bio p{margin-top:var(--s3);max-width:60ch}
+.bio p:first-child{margin-top:0;font-size:21px;color:var(--white);line-height:1.45}
+.tl{margin-top:var(--s5);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r);padding:var(--s4);overflow-x:auto}
+.ruler{display:grid;grid-template-columns:110px repeat(5,1fr);color:var(--muted);border-bottom:1px solid var(--edge);padding-bottom:10px;min-width:680px}
+.trk{display:grid;grid-template-columns:110px 1fr;align-items:center;min-height:96px;border-bottom:1px dashed var(--edge);min-width:680px}
+.trk:last-child{border-bottom:0}
+.lane{position:relative;height:76px}
+.clip{position:absolute;top:6px;bottom:6px;border-radius:8px;padding:9px 12px;overflow:hidden;background:var(--raised);border:1px solid var(--edge-ui)}
+.clip.on{background:var(--lime-soft);border-color:var(--lime)}
+.clip b{display:block;color:var(--white);font-weight:600;font-size:14.5px;white-space:nowrap;line-height:1.35}
+.clip span{display:block;color:var(--muted);white-space:nowrap;line-height:1.5}
+.ph-line{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--lime);right:1.5%}
+.ph-line::before{content:"";position:absolute;top:-4px;left:-5px;border:6px solid transparent;border-top-color:var(--lime)}
+@media (max-width:900px){.about{grid-template-columns:minmax(0,1fr)}.vf{max-width:360px}}
+
+/* contact */
+#contact{border-top:1px solid var(--edge);background:radial-gradient(800px 400px at 15% 100%,rgba(117,249,76,.08),transparent 70%)}
+.slate{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;margin-top:var(--s5);max-width:900px}
+.slate div{padding:14px 18px;border-right:1px solid var(--edge)}
+.slate div:last-child{border-right:0}
+.slate span{display:block;color:var(--muted)}
+.slate b{color:var(--white);font-weight:600}
+.clapper{height:22px;background:repeating-linear-gradient(-45deg,var(--white) 0 22px,var(--navy) 22px 44px);border-bottom:1px solid var(--edge);grid-column:1/-1;padding:0!important}
+@media (max-width:640px){.slate{grid-template-columns:1fr 1fr}.slate div:nth-child(3){border-right:0}}
+.mail{display:inline-block;margin-top:var(--s5);font-size:clamp(30px,6vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;color:var(--white);text-decoration:none;overflow-wrap:anywhere;background:linear-gradient(var(--lime),var(--lime)) 0 100%/0 4px no-repeat;padding-bottom:6px;transition:background-size .4s ease,color .2s}
+.mail:hover{background-size:100% 4px;color:var(--lime)}
+.cinfo{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);margin-top:var(--s5);list-style:none;padding:0}
+.cinfo a{text-underline-offset:4px}
+.cinfo a:hover{color:var(--lime)}
+footer{border-top:1px solid var(--edge);padding:var(--s4) 0;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--s2)}
+
+/* ---------- page scrubber ---------- */
+.scrub{position:fixed;left:0;right:0;bottom:0;z-index:40;height:56px;background:rgba(4,11,22,.94);border-top:1px solid var(--edge);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:0 20px}
+.scrub .tcode{color:var(--white);min-width:11ch}
+.scrub .rail{position:relative;height:28px}
+.scrub .rail::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:var(--edge)}
+.scrub .fill{position:absolute;left:0;top:50%;height:2px;margin-top:-1px;background:var(--lime);width:0}
+.scrub .head-mk{position:absolute;top:0;bottom:0;width:2px;background:var(--lime);left:0}
+.scrub .head-mk::before{content:"";position:absolute;top:-2px;left:-5px;width:12px;height:8px;background:var(--lime);clip-path:polygon(0 0,100% 0,50% 100%)}
+.scrub .mk{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;min-width:44px;min-height:44px;justify-content:center;color:var(--muted)}
+.scrub .mk i{width:10px;height:10px;border-radius:2px;background:var(--panel);border:1.5px solid var(--edge-ui);transform:rotate(45deg)}
+.scrub .mk.past i{background:var(--lime);border-color:var(--lime)}
+.scrub .mk span{position:absolute;bottom:100%;white-space:nowrap;opacity:0;transition:opacity .2s;background:var(--panel);border:1px solid var(--edge);padding:2px 8px;border-radius:6px;color:var(--white)}
+.scrub .mk:hover span,.scrub .mk:focus-visible span{opacity:1}
+.scrub .lbl{color:var(--muted);min-width:12ch;text-align:right}
+@media (max-width:640px){.scrub .lbl{display:none}.scrub{gap:12px;padding:0 12px}}
+
+/* player */
+dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
+dialog::backdrop{background:rgba(2,6,12,.93)}
+.player{display:flex;flex-direction:column;gap:12px;width:min(92vw,calc(82vh * 9 / 16))}
+.player .frame{aspect-ratio:9/16;max-height:82vh;width:100%;background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--edge)}
+.player iframe,.player video{width:100%;height:100%;border:0;object-fit:contain;background:#000}
+.pbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pbar h3{font-size:16px;font-weight:600}
+.pbar p{font-size:14px;color:var(--muted)}
+.pbar .acts{display:flex;gap:8px;flex-shrink:0}
+.pbtn{min-width:44px;min-height:44px;border-radius:999px;border:1px solid var(--edge-ui);background:var(--panel);color:var(--white);display:inline-grid;place-items:center;padding:0 14px;font-size:14px;text-decoration:none}
+.pbtn:hover{border-color:var(--lime);color:var(--lime)}
+.landscape .player{width:min(92vw,1100px)}
+.landscape .player .frame{aspect-ratio:16/9;max-height:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="leader" id="leader" aria-hidden="true">
+  <div class="ring"><span class="x"></span><span class="y"></span><span class="num" id="lnum">3</span></div>
+  <div class="meta mono"><span>ELIAZ NAIMIEL PAZ / REEL 2026</span><button type="button" id="skipLeader">Skip intro</button></div>
+</div>
+<a class="skip" href="#work">Skip to the work</a>
+<header class="top">
+  <nav class="wrap nav" aria-label="Main">
+    <a class="brand" href="#top">ELIAZ<b>.</b></a>
+    <ul>
+      <li class="hide-sm"><a class="l" href="#hooks">Hook lab</a></li>
+      <li class="hide-sm"><a class="l" href="#work">Work</a></li>
+      <li class="hide-sm"><a class="l" href="#about">About</a></li>
+      <li><a class="btn solid" href="#contact">Hire Eliaz</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="stage">
+    <div class="wrap hero">
+      <div>
+        <span class="status mono"><span class="dot"></span>Open for new edit batches</span>
+        <h1><span class="ln">Eliaz</span><span class="ln out">Naimiel</span><span class="ln g">Paz.</span></h1>
+        <p class="role">I cut <span class="sw" id="swap">DTC ads</span><br>that people don't scroll past.</p>
+        <p class="lede">Four years editing performance ads, short-form VSLs and montages in CapCut, Premiere Pro and After Effects. When the footage runs out, I generate the rest with Veo 3, Higgsfield and ElevenLabs.</p>
+        <div class="cta">
+          <a class="btn solid" href="#work"><span class="dot"></span>Watch the reel</a>
+          <a class="btn" href="mailto:eng.paz025@gmail.com">Get in touch</a>
+        </div>
+      </div>
+      <div class="rig" aria-label="Showreel">
+        <div class="phone ghost l" aria-hidden="true"><div class="scr"><img id="gl" alt=""></div></div>
+        <div class="phone ghost r" aria-hidden="true"><div class="scr"><img id="gr" alt=""></div></div>
+        <div class="phone main">
+          <div class="scr" id="reel">
+            <span class="island"></span>
+            <div class="bars" id="bars"></div>
+            <video id="rv0" muted playsinline preload="auto"></video>
+            <video id="rv1" muted playsinline preload="auto" style="opacity:0"></video>
+            <span class="flash" id="flash"></span>
+            <button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="sndw" d="M16 9l5 6M21 9l-5 6"/></svg></button>
+            <div class="reel-ui"><span class="mono now" id="rnow">NOW PLAYING 01 / 08</span><div class="ttl" id="rttl"></div></div>
+          </div>
+        </div>
+        <div class="tag a mono"><b id="cnt">421</b>edits on the reel</div>
+        <div class="tag b mono"><b>9:16</b>cut for the feed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker" aria-label="Brands Eliaz has edited for"><div class="track" id="ticker"></div></div>
+
+  <section id="hooks">
+    <div class="wrap">
+      <div class="head"><h2>One body. <em>Three hooks.</em></h2><p class="mono idx">B2C2 / AGED GARLIC</p></div>
+      <p class="sub">Media buyers test the first three seconds, so every batch ships with hook variations on one locked body. Play all three side by side and watch where they split.</p>
+      <div class="lab" id="lab"></div>
+      <div class="labbar"><button class="btn solid" type="button" id="labPlay"><span class="dot"></span>Play all three in sync</button><span class="mono idx" id="labTime">00:00 / 00:00</span></div>
+    </div>
+  </section>
+
+  <section id="work" style="background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)">
+    <div class="wrap">
+      <div class="head"><h2>Every edit, <em>on the reel.</em></h2><p class="mono idx" id="total"></p></div>
+      <p class="sub">Ads, VSLs, montages and test projects, straight from the edit library. Clips marked LIVE preview on hover. Select any video to play it.</p>
+      <ul class="filters" id="filters" aria-label="Filter videos"></ul>
+      <p class="catnote" id="catnote" aria-live="polite"></p>
+      <ul class="grid" id="grid"></ul>
+      <div class="more"><button class="btn" id="moreBtn" type="button">Show more</button><span class="count mono" id="count"></span></div>
+    </div>
+  </section>
+
+  <section id="capabilities">
+    <div class="wrap">
+      <h2>What I bring <em>to the edit.</em></h2>
+      <div class="caps">
+        <div class="cap"><h3>Post-production</h3><p>Hook-first pacing, color grading, sound design and captions, cut to each platform's spec.</p><ul class="mono"><li>CapCut Pro</li><li>Premiere Pro</li><li>After Effects</li><li>Color</li><li>Sound</li></ul></div>
+        <div class="cap"><h3>AI and media synthesis</h3><p>Footage that doesn't exist yet: AI UGC, animated b-roll, avatars and cloned voice, lip-synced and graded to match the real shots.</p><ul class="mono"><li>Veo 3</li><li>Higgsfield</li><li>Grok Imagine</li><li>Gemini Pro</li><li>Runway</li><li>ElevenLabs</li></ul></div>
+        <div class="cap"><h3>Batch production</h3><p>One locked body, three to five hook variations and AppLovin cuts per batch, organized so media buyers can test fast.</p><ul class="mono"><li>DTC ads</li><li>VSLs</li><li>Micro dramas</li><li>Montages</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" style="border-top:1px solid var(--edge)">
+    <div class="wrap">
+      <h2>The timeline <em>so far.</em></h2>
+      <div class="about">
+        <figure class="vf">
+          <img src="https://eliaznaimielpaz-portfolio.netlify.app/me.jpg" alt="Portrait of Eliaz Naimiel Paz" loading="lazy" onerror="this.style.display='none'">
+          <span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+          <div class="hud top mono" aria-hidden="true"><span class="rec"><span class="dot"></span>REC</span><span>4K 24p</span></div>
+          <div class="hud bot mono" aria-hidden="true"><span id="tc">00:00:00:00</span><span>CAM A</span></div>
+        </figure>
+        <div class="bio">
+          <p>I'm a Computer Engineering graduate from Manila who ended up in the edit bay, and I treat an ad like a system: the hook has one job, the body has one job, and every cut earns its frames or goes.</p>
+          <p>At CAPT I ran edits end to end: storyboarding with the team, organizing multi-camera footage, cutting for each platform and doing final quality control on every render. Since April 2026 I've worked freelance for international e-commerce and media clients, building AI footage and voice that sits cleanly next to real UGC.</p>
+          <div class="tl" role="list" aria-label="Experience timeline">
+            <div class="ruler mono" aria-hidden="true"><span></span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
+            <div class="trk" role="listitem"><span class="mono idx">V1 Edit</span><div class="lane">
+              <div class="clip" style="left:18%;width:66.5%"><b>Video Editor and Lead Creative Director</b><span class="mono">CAPT, remote. Nov 2022 to Apr 2026</span></div>
+              <div class="clip on" style="left:85%;width:15%"><b>Freelance AI Editor</b><span class="mono">Apr 2026 to now</span></div>
+              <span class="ph-line" aria-hidden="true"></span></div></div>
+            <div class="trk" role="listitem"><span class="mono idx">A1 Study</span><div class="lane">
+              <div class="clip" style="left:0;width:100%"><b>B.S. Computer Engineering, Polytechnic University of the Philippines</b><span class="mono">Graduated 2026. Cisco certifications, embedded systems and IoT, SQL</span></div></div></div>
+          </div>
+          <div class="cta"><a class="btn" href="https://drive.google.com/file/d/1yO_P7gVhnf2Oc7hO7VSqdDuq7Q4NFhAu/view" target="_blank" rel="noopener">View résumé</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2>Let's <em>create.</em></h2>
+      <p class="sub">Send the brief and a reference ad. I'll reply with turnaround and a plan for the hooks.</p>
+      <div class="slate mono" aria-label="Project slate">
+        <div class="clapper" aria-hidden="true"></div>
+        <div><span>PROD.</span><b>Your next batch</b></div>
+        <div><span>EDITOR</span><b>E. N. Paz</b></div>
+        <div><span>FORMAT</span><b>9:16, 1:1, 16:9</b></div>
+        <div><span>TAKE</span><b>01</b></div>
+      </div>
+      <a class="mail" href="mailto:eng.paz025@gmail.com">eng.paz025@gmail.com</a>
+      <ul class="cinfo mono">
+        <li><a href="tel:+639397850255">+63 939 785 0255</a></li>
+        <li>Manila, Philippines</li>
+        <li><a href="https://drive.google.com/drive/folders/1M78IYuxzJmEmbUCunuegp6gMckx35Gz3" target="_blank" rel="noopener">Full library on Google Drive</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap mono"><span>© 2026 Eliaz Naimiel G. Paz</span><span>Edited, not templated.</span></div></footer>
+
+<nav class="scrub mono" aria-label="Page timeline">
+  <span class="tcode" id="ptc">00:00:00:00</span>
+  <div class="rail" id="rail"><span class="fill" id="pfill"></span><span class="head-mk" id="phead"></span></div>
+  <span class="lbl" id="plbl">INTRO</span>
+</nav>
+
+<div class="cur" id="cur" aria-hidden="true">PLAY</div>
+
+<dialog id="dlg" aria-label="Video player">
+  <div class="player">
+    <div class="frame" id="frame"></div>
+    <div class="pbar">
+      <div><h3 id="ptitle"></h3><p id="pclient" class="mono"></p></div>
+      <div class="acts">
+        <button class="pbtn" id="orient" type="button">Landscape</button>
+        <a class="pbtn" id="popen" target="_blank" rel="noopener">Open in Drive</a>
+        <button class="pbtn" id="pclose" type="button" aria-label="Close player">✕</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const V = [{"id":"1bTSQY3HWbiilTfebibFRQVZo2lBsuvUw","t":"Batch 222, hook 1","c":"featured","cl":"Nomend"},{"id":"11rcN0gVOQkv9H2SZIYSmzlUBPhei8KZH","t":"Batch 234, hook 4","c":"featured","cl":"Nomend"},{"id":"1iLxm16rPOq_wSJBML3d1E8RTp2zyez0-","t":"Batch 358, hook 1","c":"featured","cl":"Nomend"},{"id":"1BmJvHs9WzlUFyLpvTAmNmxYdIiJeAFDx","t":"Batch 391, hook 1","c":"featured","cl":"Nomend"},{"id":"1eopmHiocn8xRLJ1YXi_3bR6PmsMeECGd","t":"Batch 404, hook 1","c":"featured","cl":"Nomend"},{"id":"1oVK82TThBmJxo-H9exLvB-nkcuKmAq9y","t":"Batch 406, hook 3","c":"featured","cl":"Nomend"},{"id":"19lCidHRlhB3nKoPDg7ZayCPK-ZkWDRJR","t":"Aged Garlic AI, batch 1","c":"featured","cl":"DTC brand"},{"id":"1mOvVX3mijz_CTsOSRGVfWZZw-naWwcf-","t":"BOF / Colors Wont Last Scarcity hook 1","c":"featured","cl":"PEAKSTA"},{"id":"10NZ2VRGJ1FP2CJG85WDzzvZsYlQIAjTQ","t":"BOF / Flight Attendant Crew Tip hook 1 UGC","c":"featured","cl":"PEAKSTA"},{"id":"1u2YEnjwl6WQ6SQYuZcMAL6mjetNIFMw1","t":"Exchange Life Keychain Trial v7","c":"featured","cl":"Exchange Life"},{"id":"1LbnP0Hkjo-iK8afa7YuF07GsXmM4iYMw","t":"Exchange Life Talking Head Trial","c":"featured","cl":"Exchange Life"},{"id":"17thHP-ruLnpRZ9JJMlO5b4vQFx2KR5Cm","t":"Batch 236, hook 3","c":"vsl","cl":"Micro drama"},{"id":"1N0Myf1-u2ESr4raFgXmJ_zHfvG8-EGq2","t":"Batch 421, hook 2","c":"vsl","cl":"Micro drama"},{"id":"1wTojcVANI7DDii6eSf5d58YFituvGv_U","t":"SAVARY 19","c":"featured","cl":"Savary"},{"id":"1oM6QeFodPEz0EBGYmm3isX6L01lSWJZt","t":"Impact Clients Test Job","c":"trials","cl":"Test project"},{"id":"1inJfIXo5-LBTaj4OR6tCMgVzp1EZxdDD","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"trials","cl":"Test project"},{"id":"1jRqxWpGF_Z7kQZVTIIAPz_1UR4o0ExVH","t":"Dish 1 - Garlic Chicken Fries","c":"food","cl":"Menu montage"},{"id":"1wvcrtWv_OijxZk6lsAzogM94tvVB2qJy","t":"Dish 10 - Ube Tres Leches Cake","c":"food","cl":"Menu montage"},{"id":"1260v4Uw0Rb8TPNfjhMGH_DgSL1ntf3az","t":"Dish 11 - Wings","c":"food","cl":"Menu montage"},{"id":"1bzTq_gI3YIO-prmxExo2XG_kyqLzpo3I","t":"Dish 12 - Sisig Fries","c":"food","cl":"Menu montage"},{"id":"1BVL-V8-EJbW99KV-hYtZbM8UaYXLgg1v","t":"Dish 12 - Sisig Fries","c":"food","cl":"Menu montage"},{"id":"1h_pZOBlbfLaYkCRgGbVt3LstHGFX7fZU","t":"Dish 13 - sisig tacos","c":"food","cl":"Menu montage"},{"id":"1chS6PacnDUQ24qpjO3WcUg3jIrXD9zDm","t":"Dish 14 - Chicken Katsu Plate","c":"food","cl":"Menu montage"},{"id":"1cby4wraTrZdL33taocD3vK3DJhsLeF38","t":"Dish 15","c":"food","cl":"Menu montage"},{"id":"1riavPZmGFlSXo9ShTAhIwZw0QmVKp79S","t":"Dish 16","c":"food","cl":"Menu montage"},{"id":"1LCmKddNH_Ln4tuFibjm0foNroXCuPDWD","t":"Dish 17 - Sisig Plate","c":"food","cl":"Menu montage"},{"id":"1rHy3qjhX7gszEPy08GKSeVVoNDCBCPqh","t":"Dish 18 - Adobo Plate","c":"food","cl":"Menu montage"},{"id":"1f6HcdSLRZJyz5H-0MPZj9g4tSEVDUKOl","t":"Dish 2 - BBQ Beef Short Rib","c":"food","cl":"Menu montage"},{"id":"1_YZsNB-tvF7GoD8O8c9-gShFPdgHpV6n","t":"Dish 3 - Pandan French Toast","c":"food","cl":"Menu montage"},{"id":"1Urb44MhwboE4ii8wQuPcxDZzGuMn91Bg","t":"Dish 4 - House Salad","c":"food","cl":"Menu montage"},{"id":"1Q1IMfD_EAN7DH-YadC9TRW7uQaButBhE","t":"Dish 5 - Popcorn Chicken","c":"food","cl":"Menu montage"},{"id":"1cz5lVDtD46DZpwcT09aRi623WbfgwAP2","t":"Dish 6 - Pork Lumpia","c":"food","cl":"Menu montage"},{"id":"1ae_TufYGUH0Pre6SP3PNZTgfVKhv5ftS","t":"Dish 7 - Crispy Garlic Tofu Plate","c":"food","cl":"Menu montage"},{"id":"1hET3bgofi4HcAzzAK7xfkH-0tdEmEabd","t":"Dish 8 - The Oribello Burger","c":"food","cl":"Menu montage"},{"id":"1RStuvaAqIMPEUEXvA8smA6AtfOeyAuLl","t":"Dish 9 - House Double Burger","c":"food","cl":"Menu montage"},{"id":"1cZfSCUzrYd6IsSVaXBTFuMok7XwtedgM","t":"Dish 1 - Garlic Chicken Fries","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"19Vz0OBeofeTke1leofCtwO3Q2G8S8qlR","t":"Dish 10 - Ube Tres Leches Cake","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1bRrACl16sDiDRhG3nwpnBl1uFkAFzmqX","t":"Dish 11 - Wings","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1Uz2mStZRgz4U16qihW7GKFXbXaJ0jgzV","t":"Dish 12 - Sisig Fries","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1rZDSFQzzLtz44tUySYEPp4H0BKLxCoGN","t":"Dish 13 - sisig tacos","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1kO9HCTNGoj0o-FGXquaCcllNgNO9KmTe","t":"Dish 14 - Chicken Katsu Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1xRTX7TA6L6MulUXR6TbX9OTKntsH8iWa","t":"Dish 15","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"15KGbck2RCA7D_2WiPu3s3vPt4BHZz83K","t":"Dish 16","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"15SmMBnLjk4L3eaiEWZFXv5hLHYNU4WMH","t":"Dish 17 - Sisig Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"165ku7NwmlAdkWyQADJ8Q_Jn5AFxED9Lc","t":"Dish 18 - Adobo Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1v26S0th2KefHy1g7SwJJIdSoEDmsMxOS","t":"Dish 2 - BBQ Beef Short Rib","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1DQ6OIv-vEJE1sInaEWHK6TyRr5qamexY","t":"Dish 3 - Pandan French Toast","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"18OLW36MI1mLamol_gj01Gg0XxmprqW1N","t":"Dish 4 - House Salad","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1sp-bHSVCKePYi3mp-IKzt9AwFJhJoK_Q","t":"Dish 5 - Popcorn Chicken","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1jsGKGIGg962rtaRjFUc7DNx79ZXVEhjM","t":"Dish 6 - Pork Lumpia","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1PtPAqMGdekpB-eXSN5dvSCTparyPETE5","t":"Dish 7 - Crispy Garlic Tofu Plate","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1KgM96bCpiMg4wlGKpsQGBnlNBJr2enXh","t":"Dish 8 - The Oribello Burger","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1cVkw0owskGsKnonqpo_qQolqcW2GTUq0","t":"Dish 9 - House Double Burger","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1y6Jsup92Rrc2nautAlE1xSwAgHkZpBtQ","t":"Trial Day 1, M1","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1EU9l3gc1MTD1QjbKq6KNjl3zfXw19Wr5","t":"Trial Day 1, M2","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1oS8ZNdrUEXHZZ4QQE7toxAuT9jyQBzbq","t":"Trial Day 1, M3","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1MKaKNUFXbdmi8Gvi8nkmOH4IHD81JVgb","t":"Trial Day 2, M4","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1crg_R_oB0P50TgVdubPEDBZ6WhgK6XF8","t":"Trial Day 2, M5","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1zF1CBsL8ail61t4PD2HEwcTMnbfaXwoV","t":"Trial Day 2, M6","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1j0m0fETEa6OCM3whZ6wffQP6cRLpoCq-","t":"Trial Day 3, M7","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1TFFHeBxtWGi-nhnd2KPxNnPmmhbVRjEg","t":"Trial Day 3, M8","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1TxgqR2lHAzBf6FrL8IYQao0SUUXXQzo9","t":"Trial Day 4, M9","c":"food","cl":"Oribello's Kitchen + Bar"},{"id":"1h6uzowzhah4vadNKxPMKqruevl2ItXeT","t":"BOF / Colors Wont Last Scarcity hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1pYqM_9ATzQfFEsvfAgM-7HfPVtz4r2pO","t":"BOF / Colors Wont Last Scarcity hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1s1dhgqQV_n370PcczHXHlJN_LOQbxaIs","t":"BOF / Flight Attendant Crew Tip hook 1 UGC","c":"ads","cl":"PEAKSTA"},{"id":"1z-4nncVQ_er6oNeebGhbg00L2bfBGlmw","t":"BOF / Flight Attendant Crew Tip hook 2 UGC","c":"ads","cl":"PEAKSTA"},{"id":"1APHwMz3nmgyUJ37-is8AwrU4EZ7aEjow","t":"BOF / Flight Attendant Crew Tip hook 3 UGC","c":"ads","cl":"PEAKSTA"},{"id":"10EwRKZxxXKM9AlisVebx0bxGh6VeNNmh","t":"BOF / No Risk All Bag Risk Reversal hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1X79lRPtgz18D1DOqLKRLgGCOSmeTIHBe","t":"BOF / No Risk All Bag Risk Reversal hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1l7ONQMLYfG0V4Cx1LF45bQtPV7m8BLLD","t":"BOF / No Risk All Bag Risk Reversal hook 3","c":"ads","cl":"PEAKSTA"},{"id":"18slGGkF-WqFOcEPKaMTudn7QGUzOEjGR","t":"BOF / Shipping Fear Answered Review hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1cT3_L1-D0rN1MIvLav8WBvXMTdaiEt_B","t":"BOF / Shipping Fear Answered Review hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1O7wW0gzlRkEwijVU7K7PASpmEnKLeeg5","t":"BOF / Shipping Fear Answered Review hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1jj_z6S0-irOfPtrKpRRVELeofCu5YwyJ","t":"MOF / Fast Delivery Rebuttal RT hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1vUDt3feUvbRlk-frwkim4U46X6iRsfUv","t":"MOF / Fast Delivery Rebuttal RT hook 2","c":"ads","cl":"PEAKSTA"},{"id":"13_wOjevj2HiaETZSNi2xCYXk9gKIrS93","t":"MOF / Fast Delivery Rebuttal RT hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1aC9251OocgdazOD4VZgRx9zf_cvcSTxC","t":"MOF / Testimonial Montage First Theft hook 1 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1QPAOQOZ7WKPOONkTLw1h_U1bivUmNklE","t":"MOF / Testimonial Montage First Theft hook 2 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1Zs0JnMEgVa6YAV9cMd8Lj2BFxjFyGFib","t":"MOF / Testimonial Montage First Theft hook 3 VSL","c":"ads","cl":"PEAKSTA"},{"id":"1s84AjZPn75GxOZauZpD1775ftn5sKNaI","t":"MOF / Uber Scanner RFIDDemo hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1KsuPHxfGVpWcR-VRuyQPN0YvDRfSg-Cx","t":"MOF / Uber Scanner RFIDDemo hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1EX4VO1mGDfijDCk-lKhiK8negnCSfGPT","t":"MOF / Uber Scanner RFIDDemo hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1BsCrL7MwCHPEthpytWCwX7VYn-t5i9TT","t":"SC2 MOF / Petite Strap Mirror Test hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1-uRWur5GsM-eAZ1H9sqm92jW26fE3qMd","t":"SC2 MOF / Petite Strap Mirror Test hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1ShMlqX7-sGtgcpYl9pOdr_1uT6flipGW","t":"SC2 MOF / Petite Strap Mirror Test hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1HcwoDp6I1DA7Z-zne5UFKCV2KOpzZIn_","t":"SC2 MOF / Scanner Test Own Cards hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1SRwoUKFqLvQgDDxDnmGJntkuxa1iXIL4","t":"SC2 MOF / Scanner Test Own Cards hook 2","c":"ads","cl":"PEAKSTA"},{"id":"10xzIRBlmo_c-Js4bLiMZQXQ_Wdly7lNn","t":"SC2 MOF / Scanner Test Own Cards hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1RKUfFR-56ItEDqgbd8O6YN131OWWQ0PW","t":"SC2 MOF / Sister Swore By Phone Pile hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1jMPm3FbZWwHZ835H3dN_D-lxinwN1p5z","t":"SC2 MOF / Sister Swore By Phone Pile hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1iHGdReT6dK-h7twIQNwHUY53baRoO7wb","t":"SC2 MOF / Sister Swore By Phone Pile hook 3","c":"ads","cl":"PEAKSTA"},{"id":"13IrUYDuTqDFJlt58gPSMtTGsMmYR-V6R","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1uT3MxyLoAZqzJduLNtwWQ7fn98QdcXFD","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1NJpa1xDibhOATeLmUHv-SU86trEI17MI","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1UnhiDbdwJCP2dHKorfWhMHaXDDRDcoUC","t":"TOF / Gate To Gate Terminal hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1NURjVk3C0pHEr2-6gKyXAp1aIJfP_I6z","t":"TOF / Gate To Gate Terminal hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1B3561YVJAQf38FoKUVUzBop8cwVF3QCr","t":"TOF / Gate To Gate Terminal hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1OV8feOGtJOQk1xRSzDprzmnpLecylLTK","t":"TOF / Wear It Four Ways Versatility hook 1","c":"ads","cl":"PEAKSTA"},{"id":"1pe0_gysylN7kBcydQfuarhZepED1dBT0","t":"TOF / Wear It Four Ways Versatility hook 2","c":"ads","cl":"PEAKSTA"},{"id":"1duqlEBi4rm9Y2UT0B3-h36y6js5zWoxV","t":"TOF / Wear It Four Ways Versatility hook 3","c":"ads","cl":"PEAKSTA"},{"id":"1Oiklmye6EQmOyX-Bog_dtfjh-TsRv_Nv","t":"3 Best Foods for High Blood Pressure 1080p","c":"ads","cl":"PGA"},{"id":"1Ynb9XAhhlGx0Qh23McqXijtGsEr3vxt0","t":"B2C1.JAPANESE DOCTOR hook 1","c":"ads","cl":"PGA"},{"id":"1jgmvhlYVPFnnejDVmIjmWCtlLE5bmDgK","t":"B2C1.JAPANESE DOCTOR hook 2","c":"ads","cl":"PGA"},{"id":"1vjmMk6m6CWiRcyTjvZBKI0LhM8ESGMMj","t":"b3c1","c":"ads","cl":"PGA"},{"id":"1ZgsxSd3NK4XX1O_udCHVpm0nu6nzfQv5","t":"BOF / Flight Attendant Crew Tip hook 2 UGC","c":"ads","cl":"DTC brands"},{"id":"1uJbfEo-JpKps6zP6WjFyj9WpjU8E2Tjg","t":"BOF / Flight Attendant Crew Tip hook 3 UGC","c":"ads","cl":"DTC brands"},{"id":"1HY3hD8o2uBARdmkrobl5yfjvd2uVzk6U","t":"BOF / No Risk All Bag Risk Reversal hook 1","c":"ads","cl":"DTC brands"},{"id":"1Y0zJneybnjV_bbadcE3ewv4YLeoDBLbJ","t":"BOF / No Risk All Bag Risk Reversal hook 2","c":"ads","cl":"DTC brands"},{"id":"199sfPRAbczQUe7Rj4wvVOTQj-l4rOcsd","t":"BOF / No Risk All Bag Risk Reversal hook 3","c":"ads","cl":"DTC brands"},{"id":"19L2kGzfOT1K72GduBBEEE4DJzyvkMFIm","t":"BOF / Shipping Fear Answered Review hook 1","c":"ads","cl":"DTC brands"},{"id":"1ye8bTTwsQsSOpOs2vTm4g2bFR7FNpyr9","t":"BOF / Shipping Fear Answered Review hook 2","c":"ads","cl":"DTC brands"},{"id":"1Ed0nL9ZPJ6ASf-GTGhSn-Vk0cPLvGlUS","t":"BOF / Shipping Fear Answered Review hook 3","c":"ads","cl":"DTC brands"},{"id":"1Hv-U1INwD0EwcziKVrmUv1pkEQIGLuS4","t":"(VERSION 2)B2C1.JAPANESE DOCTOR hook 1","c":"ads","cl":"DTC brands"},{"id":"1cCg7VeQ3KDMFQX741qle2z6lqkjmLXli","t":"(VERSION 2)B2C1.JAPANESE DOCTOR hook 2","c":"ads","cl":"DTC brands"},{"id":"1yh8nO4fXG4v_zB1IufC_xwso3eMz-5mV","t":"B1C2.BLACK WOMEN STRUGGLE hook 1","c":"ads","cl":"DTC brands"},{"id":"1HFP-lHIQeoiiOa3NOpnZT-7eTZCqEHpM","t":"B1C2.BLACK WOMEN STRUGGLE hook 2","c":"ads","cl":"DTC brands"},{"id":"1gGXxtCrKwSfAJPFRp38_O9jbPYh3BcdL","t":"B1C2.BLACK WOMEN STRUGGLE hook 3","c":"ads","cl":"DTC brands"},{"id":"1m_kdSFugmPuoZKIx2hQa2xdZrS9UC_T2","t":"B1C3.HEART ATTACK","c":"ads","cl":"DTC brands"},{"id":"10kUiX1AfExOyal_8T2gun7X-hSSIqNVS","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 1","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H1_azaz8f"},{"id":"10D9TmojuKvBd68QFsMGV9-d-Kf7mq4fF","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H2_c6zb54"},{"id":"1bX8nsDi9k869JgBcuHaMvTe4iH-Dvnyq","t":"B2C2.WHAT HAPPENS WHEN YOU TAKE AGED GARLIC FOR 2 WEEKS hook 3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H3_wnvc0n"},{"id":"17M0zz5lbfZu5srWf9P4Dl_zSLcyy447Y","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 1","c":"ads","cl":"DTC brands"},{"id":"1qH1dbYdv_BtpWOUiCS2XSqBS-_z_Ailn","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 2","c":"ads","cl":"DTC brands"},{"id":"1v6bRP9GiWgM5SzVG2jlpPVpMFme6d0Pu","t":"B2C3.BE CAREFUL IF YOU START TAKING AGED GARLIC hook 3","c":"ads","cl":"DTC brands"},{"id":"1sC_u9_S85lWT1sP1VKH_enb1NfVI1-Zc","t":"B2C4.BANNED DOCTOR hook 1","c":"ads","cl":"DTC brands"},{"id":"18-V_IxFQ4gA8hI-UNIY7RBkOFvNAxH0O","t":"B2C4.BANNED DOCTOR hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/B2C4.BANNED_DOCTOR_H2_qbohk8"},{"id":"18jxqPkOsesrh9elfEkDREO0lEIDbD_zw","t":"B2C4.BANNED DOCTOR hook 3","c":"ads","cl":"DTC brands"},{"id":"1HOV1iD6xmcc4gW7ewlWPqN65oCb3Zj23","t":"B3C1.RUINED MY FATHER'S LIFE","c":"ads","cl":"DTC brands"},{"id":"1SvdXES2kHdOK5FdYxbjPb2KkTRkbUGFW","t":"B3C2.BEST FOODS FOR HIGH BP hook 1","c":"ads","cl":"DTC brands"},{"id":"1IbCr5uWtHgktiLRDEXARjGxe25iJjJRV","t":"B3C2.BEST FOODS FOR HIGH BP hook 2","c":"ads","cl":"DTC brands"},{"id":"1QLx4gdiJpG43ks0ckMDmB4vqOqhRGxSp","t":"B3C4.AGED GARLIC KILLED MY DAD","c":"ads","cl":"DTC brands"},{"id":"1GLE3yjyICqbDiWCg_HcweIMvCfnWFiUY","t":"B4C2.ROOT CAUSE OF HIGH BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1dyjTj_Y8X5KyYLiRomZOVKpcte0Op7L5","t":"batch1 Aged Garlic AI","c":"ads","cl":"DTC brands"},{"id":"16V4fHAw03koOFArJXsT8cYUHQbm4ZPlL","t":"BOF / Colors Wont Last Scarcity hook 1","c":"ads","cl":"DTC brands"},{"id":"1yqWXsS_ynUpNkTA_0dKHtV5VWVZ18yY1","t":"BOF / Colors Wont Last Scarcity hook 2","c":"ads","cl":"DTC brands"},{"id":"1jdzYBL2yQG8RWs7UlXQXyN99el_o3QOg","t":"BOF / Colors Wont Last Scarcity hook 3","c":"ads","cl":"DTC brands"},{"id":"13yW5AjR_dMVhbyklY5aHCOE5CDx3d78G","t":"D3C3. ERECTILE DYSFUNCTION hook 1","c":"ads","cl":"DTC brands"},{"id":"1MUDKF_caTxt0bqv3EXRhZY2kjsO4_zSs","t":"D3C3. ERECTILE DYSFUNCTION hook 2","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/D3C3._ERECTILE_DYSFUNCTION_H2_xbfsci"},{"id":"1_xIyxgqjf6T9k6DwbB4u2phagb4pLILa","t":"D3C3. ERECTILE DYSFUNCTION hook 3","c":"ads","cl":"DTC brands"},{"id":"1ibbiYtXE-vNviL4rt9P9DQdLI2Q-52pM","t":"D4C1","c":"ads","cl":"DTC brands"},{"id":"12KmR9WKidZzF4fHz2BFM0lSW-WXiRRg2","t":"D4C3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/D4C3_tl67cj"},{"id":"1ZjmkcqszXwlF4URpR2S4Hyxb2eWujHIt","t":"Solsone","c":"ads","cl":"DTC brands"},{"id":"1kILmDr7QmECjFQ3nr_cCJdh92KQk1-95","t":"W1B1C2. BREAKING NEWS hook 1","c":"ads","cl":"DTC brands"},{"id":"1aMqk-1tt_U14Bao_219hcKue_wsJARse","t":"W2B1C1.DOCTORS ARE LYING TO BLACK WOMEN hook 1","c":"ads","cl":"DTC brands"},{"id":"1OPRsrZva4eC3UbOl4rEdLumtkd1dIfwi","t":"W2B1C3.ASIAN SECRET TO LOWER BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1lxVW3aspFVxH-QrRC4TZlPHT02mFEcOd","t":"W2B2C2.APOLOGIES","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/W2B2C2.APOLOGIES_di3scn"},{"id":"1-zkodrKnhcApt7SAmj2nthWsNJK1QV_U","t":"w2b2c3","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/w2b2c3_jzp9r1"},{"id":"1hChInyoW-jd4G-QHRqbTddDHKY7-v3r1","t":"W2B2C4","c":"ads","cl":"DTC brands"},{"id":"1PR7Kxc_APziCMytZSAhjNSf03gLNJGP9","t":"W2B3C2.TIBETAN HEALER REVEALS THE HIDDEN NITRIC OXIDE CAUSE OF HIGH BLOOD PRESSURE","c":"ads","cl":"DTC brands"},{"id":"1_iCeVlFDnKRifYbd_KS5uLhsdJ88Xk5p","t":"KIDORIMAN TRIAL TEST","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/KIDORIMAN_TRIAL_TEST_fc9qkd"},{"id":"15Jj9ZlbPxLEtZ_6fgTT_j1bBCi0WVznh","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"ads","cl":"DTC brands","cv":"SHORT%20FORM/ADS/KIDS_ENCYCLOPEDIA_TESTJOB_fkfjs0"},{"id":"1jgrQb0PAkajW0Eep_TtPggQ4ukUcZOky","t":"MOF / Fast Delivery Rebuttal RT hook 1","c":"ads","cl":"DTC brands"},{"id":"1vOe4y6sgbcP78a3kN75XBRRyhndSf8Ul","t":"MOF / Fast Delivery Rebuttal RT hook 2","c":"ads","cl":"DTC brands"},{"id":"16ov-W0dV_YPPm7m9zC9TbidXco0OxjUH","t":"MOF / Fast Delivery Rebuttal RT hook 3","c":"ads","cl":"DTC brands"},{"id":"1jNVb4XgXL5kqhKkwZ8jV4zxmYXHtYq9_","t":"MOF / Testimonial Montage First Theft hook 1 VSL","c":"ads","cl":"DTC brands"},{"id":"14juQXXE0Fe4TH_K3fyM4qgA4FC52hSb4","t":"MOF / Testimonial Montage First Theft hook 2 VSL","c":"ads","cl":"DTC brands"},{"id":"1p5kLIzP1mMrgQ0xbjsuPqWfgDJLZxIZp","t":"MOF / Testimonial Montage First Theft hook 3 VSL","c":"ads","cl":"DTC brands"},{"id":"1fMMdFyVG_8HmXQMN9InPyqxuJJriEAzs","t":"MOF / Uber Scanner RFIDDemo hook 1","c":"ads","cl":"DTC brands"},{"id":"1HUmWoiJFPu0w-KB9qEjjmw4n5ogedIMU","t":"MOF / Uber Scanner RFIDDemo hook 2","c":"ads","cl":"DTC brands"},{"id":"1UZ98OH-s3x3CGo8dJMV_oKDHYvelY_lj","t":"MOF / Uber Scanner RFIDDemo hook 3","c":"ads","cl":"DTC brands"},{"id":"1O8fR-6ArXxSySpTkZB0QV_Pz4kB-4nLx","t":"SC2 MOF / Petite Strap Mirror Test hook 1","c":"ads","cl":"DTC brands"},{"id":"14XwULWnHyCW5YrZxYAYvn9iFs0RQ_Q-n","t":"SC2 MOF / Petite Strap Mirror Test hook 2","c":"ads","cl":"DTC brands"},{"id":"1-N13hICY0YDM-l2v7Ye2HeU7pNTatg5k","t":"SC2 MOF / Petite Strap Mirror Test hook 3","c":"ads","cl":"DTC brands"},{"id":"1uz0e6Z49gkvv0mUST2Wr2urtzgvnZVHf","t":"SC2 MOF / Sister Swore By Phone Pile hook 1","c":"ads","cl":"DTC brands"},{"id":"1ONBaO3sTATfOjVrJTsM2U9JvHfVEGlh5","t":"SC2 MOF / Sister Swore By Phone Pile hook 2","c":"ads","cl":"DTC brands"},{"id":"1n4FL7L0CuTfMugSERz-BKBb8OmybcsDq","t":"SC2 MOF / Sister Swore By Phone Pile hook 3","c":"ads","cl":"DTC brands"},{"id":"1UiuIIxRfJ5CV2PyFi9gycQB6_6dc9gBj","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 1","c":"ads","cl":"DTC brands"},{"id":"1WoqQt309ZjUUS99Yq1ngOZ9ycIhEP-VX","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 2","c":"ads","cl":"DTC brands"},{"id":"18SSMitjoinqf5n4zsqoFqe0f5hpd-ER2","t":"TOF / Built Compact On Purpose Water Bottle Preempt hook 3","c":"ads","cl":"DTC brands"},{"id":"1kHnP3RVMMXhe5Jk2Df0nDZu4H2D9fa8E","t":"TOF / Gate To Gate Terminal hook 1","c":"ads","cl":"DTC brands"},{"id":"1syy9r6M8tyDIEkwAauvWfBRa7mTzKLSu","t":"TOF / Gate To Gate Terminal hook 2","c":"ads","cl":"DTC brands"},{"id":"138ubmp-qroypbAPHNqxSE6pUB2vBJO_m","t":"TOF / Gate To Gate Terminal hook 3","c":"ads","cl":"DTC brands"},{"id":"1CsVoFTmimZtwL5tkrik_J_EGo1zjOUbK","t":"JJK GYM ROUTINE FINAL","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/MEMEL_-_JJK_GYM_ROUTINE_FINAL_o5hqku"},{"id":"1Yaj7Y7haJGbmkDwbDos6safWXRVTYO_b","t":"OP GYM ROUTINE PRODUCT","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/OP_GYM_ROUTINE_PRODUCT_g1osry"},{"id":"15aYUpwC6EN-9IDKLpTzKbvV-D3Deh3Ft","t":"Introduction FA Fitness","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/Introduction_FA_Fitness_ejvqhg"},{"id":"15JZkjacJnI99csfASoR3GOrOcvJF6Fpk","t":"MW2 SHORT 5","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%202/MW2_SHORT_5_vg8mzr"},{"id":"10iv-rSWxzG1JANPPp7SRC5Kywh6ZrL35","t":"MW2 SHORT 6","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%202/MW2_SHORT_6_pcnrwl"},{"id":"1h2K0XXCjUaOQIPVlk1StBDIPxZldlgjm","t":"MW2 SHORT 9","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week%203/MW2_SHORT_9_usajn4"},{"id":"1O17r8xCv5jYLat1RDB-MYAlspmZMqQiz","t":"MW4 SHORT 14","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/MW4_SHORT_14_d8vonk"},{"id":"1bSychFiaZMaRuA6K-D87mNSLCmlr8ezM","t":"SHORT 13","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/SHORT_13_z8uwbe"},{"id":"1ckEG_hzQUpf9famE0EkaUHrpOI2SMs5H","t":"SHORT 14","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/WEEK%204/SHORT_14_ksrswf"},{"id":"1irEswXPPYCGTc8bZFDH3jOs_mYV2igcm","t":"Fitness short","c":"social","cl":"Fitness creator"},{"id":"1mvgEQhiHYYDgr3pkWhw_XESzg0L9i0kC","t":"MW1 SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/MW1_SHORT_1_pcicja"},{"id":"1YB5YPDC8F6-M-DHfmaCQfUDXd4BrBsMm","t":"MW1 SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/MW1_SHORT_2_u1ijad"},{"id":"1B8FKeauwu6I1BZlpSwnWLzgyDrJCUTc3","t":"short 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/short_1_q8hlss"},{"id":"16a4QhaIRMfBBH0s7RtZ-YXXIRHBtmu1e","t":"Short 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/march/week1/Short_2_rucim5"},{"id":"1oJZkWp9S14ZK3kICJ9u5WQc0uEqMsgzk","t":"SHORT 7","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_7_czdyyg"},{"id":"1e_I5prB0tfGFvLB-HMDMnNFxnrnqgLR3","t":"SHORT 1 The 60-Minute Myth","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_1_The_60-Minute_Myth_lkcvlj"},{"id":"1UVB8S0HQjp416dcJcitXB-OS7OmOxu6z","t":"SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_1_k1qlsa"},{"id":"14Ik0ewy-L8RyTIG87GiYrc45JewE6Wt4","t":"SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_2_u6oj0a"},{"id":"1DOzIDDqWoJxayn1nmkn6y86JD5oGz-SX","t":"SHORT 3 - The Accountant Reframe","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_3_-_The_Accountant_Reframe_lmj3xz"},{"id":"1I-80pN57xNyVklkiY7XpiyTQHKGUwaSv","t":"SHORT 3","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_3_bu372o"},{"id":"1-IKKhUuxMsf0_mjZRDKMlyZ2IFes83jj","t":"SHORT 4","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_4_f3e9fy"},{"id":"1RG6Id1NrhxcV5PCVQzxWCnkQ4-cRavrv","t":"SHORT 5 - The Mechanical Tension Secret","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_5_-_The_Mechanical_Tension_Secret_c6olhy"},{"id":"1KOgzZiihe4XUawh9YjA77zVOKAgIMPeN","t":"SHORT 5","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_5_tei5pu"},{"id":"1ZgZU4v2b6p7iL8cEy5UTKRmNY509_s3L","t":"SHORT 6","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/SHORT_6_klaeqe"},{"id":"1ZlfKunyEPMvE37wbE2zCq6loPRWljs8w","t":"SHORT 1","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_1_jupkwd"},{"id":"1MaEOXQlA9RrpRwq7S6CS8zPXVomUUELL","t":"SHORT 2","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_2_vddsle"},{"id":"1y-3EwcH-9Asbbwda6knv06MAOwQEqadb","t":"SHORT 3","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_3_rebkrj"},{"id":"1q024-rkX48rUTLZpTJw2eqOk7xjpvleD","t":"SHORT 4","c":"social","cl":"Fitness creator","cv":"SHORT%20FORM/FITNESS/WEEK%204%20REVISED/SHORT_4_eov1sf"},{"id":"18zwGi_c5Qu5jMFhpv0OKClDrqRP_LbKY","t":"M1","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M1_cpkan1"},{"id":"1I7oEsIVXW54Iv3Fd7E7-ep1z6IQ7Ofzd","t":"M2","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M2_ojai4k"},{"id":"1zqlHKiS0NEBCjYTG6MPFRN0Fp1abST3n","t":"M3","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M3_zvam0d"},{"id":"1gAdqdWOXfS92rwBZYhR8y6o2ifwhRblh","t":"M4","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M4_fvb7ce"},{"id":"1pbH5wlTMsOQ1q8P52-db7gE3EPhSQuD7","t":"M5","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M5_xczb63"},{"id":"1VD0AHeiX8I5d8cn6IX8ls28wlfqbcXIa","t":"M6","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M6_yfh2np"},{"id":"1ca7d7QKRgEdIP6xua1gE0-VLtrlBO6Pb","t":"M7","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M7_bezjc1"},{"id":"1thrTTyLbrGxv4b39pdUAH4uz9ieNzkTu","t":"M8","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M8_fanfyi"},{"id":"19ZFlapc3W1jg635-l0-S4TFrG4MLUNtG","t":"M9","c":"social","cl":"Montage","cv":"SHORT%20FORM/Montages/M9_j3bkgi"},{"id":"1-FoyEVOJpDo56kkTPZFzMHNHdet_XmOi","t":"KIDS ENCYCLOPEDIA TESTJOB","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/KIDS_ENCYCLOPEDIA_TESTJOB_hj1nuc"},{"id":"1t8cIHKUWbRKwLL0_oHZwI7SlzOSBJ_FL","t":"Quick Sweep 4","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/QuickSweep_4_qsqzyg"},{"id":"1XE4MEtI42d9CvOyaYC5Hb0gP9ZHJEq5g","t":"SAVARY 1 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_1_with_banner_-_RAIN_jfuy0m"},{"id":"1aV59niu4fk3-uMqqs1Nj_LNpzTlWFCGe","t":"SAVARY 10","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_10_-_RAIN_f8kkz1"},{"id":"1iSi0yWxAjFW4CU35Ra7uvKTEd19GvkuP","t":"SAVARY 11","c":"vsl","cl":"Short-form VSL"},{"id":"1YwL98PfgJQfCmTsvu_TolbVgsF3e98tl","t":"SAVARY 12","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_12_-_RAIN_t5g9k5"},{"id":"1-ymoJPFcAwa24C5SFaGxbFO9xXI0feN-","t":"SAVARY 13","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_13_-_RAIN_vo1dxm"},{"id":"16CF0dkhXrSwCcy15XsSwaWEz-x5AjqUo","t":"SAVARY 14","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_14_-_MAX_ytwynz"},{"id":"1M8Bwt3FdomgtuXyhYPVqK7Vnq0GjTfbu","t":"SAVARY 15","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_15_-_MAX_hbamkg"},{"id":"1u8Msl_vSAL5w7bV-un932drLQHHg6Zwr","t":"SAVARY 16","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_16_-_MAX_kepted"},{"id":"1vZc0qMnP-cF4Ysv3oZvUSjUXdlfnNM5p","t":"SAVARY 17","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_17_-_CHARLES_xefmli"},{"id":"1mJUbRVyH1XujWZiZ1-u0xazD1se_kKJ_","t":"SAVARY 18","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_18_-_CHARLES_e5duod"},{"id":"1WF7qBLIq3xjKePYm4bwnTOyc-TZVyGzY","t":"SAVARY 26","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_26_-_MAX_maqnee"},{"id":"1WL0KiPxXy-goa9IkgFX5N3zfhCg6QWcO","t":"SAVARY 29","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_29_-_RAIN_hige7t"},{"id":"1cr9xro7aa02s4Q-8PWFPqJOgNKSYWUCz","t":"SAVARY 5 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_5_-_MAX_with_banner_vczjwy"},{"id":"1PFBdJDGZWUJyp0bTb1e6pMT5QaM8XoNW","t":"SAVARY 6","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_6_-_RAIN_qtguo9"},{"id":"1f2zWJcvFecznVDyWM9kyk50rjvsp7KEW","t":"SAVARY 7","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_7_-_CHARLES_ay04sj"},{"id":"1Ae1s1mxHNvANL43bKm9vj8PgpdoWrt5C","t":"SAVARY 8 (with banner)","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_8_-_MAX_with_banner_kfmcc4"},{"id":"1UGxXo3qzERZp1EMOgDzBeiVXX57r8oFI","t":"SAVARY 9","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/SAVARY_9_-_RAIN_xhalf6"},{"id":"1NTvIZPwBV7NDAy-P47QAqsQiVUfqZJKl","t":"SHORT 1 The 60-Minute Myth","c":"vsl","cl":"Short-form VSL"},{"id":"1b-CqgN0fokx0ivckmMo_Nz-y4MOslrBR","t":"SHORT 3 - The Accountant Reframe","c":"vsl","cl":"Short-form VSL"},{"id":"19TMQ3nF4Ib1e92Xjh7BE1y-r1VmrN8-9","t":"SHORT 5 - The Mechanical Tension Secret","c":"vsl","cl":"Short-form VSL"},{"id":"1mnYeiETRfLLF-YQS4XQZ-L_FNqfEzg66","t":"Solsone","c":"vsl","cl":"Short-form VSL","cv":"SHORT%20FORM/Short%20form%20VSLs/Solsone_q2y2jz"},{"id":"1L6ycFu8kXTmPD2Y-FkSjU7fi_uyxlVlF","t":"ZYNTRA FINAL","c":"trials","cl":"Trial: 2-part test"},{"id":"14ifN4Z8aqMdXzOqTmlyuAKC9bAG40DDL","t":"Podcast clip, EP251","c":"trials","cl":"Trial project"},{"id":"1z5CMa_TsCIpqMh6MHVe2HUVJbJp5U2Iz","t":"Test video","c":"trials","cl":"Trial project"},{"id":"16R7vQUMqV1jtNCdmRKf0NMgn17F7EGYA","t":"Short Form AI Avatar Best","c":"trials","cl":"Trial: AylexTV"},{"id":"1GOb0ulJtvE5aS3tSpJ9TtwZ9I5DDG09Z","t":"NIUD TEST TASK","c":"trials","cl":"Trial project"},{"id":"1aadmVRrTfL6zLVxqMwsO9O6T5cIQdPzf","t":"Avatar","c":"trials","cl":"Trial project"},{"id":"1OhBqhJi13jFr5W2gk5FbF04wjJ0gCwm8","t":"SCRIPT 1","c":"trials","cl":"Trial project"},{"id":"1gpFTOKZIjs3WE9mP9BzTg1uvPGjzwX9U","t":"SCRIPT 3","c":"trials","cl":"Trial project"},{"id":"1HP6dP4vfSrDpCYWs__e0hXHILLXjCEyM","t":"Script 4 Old lady","c":"trials","cl":"Trial project"},{"id":"1XQXJmBkjfUjcZdio5_WQSGWCna0GrMj4","t":"Script 4","c":"trials","cl":"Trial project"},{"id":"1CnaeDJMnQ-B4yt5jxOMo6LSJsEq7Ll_t","t":"Noralife NO WM","c":"trials","cl":"Trial project"},{"id":"1Ho2eU9d9ZtTbILtl667EcnWgLybzUAq_","t":"Hugaboo Test Trial","c":"trials","cl":"Trial: Hugaboo"},{"id":"1gukO4HGJ769VOmBXxxVVnPCvDIl7ng9J","t":"Purriq Silvervine Sticks","c":"trials","cl":"Trial: Karos"},{"id":"1ay9isNcITEaFyd6l0DloBiLYCrfYM98Q","t":"Trial Edit","c":"trials","cl":"Trial project"},{"id":"1L5iHQ3BDmXRjL9XXZRz_fkPbAYwvOhsN","t":"OP GYM ROUTINE PRODUCT","c":"trials","cl":"Test project"},{"id":"1zSASgchT8lopvoMmwGnUHltCb5aXltcO","t":"RYER FG28 v2","c":"trials","cl":"Trial: Ryer"},{"id":"1fUMEIibaUNPC7x4XFQ6YFqYYaMqaG4oT","t":"SK40 Style2","c":"trials","cl":"Trial: SK Renewal"},{"id":"12WRELWCgYFJ65ve1pxAd6YOUDyOKxf_f","t":"SK40 Style3","c":"trials","cl":"Trial: SK Renewal"},{"id":"1nvWmyE3UP7mJ-ljCtmwXf_rQl5xp5kxL","t":"SK40 Style4","c":"trials","cl":"Trial: SK Renewal"},{"id":"1Z8Ku2IS0GmD795Rbt9mdG1_zkcgsSVGr","t":"Test Video MMC","c":"trials","cl":"Test project"},{"id":"1IcPqBPzqldC_vkXC87e1xb4ruom8jr0-","t":"Pawly Lab Trial","c":"trials","cl":"Trial project"},{"id":"1RhAUWWJDK5tcoSH4g_89gfNofw7nEegP","t":"Colon Animation","c":"trials","cl":"Trial project"},{"id":"13NxYRc0zd3alHgiSotEpTVab8gVUP3Yc","t":"Trial task","c":"trials","cl":"Trial project"},{"id":"1tr0IGm8d_VErecnmMe_6s63IYG2Znopw","t":"Thalique ad","c":"ads","cl":"Thalique"},{"id":"1hpEDBlmyZWgisELM0ltKW0WZ_b5KHL-2","t":"THALIQUE EARCLEANER hook 1","c":"ads","cl":"Thalique"},{"id":"1ekunLgJml5zJouRwJvWJOiPxBTZv9pbx","t":"THALIQUE EARCLEANER hook 2","c":"ads","cl":"Thalique"},{"id":"14m_DwVb2YGT_WN3WlasTL24qgvXHqFLe","t":"THALIQUE EARCLEANER hook 3","c":"ads","cl":"Thalique"},{"id":"1j0Vq6YvUK02X-hPqXmYsiGKZnEyiDEqm","t":"THALIQUE EARCLEANER hook 4","c":"ads","cl":"Thalique"},{"id":"1r6lsV1mBhjEEu_niqrSQodd48pJDXfE9","t":"batch 298 - h1","c":"ads","cl":"Nomend LumaLean"},{"id":"1E0qWAkJ9mDEKap8CqG4Z4lvrcaH2XWfK","t":"batch 298 - h2","c":"ads","cl":"Nomend LumaLean"},{"id":"1p6R5MFYGyIrnuBmzLnbuWnHMnUoHkv-w","t":"Batch 298, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1X827joO0SV0tq2KwrsAnrTZ9nz3ReUCm","t":"batch 300 - h1","c":"ads","cl":"Nomend LumaLean"},{"id":"12fIG4mRtd7J4q33gdI7yLTWAoNlCz63H","t":"batch 300 - h2","c":"ads","cl":"Nomend LumaLean"},{"id":"1kG_H_z5a1CaOHOl-icse3t0zTlqJImUK","t":"batch 300 - h3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XDW_5NrriavL9NiFmRQ1k97R72qKLoeM","t":"Batch 307, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"11VTa5kqBo--1GtFkKzoKGe9oIwp25dWC","t":"Batch 307, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1OqUsSdlcCho6MfysPusri36JU-3jg5Gq","t":"Batch 307, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1PuTGU9bn6DmCrD0WBGA4w1edt9tk8RkU","t":"Batch 308, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1c3Fd_YzVMfkoEt0VVCjXxdiWppBameCn","t":"Batch 308, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"13cfsxLdtJfF2iRtdIWjr5lT9czZGHdCC","t":"Batch 308, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1mFVCnK71Of2HzNVWK6MuZtSIzayGRDsH","t":"Batch 313, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1T0mchucoHEtlKGGVcX98ASI8lwIIcurN","t":"Batch 313, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Tw-fIc2golDb34HZg8068suLcGlOtc1I","t":"Batch 313, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1OFVscHOLvKqkpRnWSmJj1BwFFBAFGD8-","t":"Batch 314, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1CQlaxUUY8Hq6zfYesA4wOpk7I9kwGx2H","t":"Batch 314, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"12RUdLTeXV9YiiBif6xacJI4yJG-N1WSo","t":"Batch 314, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1IZXumuVSXTFg2HzWcNtV5vQM9249Z-LZ","t":"batch315 v1","c":"ads","cl":"Nomend LumaLean"},{"id":"1AnhEmpzLMNDJ8zXfEwRv_BNIoZ64n2rb","t":"batch315 v2","c":"ads","cl":"Nomend LumaLean"},{"id":"1ju-Fd0SyLovW1KIReq0ph-sWBPVyOSux","t":"batch315 v3","c":"ads","cl":"Nomend LumaLean"},{"id":"1SgZgpL8tTyMl5PwnzR64N10gaaELhTJv","t":"Batch 337, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1rDKQOh57_0ZsUWfdtGxqePACpIW4XoEs","t":"Batch 337, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1l29fcZNVoDYNkqeeUlBxGqCE4JN8GRy7","t":"Batch 337, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1QIuGbE2i1TBdA-c0DezKX4zjinGVQImC","t":"Batch 353, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1J8uAb4MtujEEEpaxu3JvCcXT4ly_iQdl","t":"Batch 353, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1q50ewn419Za-BTU_rVCzX0jb0lcDNYoR","t":"Batch 353, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1WkNwgz6DFO-AvscHo98M6lnd7-mD57cD","t":"Batch 358, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1wW2vd-XpXmRTTSZhzveXeliRWFoi8KkB","t":"Batch 358, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1mIqjwfGZe8cOYl0OyhBOvDx_cibMk9R9","t":"Batch 367, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1OSnY1UAHsb9uijEeObuM2S6D7_Vr5Bh0","t":"Batch 367, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Xc9k4Az6etKT3HGIrK0m11IAn1P9Owgu","t":"Batch 367, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1cn54EUuQ5RJjsS4JiDf5B4uPRKCha6Vq","t":"Batch 380, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"16-jcZ8JJWGbWECx01pCpO_AbDcag80LP","t":"Batch 380, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"15ztCGwUp4fgm78VkAvUs0wq7Vd6ZYLjv","t":"Batch 380, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1bReqtnLkQx5wMUi0eVEj1q8TO2aJ-8L2","t":"Batch 380, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1n2BvT7Aln3-zb6clmcke031Tzm7qdpmt","t":"Batch 380, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1zPhKmUblHioX6DwB9JD4MZdS91VV0CHq","t":"Batch 380, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1ejZivNADk4IyQ6lCkLtdPKuNN2etUW-h","t":"Batch 383, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1M5hDm4dw9dVwbTlbinZKY6QX5rv_YRl6","t":"Batch 383, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1ftPKUvfTuI2eAqeCjd2iSWa1d9nesVCx","t":"Batch 383, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1MRY8Sdl04o-2lWg47obE9PJU-WgNcI08","t":"Batch 387, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1zG8qYEdbjOrgvuN6V1qb_uW5om5VRiaW","t":"Batch 387, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1OyIrK251iNUipLIwfprbb70mA1LP4PFq","t":"Batch 387, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1OKFHg6gerR_pkRvxm9c66ulGnifrPhVY","t":"Batch 387, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1kx4isXP_rmWyfelVf4cFDpdgOQk3B-m9","t":"Batch 387, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1Vu6PDnlb-6ubJmPJ9Ui6VG8i1acBHBBi","t":"Batch 387, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1QdK_XTflWUGXMpzIfdGiIugUjlvlK8UH","t":"Batch 391, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1GJ3_ifUuH_Se1Vvp2RFlGhbTGl8iQLyF","t":"Batch 391, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"17f2B8l2e0Hz6DL60qu5UEeUXVba_iEuL","t":"Batch 391, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1XDE6namJj27I8aTQ7L2qwyzBZDQTjo5c","t":"Batch 391, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1N9sDK2jk_Iy8sV09Bu4A241vF74riXkW","t":"Batch 391, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"18sxbWqiTK7RMGr7lT4Gpn_8pkpobX-Xf","t":"Batch 396, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1MO-N9EM6SfgZMwB7U4mwre5wjoi747f1","t":"Batch 396, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"18PnrRg4sQXJyICjtEa6wOvLoQF6Vt_4C","t":"Batch 396, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1kURW71lRQvjz3jC32Kow5sZzS_lVirv3","t":"Batch 396, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1ucXjd5WZz78hLBUy5LXjqcn-BmgsiwYy","t":"Batch 396, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1wNyTtIjRJus1tWKCza2jdPJHms5sOVqW","t":"Batch 396, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1TBa3qDuR79oxwlAeDWN3ZhR5QQauoYKw","t":"Batch 397, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"15_b1DPe5SlZ2ofS3JbDuBdqvzG0SPsgP","t":"Batch 397, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1342EbVRbfPCMfwQ2HLeB_akJfXHWSkcf","t":"Batch 397, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1z88XUjc02wp1aE_UaVZ4jO0xjWH-Vj-A","t":"Batch 397, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1cvAj-vADi4NZY1PKmz5Ao9-v_icz99D0","t":"Batch 397, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1fLNCW7nWPqfPOFluKCsMl3k1HUImqIG5","t":"Batch 397, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XfHUPLnzN9KcuBctZvcoVkV2KDSy6R1E","t":"Batch 404, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1f3ti0Alr7lGkbilMR0Pp4MTO8R62MXcw","t":"Batch 404, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1gRkmFgH-_E4ar4uN99Qg39RjZ0w3bY5o","t":"Batch 404, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1sO1rxZgD0QlYO2THnDutX6_HnbqEJdtB","t":"Batch 404, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1s8I-GqdFAfkTdjPjZG7ifUToLzk62Jyp","t":"Batch 404, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"11aPUWSQa61C9R31ppbrYLJlxe9T0Z_5l","t":"Batch 406, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1YXljkZMVC2rkDmBgqJr1Q3TXevc1G_5n","t":"Batch 406, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1ixfVry0ikQfzXbSpu0ANkyaqtR2GBB4e","t":"Batch 406, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend LumaLean"},{"id":"1xKcayIZZ5WHD2zWIvhvDTN-wF-8_aID8","t":"Batch 406, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1JW0ElLk--h-QN7BWqZ7rWeilYbf6YoP0","t":"Batch 406, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1XneX9QtYLSxOH_T7p3ahdcP76jbUw8kA","t":"Batch 421, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"16Gt6iG91yAKELzBrfePzxmYT65HyNB-u","t":"Batch 421, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1mMobgTcww3jFMsoj1K3aqUT8c0iXvsRN","t":"Batch 421, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1XtslHma_MrF23Tgzr1H_yt38X3PpMFxH","t":"Batch 421, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1q9I_wabBjDCGol70xeU-xzUS-GzR5VWo","t":"Batch 421, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"14tYhWoohLxsvXGKBaUtqMPNb0MHpbSze","t":"Batch 423, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1JKlJgQQO5GqONcx6juGodY7pSWlWmc6T","t":"Batch 423, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"13kFMBt_epCoCTbSS_VOUMAUvji_zZOEl","t":"Batch 423, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1r13YSV36MLase2qBQcWiVmPtp5nCRmMK","t":"Batch 423, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1SYrU46e4odqnFv9Eh4UwbXa7EI5zp-8J","t":"Batch 423, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1ILQ8Y66X7hzieyfML4UyiJN9r__IQ8Nk","t":"Batch 425, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1H9rIx7tfdP-VmMuG0tUbPeYoqdrHKFqt","t":"Batch 425, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1vXC_o255piRHkffSWhdyORXVo5Cqt8Px","t":"Batch 425, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1i7gKXyn68DJRHNPPJ55_XEn7VviuO_Pn","t":"Batch 425, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1s15JvGSjo3OQdrrsvNEMw2O2jv7x8IgT","t":"Batch 425, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1PpVRiluEJxYheAHqKNZrrRZEEkinA8IX","t":"Batch 438, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1gpAVe7Wg5Ky0Kfo-0dtV_G83QGkCdFJh","t":"Batch 438, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"15w72ZVBT_v_FCemWMXbs_aH-3TMqMaLq","t":"Batch 438, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1Kv2uUDHnTjCxdUPgDkuk7Bd_2hTk5xQR","t":"Batch 438, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1kz_kXqBosHnRGTw7VeWf6ePVIHHKKdU5","t":"Batch 439, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1snJ3Z_EfHW-aTB0Fx9Whbpenl83dViKQ","t":"Batch 439, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"10dtGE-nXwxQwWvu6Q_5Z_7NFFtYRcLyz","t":"Batch 439, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"1DFK3I36Xmu4_wuID_-pbEmMZOo9ZOYzK","t":"Batch 439, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1gNv-QhFNMc-oQ4m1BpYu6blqRqDlOTsP","t":"Batch 441, hook 1","c":"ads","cl":"Nomend LumaLean"},{"id":"1-Vz-8IMnnd71rEu_VCsgCfgBjYPlVbf9","t":"Batch 441, hook 2","c":"ads","cl":"Nomend LumaLean"},{"id":"1s9EU6XFjR89PbHyik2FgDs0PluSjpxBW","t":"Batch 441, hook 3","c":"ads","cl":"Nomend LumaLean"},{"id":"11L0oHktXmcjWUjZJTX5Vs81kRiD3j3vx","t":"Batch 441, hook 4","c":"ads","cl":"Nomend LumaLean"},{"id":"1GB8LxrD3gikl02nTCeVvqiurUz0wyp3w","t":"Batch 441, hook 5","c":"ads","cl":"Nomend LumaLean"},{"id":"1CJoBoWxNBdokmYuJGvyPz7hxv3TgE5yY","t":"Batch 222, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"12QlhN7uobXP4eug8vNo6BLgsjkHlJJJY","t":"Batch 222, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1_fFoxS7dqFB-OUTuyym5e6ZmbWDfX0iH","t":"Batch 222, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1vlfiOlFcgbk4s2M9nCHhu1Xtcnlx1Cvv","t":"Batch 222, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"181ythdpkwLkfwsu927KEEyTrCmUhPU7f","t":"Batch 222, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1bqg3D8H6ujSOCv8-tEg5EvpBaaCnAQJ2","t":"Batch 234, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Chwwpyz5guw0HmOq6CpDeDPpN0uTdNrw","t":"Batch 234, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1e8HlF85a_WnnLDov4CG3duY8hAvgPeme","t":"Batch 234, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1GvAJbcH2o3zjUXhXuSjhAXCWoan0JMMG","t":"Batch 234, hook 4 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1DQYEFHqzxM7lqL1ab11WA4x6e76ip3Mh","t":"Batch 234, hook 5 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1e3bJRklUpKG4BDo_EUkj9i2HzklD1KJy","t":"Batch 234, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1l4Hcec43JFavJJ4CDd6xuatBKv_Bj2UB","t":"Batch 234, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1eExrZwukal8ecrD1xKhF2aNny-vkepOA","t":"Batch 234, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Qmu7cfg4rpQxV0MuBe9PdJ9PSaVpJi5F","t":"Batch 234, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1_LS5I9-tJnhAR3qPGv6GW9B-GYP7fvW6","t":"Batch 236, hook 1 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1H6n6vi6xYkkNuc77C1nu9NERBTObCwzT","t":"Batch 236, hook 2 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"17uIYHa-8Z_99j3Nep1hC50GrSOZlVSqY","t":"Batch 236, hook 3 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1TUof8jxX_GQleEUbEiqeJD5n1cGrJNwd","t":"Batch 236, hook 4 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Tj3ztujPjW30R9TLrtD9hoTe1SeRJtYk","t":"Batch 236, hook 5 (AppLovin cut)","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1OEY5rVCa48LAK9U4h8vupJqrz4eyS8Sy","t":"Batch 236, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1H4JT1wImVnVkUEJJ9OvM0RwkbfLrFQzq","t":"Batch 236, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1MzKIhQdlzQzbT66o3CXW9VOESxtFDZP1","t":"Batch 236, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1mFqExKolTPQ47j3cRXwXL0oh7KXBDpYX","t":"Batch 236, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1xykcbLMLwUts2j8oMq9I03BOW4rcu3kJ","t":"Batch 236, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1w2x5m9FDfok5T2EQEGW044qY7xy1R4-L","t":"Batch 240, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1Khje-BGfRC56CT7UInAA9Oa5e6FniMti","t":"Batch 240, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1PJe4L0SeJdVwgdOAyVsihCq5LxeWzGQm","t":"Batch 240, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1k42kV7B9GLUGC4zF8OdKeO1UvpljFdFD","t":"Batch 240, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1LGphg3me_hlyNtbHDpzF2Lt4qy5UZ7Zp","t":"Batch 240, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"12b0A-x9keXIISKmqGXwAIGluToB7u3Hg","t":"Batch 260, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"13oNqvUr7EVGif8YPQd5qYncOjNBF46RR","t":"Batch 260, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1PqgaYkZog3iFpMBrCe8tKSQS8WJcnvcB","t":"Batch 260, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1QlVBot7yKLdTzmV0feL0wnqaoViX10rw","t":"Batch 260, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1-HUKo8YukjJ9xTgIhEC7ichbEZLONQdp","t":"Batch 260, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1iIvKFDealb7FIMmXYXA0Opj9p86WPTrl","t":"Batch 265, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1M8bo6568XlwBj9vLMHR9JZzKEQ8tsPf0","t":"Batch 265, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1otVDskVCXDjIYZO_WaFTQ_0Sp6-RrlDp","t":"Batch 265, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1RsIj4_gqKHLwNk3Y9Nhc4F6DBnJNYIeH","t":"Batch 265, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1fIXzKKpvmb_Fe3dCiIOH7in3Tg8RTCUA","t":"Batch 265, hook 5","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1TkY_71LS_dOl8PGEGSkTi_8r7JAtGrlI","t":"Batch 292, hook 1","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1T75ZVR6eV1QKyj7BWRuR31RAXGGBWG-M","t":"Batch 292, hook 2","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1gecmMD1Ju9GAUw4nYRLl0w5RGvik6lpJ","t":"Batch 292, hook 3","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1OsuhZjryDURuaO8ASR76fgSTssblwK5E","t":"Batch 292, hook 4","c":"ads","cl":"Nomend Nourish Gummies"},{"id":"1ZghfUoCnQjRgpYeOb9WsKgLAmWgWE-K5","t":"AD 1","c":"ads","cl":"Vivint"},{"id":"1Kfjr_qyB0wSZ1i0UoXEF9bAZ33je-oRm","t":"AD 2","c":"ads","cl":"Vivint"},{"id":"1FikFplDbaQbH5N3EWxEKqNe0w-MubTHD","t":"AD 1 REVISED","c":"ads","cl":"Vivint"},{"id":"1v1nKP2rOHVZ2g0A5vOkxdkFR-AdXQWOD","t":"AD 2 REVISED","c":"ads","cl":"Vivint"}];
+const CLD = "https://res.cloudinary.com/dbqigfl0g/video/upload/";
+const cvid = (p, w=540) => `${CLD}q_auto,w_${w}/${p}.mp4`;
+const cimg = p => `${CLD}so_1,q_auto,w_480/${p}.jpg`;
+const dthumb = id => `https://drive.google.com/thumbnail?id=${id}&sz=w480`;
+const thumb = v => v.cv ? cimg(v.cv) : dthumb(v.id);
+const CATS = [
+  ["featured","Best work","The edits I'd show first: top-performing hooks across Nomend, PEAKSTA, Exchange Life and Savary."],
+  ["ads","Performance ads","Batch production for DTC brands. Each batch is one body with several hook variations, plus AppLovin cuts where the media buyer needed them."],
+  ["vsl","VSLs and dramas","Short-form video sales letters and micro-drama ads, built for watch time."],
+  ["social","Social and fitness","Weekly short-form for a fitness creator, anime gym edits and montages."],
+  ["food","Food and hospitality","Menu montages and the Kamayan series for Oribello's Kitchen + Bar."],
+  ["trials","Test projects","Paid trials and application edits for agencies and brands."],
+  ["all","All",""]
+];
+const BRANDS = ["Nomend LumaLean","PEAKSTA","Vivint","Thalique","Exchange Life","Nomend Nourish","PGA","Savary","Oribello's Kitchen + Bar"];
+const REEL = ["SHORT%20FORM/Montages/M9_j3bkgi","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/OP_GYM_ROUTINE_PRODUCT_g1osry","SHORT%20FORM/Short%20form%20VSLs/SAVARY_7_-_CHARLES_ay04sj","SHORT%20FORM/Montages/M5_xczb63","SHORT%20FORM/ADS/B2C4.BANNED_DOCTOR_H2_qbohk8","SHORT%20FORM/FITNESS/Anime%20Gym%20Edits/MEMEL_-_JJK_GYM_ROUTINE_FINAL_o5hqku","SHORT%20FORM/Montages/M7_bezjc1","SHORT%20FORM/FITNESS/SHORT_1_The_60-Minute_Myth_lkcvlj"];
+const HOOKS = ["SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H1_azaz8f","SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H2_c6zb54","SHORT%20FORM/ADS/B2C2.WHAT_HAPPENS_WHEN_YOU_TAKE_AGED_GARLIC_FOR_2_WEEKS_H3_wnvc0n"];
+const PAGE = 30;
+let cat = "featured", shown = PAGE;
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fine = matchMedia("(pointer:fine)").matches;
+const pad = n => String(n).padStart(2,"0");
+const titleOf = p => { const v = V.find(x => x.cv===p); return v ? `${v.t}, ${v.cl}` : decodeURIComponent(p.split("/").pop()).replace(/_[a-z0-9]{6}$/,"").replace(/_/g," "); };
+
+/* ---- intro leader ---- */
+(function(){
+  const el = $("#leader"); let seen = false;
+  try { seen = sessionStorage.getItem("leader") === "1"; } catch(e){}
+  const done = () => { el.classList.add("out"); setTimeout(() => el.remove(), 750); try{sessionStorage.setItem("leader","1")}catch(e){} };
+  if (reduce || seen) { el.remove(); return; }
+  $("#skipLeader").addEventListener("click", done);
+  addEventListener("keydown", function k(){ done(); removeEventListener("keydown", k); }, {once:true});
+  const ring = el.querySelector(".ring"), num = $("#lnum"); const t0 = performance.now(); const per = 520;
+  (function tick(now){
+    const t = now - t0, i = Math.floor(t/per), frac = (t % per)/per;
+    if (i >= 3) return done();
+    num.textContent = 3 - i; ring.style.setProperty("--sweep", (frac*360)+"deg");
+    requestAnimationFrame(tick);
+  })(t0);
+})();
+
+/* ---- hero showreel ---- */
+(function(){
+  const vids = [$("#rv0"), $("#rv1")]; let cur = 0, idx = 0; const SEG = 2.8;
+  $("#bars").innerHTML = REEL.map(() => "<i><b></b></i>").join("");
+  const bars = [...document.querySelectorAll("#bars i")];
+  $("#gl").src = cimg(REEL[3]); $("#gr").src = cimg(REEL[2]);
+  function load(v, p){ v.src = cvid(p); v.currentTime = 0; }
+  function show(i){
+    const a = vids[cur], b = vids[1-cur];
+    bars.forEach((x,j) => { x.classList.toggle("done", j < i); x.classList.remove("on"); });
+    void bars[i].offsetWidth; bars[i].style.setProperty("--dur", SEG+"s"); bars[i].classList.add("on");
+    $("#rnow").textContent = `NOW PLAYING ${pad(i+1)} / ${pad(REEL.length)}`;
+    $("#rttl").textContent = titleOf(REEL[i]);
+    a.style.opacity = 1; b.style.opacity = 0; a.play().catch(()=>{});
+    if (!reduce) { $("#flash").classList.remove("go"); void $("#flash").offsetWidth; $("#flash").classList.add("go"); }
+    load(b, REEL[(i+1) % REEL.length]);
+  }
+  load(vids[0], REEL[0]);
+  if (reduce) { vids[0].poster = cimg(REEL[0]); $("#rttl").textContent = titleOf(REEL[0]); return; }
+  show(0);
+  setInterval(() => { idx = (idx+1) % REEL.length; vids[cur].pause(); cur = 1-cur; show(idx); }, SEG*1000);
+  $("#snd").addEventListener("click", e => {
+    const on = vids[0].muted; vids.forEach(v => v.muted = !on);
+    e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
+    $("#sndw").setAttribute("d", on ? "M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" : "M16 9l5 6M21 9l-5 6");
+  });
+  // rotating word
+  const words = ["DTC ads","VSLs","hooks","montages","micro dramas"]; let w = 0;
+  setInterval(() => { w = (w+1) % words.length; $("#swap").textContent = words[w]; }, 2200);
+})();
+
+/* ---- hook lab ---- */
+(function(){
+  $("#lab").innerHTML = HOOKS.map((p,i) => `<figure><div class="scr" data-hook="${i}"><span class="lbl mono">HOOK ${i+1}</span>
+    <video muted playsinline preload="metadata" poster="${cimg(p)}" src="${cvid(p)}"></video></div>
+    <figcaption>Hook ${i+1}<span class="mono">Variation ${"ABC"[i]}</span></figcaption></figure>`).join("");
+  const vs = [...document.querySelectorAll("#lab video")]; let playing = false;
+  const btn = $("#labPlay");
+  btn.addEventListener("click", () => {
+    playing = !playing;
+    if (playing) { vs.forEach(v => { v.currentTime = 0; v.play().catch(()=>{}); }); btn.innerHTML = '<span class="dot"></span>Pause'; }
+    else { vs.forEach(v => v.pause()); btn.innerHTML = '<span class="dot"></span>Play all three in sync'; }
+  });
+  vs[0].addEventListener("timeupdate", () => { const t = vs[0].currentTime, d = vs[0].duration || 0; $("#labTime").textContent = `${pad(Math.floor(t/60))}:${pad(Math.floor(t%60))} / ${pad(Math.floor(d/60))}:${pad(Math.floor(d%60))}`; });
+  vs[0].addEventListener("ended", () => { playing = false; btn.innerHTML = '<span class="dot"></span>Play all three in sync'; });
+})();
+
+/* ---- ticker ---- */
+const one = BRANDS.map(b => `<span>${esc(b)}</span><span class="sep" aria-hidden="true">✦</span>`).join("");
+$("#ticker").innerHTML = one + `<span aria-hidden="true" style="display:contents">${one}</span>`;
+
+/* ---- work grid ---- */
+function tile(v, n){
+  return `<button class="tile" type="button" data-id="${v.id}" aria-label="Play ${esc(v.t)}, ${esc(v.cl)}">
+    <img src="${thumb(v)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('noimg');this.remove()">
+    <span class="ph">${esc(v.t)}</span><span class="tc mono" aria-hidden="true">CLIP ${String(n).padStart(3,"0")}</span>
+    ${v.cv ? '<span class="pv mono" aria-hidden="true"><span class="dot"></span>LIVE</span>' : ""}
+    <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></span></button>`;
+}
+function list(){ return cat==="all" ? V : V.filter(v => v.c===cat); }
+function renderFilters(){
+  $("#filters").innerHTML = CATS.map(([k,l]) => {
+    const n = k==="all" ? V.length : V.filter(v=>v.c===k).length;
+    return `<li><button class="chip" type="button" data-cat="${k}" aria-pressed="${k===cat}">${l}<span class="n">${n}</span></button></li>`;
+  }).join("");
+  $("#total").textContent = `${V.length} EDITS / ${CATS.length-1} CATEGORIES`;
+  $("#cnt").textContent = V.length;
+}
+function render(){
+  const items = list();
+  $("#grid").innerHTML = items.slice(0, shown).map((v,i) => `<li class="card">${tile(v,i+1)}<h3>${esc(v.t)}</h3><p>${esc(v.cl)}</p></li>`).join("");
+  $("#catnote").textContent = CATS.find(c=>c[0]===cat)[2];
+  const rest = items.length - Math.min(shown, items.length);
+  $("#moreBtn").hidden = rest <= 0;
+  $("#moreBtn").textContent = `Load ${Math.min(rest, PAGE)} more`;
+  $("#count").textContent = `${Math.min(shown, items.length)} / ${items.length}`;
+}
+$("#filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if(!b) return;
+  cat = b.dataset.cat; shown = PAGE;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c===b));
+  render();
+});
+$("#moreBtn").addEventListener("click", () => {
+  const first = shown; shown += PAGE; render();
+  const next = document.querySelectorAll("#grid .tile")[first]; if(next) next.focus();
+});
+// hover preview for LIVE clips
+if (fine && !reduce) {
+  $("#grid").addEventListener("pointerover", e => {
+    const t = e.target.closest(".tile"); if (!t || t.dataset.live) return;
+    const v = V.find(x => x.id===t.dataset.id); if (!v || !v.cv) return;
+    t.dataset.live = 1;
+    const vid = document.createElement("video"); vid.muted = true; vid.playsInline = true; vid.loop = true; vid.src = cvid(v.cv, 360);
+    vid.addEventListener("playing", () => t.classList.add("live"));
+    t.appendChild(vid); vid.play().catch(()=>{});
+    t.addEventListener("pointerleave", () => { t.classList.remove("live"); vid.pause(); setTimeout(() => { vid.remove(); delete t.dataset.live; }, 250); }, {once:true});
+  });
+}
+
+/* ---- custom cursor ---- */
+if (fine && !reduce) {
+  const c = $("#cur");
+  addEventListener("pointermove", e => {
+    c.style.left = e.clientX+"px"; c.style.top = e.clientY+"px";
+    document.body.style.setProperty("--mx", e.clientX+"px"); document.body.style.setProperty("--my", e.clientY+"px");
+    const over = e.target.closest && e.target.closest(".grid .tile, .lab .scr");
+    c.classList.toggle("on", !!over);
+    if (over) c.textContent = over.classList.contains("scr") ? "SYNC" : "PLAY";
+  }, {passive:true});
+}
+document.addEventListener("click", e => { const s = e.target.closest(".lab .scr"); if (s) $("#labPlay").click(); });
+
+/* ---- player ---- */
+const dlg = $("#dlg"); let lastFocus = null;
+function openPlayer(id){
+  const v = V.find(x => x.id===id); if(!v) return;
+  lastFocus = document.activeElement;
+  $("#frame").innerHTML = v.cv
+    ? `<video src="${cvid(v.cv, 1080)}" controls autoplay playsinline poster="${cimg(v.cv)}"></video>`
+    : `<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(v.t)}"></iframe>`;
+  $("#ptitle").textContent = v.t; $("#pclient").textContent = v.cl;
+  $("#popen").href = `https://drive.google.com/file/d/${id}/view`;
+  dlg.classList.remove("landscape"); $("#orient").textContent = "Landscape";
+  dlg.showModal(); $("#pclose").focus();
+}
+dlg.addEventListener("close", () => { $("#frame").innerHTML = ""; if(lastFocus) lastFocus.focus(); });
+dlg.addEventListener("click", e => { if(e.target===dlg) dlg.close(); });
+$("#pclose").addEventListener("click", () => dlg.close());
+$("#orient").addEventListener("click", () => { const l = dlg.classList.toggle("landscape"); $("#orient").textContent = l ? "Portrait" : "Landscape"; });
+document.addEventListener("click", e => { const t = e.target.closest(".grid .tile"); if(t) openPlayer(t.dataset.id); });
+
+/* ---- page scrubber: the page is a timeline ---- */
+(function(){
+  const secs = [["top","INTRO"],["hooks","HOOK LAB"],["work","WORK"],["capabilities","CRAFT"],["about","TIMELINE"],["contact","CONTACT"]];
+  const rail = $("#rail"); const TOTAL = 90; // the page "runs" 90 seconds
+  const max = () => document.documentElement.scrollHeight - innerHeight;
+  rail.insertAdjacentHTML("beforeend", secs.map(([id,l]) => `<button class="mk" type="button" data-to="${id}" aria-label="Jump to ${l.toLowerCase()}"><i></i><span>${l}</span></button>`).join(""));
+  const mks = [...rail.querySelectorAll(".mk")];
+  function place(){ mks.forEach((m,i) => { const el = document.getElementById(secs[i][0]); m.dataset.y = Math.max(0, el.offsetTop - 70); m.style.left = Math.min(100, m.dataset.y / max() * 100) + "%"; }); }
+  function upd(){
+    const p = Math.min(1, scrollY / Math.max(1, max()));
+    $("#pfill").style.width = p*100+"%"; $("#phead").style.left = p*100+"%";
+    const f = Math.round(p*TOTAL*24); $("#ptc").textContent = `00:${pad(Math.floor(f/1440))}:${pad(Math.floor(f/24)%60)}:${pad(f%24)}`;
+    let cur = secs[0][1]; mks.forEach((m,i) => { const past = scrollY + 2 >= +m.dataset.y; m.classList.toggle("past", past); if (past) cur = secs[i][1]; });
+    $("#plbl").textContent = cur;
+  }
+  rail.addEventListener("click", e => { const m = e.target.closest(".mk"); if (m) document.getElementById(m.dataset.to).scrollIntoView({behavior: reduce ? "auto" : "smooth"}); });
+  addEventListener("scroll", upd, {passive:true}); addEventListener("resize", () => { place(); upd(); });
+  addEventListener("load", () => { place(); upd(); }); place(); upd();
+})();
+
+/* ---- viewfinder timecode ---- */
+if (!reduce) { const t0 = performance.now(), tc = $("#tc");
+  setInterval(() => { const f = Math.floor((performance.now()-t0)/1000*24); tc.textContent = `00:${pad(Math.floor(f/1440)%60)}:${pad(Math.floor(f/24)%60)}:${pad(f%24)}`; }, 42); }
+
+renderFilters(); render();
+</script>
+</body>
+</html>
